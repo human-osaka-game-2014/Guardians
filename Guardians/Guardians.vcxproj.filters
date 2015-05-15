@@ -1,0 +1,652 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Battle">
+      <UniqueIdentifier>{46b9b200-ac91-438b-bde7-10ad5d31ee5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Battle\Field">
+      <UniqueIdentifier>{6f8844b0-5291-4eaa-b55d-b8b06d2e0b22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Battle\Character">
+      <UniqueIdentifier>{dfcc62a3-ab4f-45b0-9897-9faed389986b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Battle\Character\Enemy">
+      <UniqueIdentifier>{8336fc5e-d40a-4242-8661-43e6a406dd10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Battle\Character\Player">
+      <UniqueIdentifier>{be587a01-1a1f-402f-b43a-ca888b1aad68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{04d7a6d8-0fd5-454e-846c-1d3232fec2d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prepare">
+      <UniqueIdentifier>{d5246a8f-8c62-4925-8889-113cc552f2d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prepare\Screen">
+      <UniqueIdentifier>{ef1d7ec6-efa4-4e96-bb3a-29275f967599}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prepare\Cursor">
+      <UniqueIdentifier>{f0ff3c47-aa95-4993-861b-a3eb74ef89f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prepare\Telop">
+      <UniqueIdentifier>{a5339aa4-7b8d-4cdd-8feb-38be970be8ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prepare\Window">
+      <UniqueIdentifier>{72af6127-bc3a-4e62-ad5f-cd5a2699b6b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Title">
+      <UniqueIdentifier>{0a690f22-930b-417b-bbc7-ddbdcd605745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{aacfbb0b-09ce-432e-8da0-df0885c7c69e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prepare\Map">
+      <UniqueIdentifier>{453c2c58-761d-4ac9-8396-4e7b478d601e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Battle\Effect">
+      <UniqueIdentifier>{15170b58-d175-4972-b131-61f25f421290}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="charaPicture.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="chip.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="chipMonster.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DdirectShow.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DgameIcon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DgameMenuBar.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Dlogo.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Dscene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DsceneManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DtextureManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="fontPolygon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Guardians.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="macro.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Polygon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetSet.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="StringConvert.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="stringList.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="KgameDataWindow.h">
+      <Filter>Prepare\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="KgameEquipWindow.h">
+      <Filter>Prepare\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="KgameSaveDataWindow.h">
+      <Filter>Prepare\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="KgameSelectWindow.h">
+      <Filter>Prepare\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="KgameShopListWindow.h">
+      <Filter>Prepare\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="KgameShopMenuWindow.h">
+      <Filter>Prepare\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="KgameStatusWindow.h">
+      <Filter>Prepare\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="KgameThingsWindow.h">
+      <Filter>Prepare\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="KgameWindow.h">
+      <Filter>Prepare\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="DgameCharaCursor.h">
+      <Filter>Prepare\Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="DgameCursor.h">
+      <Filter>Prepare\Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="DgameItemCursor.h">
+      <Filter>Prepare\Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="DgameMenuCursor.h">
+      <Filter>Prepare\Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="DgameSaveCursor.h">
+      <Filter>Prepare\Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="DgameSelectCursor.h">
+      <Filter>Prepare\Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="MgameBossTelop.h">
+      <Filter>Prepare\Telop</Filter>
+    </ClInclude>
+    <ClInclude Include="MgameCharaTelop.h">
+      <Filter>Prepare\Telop</Filter>
+    </ClInclude>
+    <ClInclude Include="MgameExplainTelop.h">
+      <Filter>Prepare\Telop</Filter>
+    </ClInclude>
+    <ClInclude Include="MgameStageTelop.h">
+      <Filter>Prepare\Telop</Filter>
+    </ClInclude>
+    <ClInclude Include="MgameTelop.h">
+      <Filter>Prepare\Telop</Filter>
+    </ClInclude>
+    <ClInclude Include="DbattleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DlogoScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DopeningScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DprepareMissionScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DtitleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="resultScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="endingScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DmenuSelectScreen.h">
+      <Filter>Prepare\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="DmenuShopScreen.h">
+      <Filter>Prepare\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="DmenuStatusScreen.h">
+      <Filter>Prepare\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="menuScreen.h">
+      <Filter>Prepare\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="MmenuDataScreen.h">
+      <Filter>Prepare\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="Dtitle.h">
+      <Filter>Title</Filter>
+    </ClInclude>
+    <ClInclude Include="DtitleMenu.h">
+      <Filter>Title</Filter>
+    </ClInclude>
+    <ClInclude Include="DtitleSelect.h">
+      <Filter>Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Mlayer7.h">
+      <Filter>Battle\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Mlayer6.h">
+      <Filter>Battle\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Mlayer5.h">
+      <Filter>Battle\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Mlayer4.h">
+      <Filter>Battle\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Mlayer3.h">
+      <Filter>Battle\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Mlayer2.h">
+      <Filter>Battle\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Mlayer1.h">
+      <Filter>Battle\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="MLayer.h">
+      <Filter>Battle\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="3DModel.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="3DVertex.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="anim3DModel.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="animVertex.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="graphicsDevice.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="TexCharacter.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="TexString.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Dcharacter.h">
+      <Filter>Battle\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="DcharacterManager.h">
+      <Filter>Battle\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="DNeru.h">
+      <Filter>Battle\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Dplayer.h">
+      <Filter>Battle\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Mfield.h">
+      <Filter>Battle\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Dmushroom.h">
+      <Filter>Battle\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Denemy.h">
+      <Filter>Battle\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Mcamera.h">
+      <Filter>Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="KbattleUI.h">
+      <Filter>Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="MgameData.h" />
+    <ClInclude Include="define.h" />
+    <ClInclude Include="DMaru.h">
+      <Filter>Battle\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="gameMap.h">
+      <Filter>Prepare\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="gameMapPointer.h">
+      <Filter>Prepare\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Deffect.h">
+      <Filter>Battle\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>Battle\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="DfireBallManager.h">
+      <Filter>Battle\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="DEffectManager.h">
+      <Filter>Battle\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="iceWallManager.h">
+      <Filter>Battle\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicSquareManager.h">
+      <Filter>Battle\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="DBillBoard.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="DAldfauth.h">
+      <Filter>Battle\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Dminertza.h">
+      <Filter>Battle\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="fenrir.h">
+      <Filter>Battle\Character\Enemy</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="charaPicture.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DdirectShow.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DgameIcon.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DgameMenuBar.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Dlogo.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="fontPolygon.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Polygon.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="stringList.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="3DVertex.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="3DModel.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="anim3DModel.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="animVertex.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="graphicsDevice.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="Input_Gamepad.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="Input_Keyboard.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="Input_Mouse.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="StringConvert.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="TexString.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="TexCharacter.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="vertex.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="MLayer.cpp">
+      <Filter>Battle\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Mlayer1.cpp">
+      <Filter>Battle\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Mlayer3.cpp">
+      <Filter>Battle\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Mlayer2.cpp">
+      <Filter>Battle\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Mlayer5.cpp">
+      <Filter>Battle\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Mlayer4.cpp">
+      <Filter>Battle\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Mlayer6.cpp">
+      <Filter>Battle\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Mlayer7.cpp">
+      <Filter>Battle\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Mcamera.cpp">
+      <Filter>Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="Mfield.cpp">
+      <Filter>Battle\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Dcharacter.cpp">
+      <Filter>Battle\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="DcharacterManager.cpp">
+      <Filter>Battle\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Dplayer.cpp">
+      <Filter>Battle\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="DNeru.cpp">
+      <Filter>Battle\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Dmushroom.cpp">
+      <Filter>Battle\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="KgameDataWindow.cpp">
+      <Filter>Prepare\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="KgameEquipWindow.cpp">
+      <Filter>Prepare\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="KgameSaveDataWindow.cpp">
+      <Filter>Prepare\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="KgameSelectWindow.cpp">
+      <Filter>Prepare\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="KgameShopListWindow.cpp">
+      <Filter>Prepare\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="KgameShopMenuWindow.cpp">
+      <Filter>Prepare\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="KgameStatusWindow.cpp">
+      <Filter>Prepare\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="KgameThingWindow.cpp">
+      <Filter>Prepare\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="KgameWindow.cpp">
+      <Filter>Prepare\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="DgameCharaCursor.cpp">
+      <Filter>Prepare\Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="DgameCursor.cpp">
+      <Filter>Prepare\Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="DgameItemCursor.cpp">
+      <Filter>Prepare\Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="DgameMenuCursor.cpp">
+      <Filter>Prepare\Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="DgameSaveCursor.cpp">
+      <Filter>Prepare\Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="DgameSelectCursor.cpp">
+      <Filter>Prepare\Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="MgameBossTelop.cpp">
+      <Filter>Prepare\Telop</Filter>
+    </ClCompile>
+    <ClCompile Include="MgameCharaTelop.cpp">
+      <Filter>Prepare\Telop</Filter>
+    </ClCompile>
+    <ClCompile Include="MgameExplainTelop.cpp">
+      <Filter>Prepare\Telop</Filter>
+    </ClCompile>
+    <ClCompile Include="MgameStageTelop.cpp">
+      <Filter>Prepare\Telop</Filter>
+    </ClCompile>
+    <ClCompile Include="MgameTelop.cpp">
+      <Filter>Prepare\Telop</Filter>
+    </ClCompile>
+    <ClCompile Include="Denemy.cpp">
+      <Filter>Battle\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="DbattleScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DlogoScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DopeningScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DprepareMissionScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DtitleScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="endingScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="resultScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DmenuShopScreen.cpp">
+      <Filter>Prepare\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="DmenuStatusScreen.cpp">
+      <Filter>Prepare\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="menuScreen.cpp">
+      <Filter>Prepare\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="MmenuDataScreen.cpp">
+      <Filter>Prepare\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="Dscene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Dtitle.cpp">
+      <Filter>Title</Filter>
+    </ClCompile>
+    <ClCompile Include="DtitleMenu.cpp">
+      <Filter>Title</Filter>
+    </ClCompile>
+    <ClCompile Include="DtitleSelect.cpp">
+      <Filter>Title</Filter>
+    </ClCompile>
+    <ClCompile Include="chipMonster.cpp">
+      <Filter>Prepare\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="chip.cpp">
+      <Filter>Prepare\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="KbattleUI.cpp">
+      <Filter>Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="MgameData.cpp" />
+    <ClCompile Include="DsceneManager.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DMaru.cpp">
+      <Filter>Battle\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="gameMap.cpp">
+      <Filter>Prepare\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="gameMapPointer.cpp">
+      <Filter>Prepare\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Deffect.cpp">
+      <Filter>Battle\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="DtextureManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>Battle\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="DEffectManager.cpp">
+      <Filter>Battle\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="DfireBallManager.cpp">
+      <Filter>Battle\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="iceWallManager.cpp">
+      <Filter>Battle\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="MagicSquareManager.cpp">
+      <Filter>Battle\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="DBillBoard.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="DAldfauth.cpp">
+      <Filter>Battle\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Dminertza.cpp">
+      <Filter>Battle\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="DmenuSelectScreen.cpp">
+      <Filter>Prepare\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="fenrir.cpp">
+      <Filter>Battle\Character\Enemy</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Guardians.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Guardians.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

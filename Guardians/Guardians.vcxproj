@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{740AEEC1-A5F8-4DF8-A341-3DC46FC965F3}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Guardians</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Effekseer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Effekseer\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Effekseer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Effekseer\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateMapFile>true</GenerateMapFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="3DModel.h" />
+    <ClInclude Include="3DVertex.h" />
+    <ClInclude Include="anim3DModel.h" />
+    <ClInclude Include="animVertex.h" />
+    <ClInclude Include="charaPicture.h" />
+    <ClInclude Include="chip.h" />
+    <ClInclude Include="chipMonster.h" />
+    <ClInclude Include="DAldfauth.h" />
+    <ClInclude Include="DbattleScene.h" />
+    <ClInclude Include="DBillBoard.h" />
+    <ClInclude Include="Dcharacter.h" />
+    <ClInclude Include="DcharacterManager.h" />
+    <ClInclude Include="DdirectShow.h" />
+    <ClInclude Include="Deffect.h" />
+    <ClInclude Include="DEffectManager.h" />
+    <ClInclude Include="define.h" />
+    <ClInclude Include="Denemy.h" />
+    <ClInclude Include="DfireBallManager.h" />
+    <ClInclude Include="DgameCharaCursor.h" />
+    <ClInclude Include="DgameCursor.h" />
+    <ClInclude Include="DgameIcon.h" />
+    <ClInclude Include="DgameItemCursor.h" />
+    <ClInclude Include="DgameMenuBar.h" />
+    <ClInclude Include="DgameMenuCursor.h" />
+    <ClInclude Include="DgameSaveCursor.h" />
+    <ClInclude Include="DgameSelectCursor.h" />
+    <ClInclude Include="Dlogo.h" />
+    <ClInclude Include="DlogoScene.h" />
+    <ClInclude Include="DMaru.h" />
+    <ClInclude Include="DmenuSelectScreen.h" />
+    <ClInclude Include="DmenuShopScreen.h" />
+    <ClInclude Include="DmenuStatusScreen.h" />
+    <ClInclude Include="Dminertza.h" />
+    <ClInclude Include="Dmushroom.h" />
+    <ClInclude Include="DNeru.h" />
+    <ClInclude Include="DopeningScene.h" />
+    <ClInclude Include="Dplayer.h" />
+    <ClInclude Include="DprepareMissionScene.h" />
+    <ClInclude Include="Dscene.h" />
+    <ClInclude Include="DsceneManager.h" />
+    <ClInclude Include="DtextureManager.h" />
+    <ClInclude Include="Dtitle.h" />
+    <ClInclude Include="DtitleMenu.h" />
+    <ClInclude Include="DtitleScene.h" />
+    <ClInclude Include="DtitleSelect.h" />
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="endingScene.h" />
+    <ClInclude Include="fenrir.h" />
+    <ClInclude Include="fontPolygon.h" />
+    <ClInclude Include="gameMap.h" />
+    <ClInclude Include="gameMapPointer.h" />
+    <ClInclude Include="graphicsDevice.h" />
+    <ClInclude Include="Guardians.h" />
+    <ClInclude Include="iceWallManager.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="KbattleUI.h" />
+    <ClInclude Include="KgameDataWindow.h" />
+    <ClInclude Include="KgameEquipWindow.h" />
+    <ClInclude Include="KgameSaveDataWindow.h" />
+    <ClInclude Include="KgameSelectWindow.h" />
+    <ClInclude Include="KgameShopListWindow.h" />
+    <ClInclude Include="KgameShopMenuWindow.h" />
+    <ClInclude Include="KgameStatusWindow.h" />
+    <ClInclude Include="KgameThingsWindow.h" />
+    <ClInclude Include="KgameWindow.h" />
+    <ClInclude Include="macro.h" />
+    <ClInclude Include="MagicSquareManager.h" />
+    <ClInclude Include="Mcamera.h" />
+    <ClInclude Include="menuScreen.h" />
+    <ClInclude Include="Mfield.h" />
+    <ClInclude Include="MgameBossTelop.h" />
+    <ClInclude Include="MgameCharaTelop.h" />
+    <ClInclude Include="MgameData.h" />
+    <ClInclude Include="MgameExplainTelop.h" />
+    <ClInclude Include="MgameStageTelop.h" />
+    <ClInclude Include="MgameTelop.h" />
+    <ClInclude Include="MLayer.h" />
+    <ClInclude Include="Mlayer1.h" />
+    <ClInclude Include="Mlayer2.h" />
+    <ClInclude Include="Mlayer3.h" />
+    <ClInclude Include="Mlayer4.h" />
+    <ClInclude Include="Mlayer5.h" />
+    <ClInclude Include="Mlayer6.h" />
+    <ClInclude Include="Mlayer7.h" />
+    <ClInclude Include="MmenuDataScreen.h" />
+    <ClInclude Include="Polygon.h" />
+    <ClInclude Include="RenderTargetSet.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="resultScene.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StringConvert.h" />
+    <ClInclude Include="stringList.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="TexCharacter.h" />
+    <ClInclude Include="TexString.h" />
+    <ClInclude Include="texture.h" />
+    <ClInclude Include="vertex.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="3DModel.cpp" />
+    <ClCompile Include="3DVertex.cpp" />
+    <ClCompile Include="anim3DModel.cpp" />
+    <ClCompile Include="animVertex.cpp" />
+    <ClCompile Include="charaPicture.cpp" />
+    <ClCompile Include="chip.cpp" />
+    <ClCompile Include="chipMonster.cpp" />
+    <ClCompile Include="DAldfauth.cpp" />
+    <ClCompile Include="DbattleScene.cpp" />
+    <ClCompile Include="DBillBoard.cpp" />
+    <ClCompile Include="Dcharacter.cpp" />
+    <ClCompile Include="DcharacterManager.cpp" />
+    <ClCompile Include="DdirectShow.cpp" />
+    <ClCompile Include="Deffect.cpp" />
+    <ClCompile Include="DEffectManager.cpp" />
+    <ClCompile Include="Denemy.cpp" />
+    <ClCompile Include="DfireBallManager.cpp" />
+    <ClCompile Include="DgameCharaCursor.cpp" />
+    <ClCompile Include="DgameCursor.cpp" />
+    <ClCompile Include="DgameIcon.cpp" />
+    <ClCompile Include="DgameItemCursor.cpp" />
+    <ClCompile Include="DgameMenuBar.cpp" />
+    <ClCompile Include="DgameMenuCursor.cpp" />
+    <ClCompile Include="DgameSaveCursor.cpp" />
+    <ClCompile Include="DgameSelectCursor.cpp" />
+    <ClCompile Include="Dlogo.cpp" />
+    <ClCompile Include="DlogoScene.cpp" />
+    <ClCompile Include="DMaru.cpp" />
+    <ClCompile Include="DmenuSelectScreen.cpp" />
+    <ClCompile Include="DmenuShopScreen.cpp" />
+    <ClCompile Include="DmenuStatusScreen.cpp" />
+    <ClCompile Include="Dminertza.cpp" />
+    <ClCompile Include="Dmushroom.cpp" />
+    <ClCompile Include="DNeru.cpp" />
+    <ClCompile Include="DopeningScene.cpp" />
+    <ClCompile Include="Dplayer.cpp" />
+    <ClCompile Include="DprepareMissionScene.cpp" />
+    <ClCompile Include="Dscene.cpp" />
+    <ClCompile Include="DsceneManager.cpp" />
+    <ClCompile Include="DtextureManager.cpp" />
+    <ClCompile Include="Dtitle.cpp" />
+    <ClCompile Include="DtitleMenu.cpp" />
+    <ClCompile Include="DtitleScene.cpp" />
+    <ClCompile Include="DtitleSelect.cpp" />
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="endingScene.cpp" />
+    <ClCompile Include="fenrir.cpp" />
+    <ClCompile Include="fontPolygon.cpp" />
+    <ClCompile Include="gameMap.cpp" />
+    <ClCompile Include="gameMapPointer.cpp" />
+    <ClCompile Include="graphicsDevice.cpp" />
+    <ClCompile Include="iceWallManager.cpp" />
+    <ClCompile Include="input.cpp" />
+    <ClCompile Include="Input_Gamepad.cpp" />
+    <ClCompile Include="Input_Keyboard.cpp" />
+    <ClCompile Include="Input_Mouse.cpp" />
+    <ClCompile Include="KbattleUI.cpp" />
+    <ClCompile Include="KgameDataWindow.cpp" />
+    <ClCompile Include="KgameEquipWindow.cpp" />
+    <ClCompile Include="KgameSaveDataWindow.cpp" />
+    <ClCompile Include="KgameSelectWindow.cpp" />
+    <ClCompile Include="KgameShopListWindow.cpp" />
+    <ClCompile Include="KgameShopMenuWindow.cpp" />
+    <ClCompile Include="KgameStatusWindow.cpp" />
+    <ClCompile Include="KgameThingWindow.cpp" />
+    <ClCompile Include="KgameWindow.cpp" />
+    <ClCompile Include="MagicSquareManager.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mcamera.cpp" />
+    <ClCompile Include="menuScreen.cpp" />
+    <ClCompile Include="Mfield.cpp" />
+    <ClCompile Include="MgameBossTelop.cpp" />
+    <ClCompile Include="MgameCharaTelop.cpp" />
+    <ClCompile Include="MgameData.cpp" />
+    <ClCompile Include="MgameExplainTelop.cpp" />
+    <ClCompile Include="MgameStageTelop.cpp" />
+    <ClCompile Include="MgameTelop.cpp" />
+    <ClCompile Include="MLayer.cpp" />
+    <ClCompile Include="Mlayer1.cpp" />
+    <ClCompile Include="Mlayer2.cpp" />
+    <ClCompile Include="Mlayer3.cpp" />
+    <ClCompile Include="Mlayer4.cpp" />
+    <ClCompile Include="Mlayer5.cpp" />
+    <ClCompile Include="Mlayer6.cpp" />
+    <ClCompile Include="Mlayer7.cpp" />
+    <ClCompile Include="MmenuDataScreen.cpp" />
+    <ClCompile Include="Polygon.cpp" />
+    <ClCompile Include="resultScene.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="StringConvert.cpp" />
+    <ClCompile Include="stringList.cpp" />
+    <ClCompile Include="TexCharacter.cpp" />
+    <ClCompile Include="TexString.cpp" />
+    <ClCompile Include="texture.cpp" />
+    <ClCompile Include="vertex.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Guardians.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Guardians.ico" />
+    <Image Include="small.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

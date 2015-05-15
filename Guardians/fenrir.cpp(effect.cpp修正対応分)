@@ -1,0 +1,809 @@
+#include "stdafx.h"
+
+/*--------------------------------------------------------------
+
+コンストラクタ
+@param	LPDIRECT3DDEVICE9 描画デバイス
+@return なし
+
+--------------------------------------------------------------*/
+CFenrir::CFenrir(LPDIRECT3DDEVICE9 _pDevice) : CEnemy(_pDevice), m_speed(0.00f)
+{
+	//ステータス設定
+	HP = 14000;
+	DEF = 25;
+	STR = 0;		//攻撃ごとに適宜代入
+	addState = 0;	//同上
+	actionGauge = 100;
+	actionGaugeRecover = 25;
+
+	TimeCount = 0;
+
+	m_angle=-90;
+
+	m_model = new XFileAnimationMesh(_T("image\\xfile\\Enemy\\StageBoss2.X"), m_pDevice, D3DXVECTOR3(0.025f, 0.075f, 0.025f));
+
+	// ボックスの生成
+	CreateBox();
+
+	// モーションの開始時間と終了時間
+	double Animation[MOTION_MAX_NUM][2] = {
+		{ 0, 100 },  // 00) 待機
+		{ 100, 200 }, // 01) ひるみ
+		{ 200, 295 }, // 02) 死亡
+		{ 300, 345 }, // 03) ジャンプ溜め→跳び
+		{ 345, 345 }, // 04) ジャンプ滞空（ここで一端固定
+		{ 345, 400 }, // 05) ジャンプ着地
+		{ 400, 460 }, // 06) 向き反転 (415-445で跳び上がりつつ180°回転　しっぽにダメージ判定)
+		{ 465, 520 }, // 07) ジャンプ着地噛みつき
+		{ 520, 580 }, // 08) 噛みつき (540-555で口に当たり判定)
+		{ 580, 650 }, // 09) 火炎弾 (625で発射)
+		{ 650, 690 }, // 10) しっぽ攻撃（675でエフェクト）
+		{ 690, 730 }, // 11) 火炎放射前
+		{ 730, 730 }, // 12) 火炎放射中
+		{ 730, 770 }, // 13) 火炎放射後
+		{ 770, 800 }, // 14) 遠吠え前
+		{ 800, 800 }, // 15) 遠吠え中
+		{ 800, 860 }, // 16) 遠吠え後
+		{ 0, 100 }, // 16) 遠吠え後待機
+		{ 860, 930 }, // 17) 体当たり前
+		{ 930, 930 }, // 18) 体当たり中
+		{ 930, 960 }, // 19) 体当たり後
+	};
+
+	m_animList.resize(MOTION_MAX_NUM);
+	// 配列にモーション時間を格納
+	for (int i = 0; i < MOTION_MAX_NUM; i++){
+		m_animList[i].startTime = Animation[i][0];
+		m_animList[i].endTime = Animation[i][1];
+		m_animList[i].chancel = false;
+	}
+	m_animList[MOTION_WAIT].chancel = true;
+//	m_animList[MOTION_WAIT2].chancel = false;
+	//m_animList[2].chancel = true;
+	//m_animList[5].chancel = true;
+	//m_animList[6].chancel = true;
+	// アニメーションをセット
+	m_model->SetAnimList(&m_animList);
+	m_model->ChangeMotion(0);
+
+	//モーションリストをセット
+	for (int i = 0; i < MOTION_MAX_NUM; i++){
+		m_effectList[i].name = NULL;
+		m_effectList[i].subName = NULL;
+	}
+	SetEffectList();
+
+	for (int i = 0; i < EFFECT_MAX_NUM; i++){
+		m_effect[i] = new CEffect(m_position, m_pDevice);
+		m_effect[i]->SetCharaHeight((150.f * m_scale.y) / 2);
+		effectPos[i] = D3DXVECTOR3(0, -3, 0);
+	}
+	SetMotion(MOTION_WAIT);
+
+
+	m_sidePos[0] = -11.f;
+	m_sidePos[1] = 9.f;
+}
+/*--------------------------------------------------------------
+
+デストラクタ
+
+
+
+--------------------------------------------------------------*/
+CFenrir::~CFenrir()
+{
+	SAFE_DELETE(m_model);
+	//	SAFE_DELETE(m_sphere[0].pShereMaterials);
+	for (unsigned i = 0; i < m_box.size(); i++)
+		SAFE_DELETE(m_box[i].pMaterials)
+
+	for (int i = 0; i < EFFECT_MAX_NUM; i++)
+		SAFE_DELETE(m_effect[i]);
+
+}
+/*--------------------------------------------------------------
+
+制御
+@param	なし
+@return なし
+
+--------------------------------------------------------------*/
+void CFenrir::Control()
+{
+	static bool countFlag = false;
+	static unsigned	interval = 0;		//休憩時間
+	static unsigned	actionFlag = 0;		//行動分岐用
+	static DWORD MotionStart, MotionEnd;
+	static int LoadCount;				//一時変数系
+	srand((unsigned int)time(NULL));
+
+	TimeCount++;
+
+	// 敵のAI
+	if (HP <= 0) m_curMotionID = MOTION_DEATH;
+	else if (actionGauge <= 0) {
+		m_curMotionID = MOTION_FALTER;
+		STR = 0;
+		addState = 0;
+		for (int i = 0; i < sizeof m_boxFlag; i++)
+			m_boxFlag[i] = false;
+		if (TimeCount > 0) TimeCount = -300;	//5秒怯み
+		if (TimeCount = 0) actionGauge = 100;	//怯み終わったら全快
+	}
+	else{
+		if (TimeCount >= 60){
+			TimeCount -= 60;
+			actionGauge += actionGaugeRecover;
+			if (actionGauge>100) actionGauge = 100;
+		}
+		if (interval){
+			m_HitCount = 0;
+			m_curMotionID = MOTION_WAIT;
+			interval--;
+			SetMotion(m_curMotionID);
+			return;
+		}
+	}
+
+	switch (m_curMotionID){
+	case MOTION_DEATH:
+		if (m_animList[MOTION_DEATH].endTime <= m_time)
+			motionStop = true;
+		break;
+	case MOTION_FALTER:
+		if (m_animList[MOTION_FALTER].endTime <= m_time)
+			motionStop = true;
+		if (LoadCount > actionGauge)
+			motionStop = false;
+		LoadCount = actionGauge;
+		break;
+	case MOTION_WAIT:
+		m_position.y = 0;
+
+		
+		//行動分岐
+		if ((m_position.x - m_playerPos.x)*m_angle > 0)			//プレイヤーが背後にいたら
+			if (fabsf(m_position.x - m_playerPos.x) < 6.f){		//　近い
+				if (actionFlag == 2){							//　　反転→尻尾→反転の時
+					m_curMotionID = MOTION_TAIL;
+					actionFlag = 1;
+				}
+				else if (!actionFlag && rand() % 10 < 4){		//　　尻尾使ってなかったら40％で使う
+					m_curMotionID = MOTION_TAIL;
+					actionFlag = 1;
+				}
+				else {											//　　それ以外は反転
+					m_curMotionID = MOTION_TURN;
+					actionFlag = 0;
+				}
+			}
+			else m_curMotionID = MOTION_TURN;
+		else {													//プレイヤーが前にいる
+			if (actionGauge > 70 && rand() % 20 < 3){			//　行動値がそれなりにあったら15％で遠吠え
+				m_curMotionID = MOTION_HOWL1;
+			}
+			else if (fabsf(m_position.x - m_playerPos.x) < 6.f){//　近い
+				if (rand() % 10 <= 2){							//　　20％で反転→尻尾→反転を使用
+					m_curMotionID = MOTION_TURN;
+					actionFlag = 2;
+				}
+			}
+			else if (fabsf(m_position.x - m_playerPos.x) < 10.f){//　中距離
+				if (rand() % 10 < 4)							//　　　40％でファイアブレス　残りでちょっと待機
+					m_curMotionID = MOTION_FIRE1;
+				else if (rand() % 10 < 5)						//　　　50％で体当たり　残りでちょっと待機
+					m_curMotionID = MOTION_ATTACK1;
+				else interval = 30;
+
+			}
+			else {												//　遠い
+				if (actionGauge > 75 && rand() % 10 < 2){		//　　行動値がそれなりにあったら20％でタックル
+					m_curMotionID = MOTION_ATTACK1;
+				}
+				m_curMotionID = MOTION_JUMP1;					//　　80％でジャンプ(更に50%で中距離)　残りで噛みつきジャンプ
+				if (rand() % 10 < 8){
+					if (rand() % 10 < 5) actionFlag = 0;
+					else actionFlag = 1;
+				}
+				else actionFlag = 2;
+			}
+		}
+
+//		m_curMotionID = MOTION_HOWL1;
+		
+		LoadCount = 0;
+		break;
+	case MOTION_JUMP1:
+		if (m_time >= m_animList[m_curMotionID].endTime){
+			m_curMotionID = MOTION_JUMP2;
+			LoadCount = int(fabs(m_playerPos.x - m_position.x) / 0.4f) - 5; //跳ぶ時間（フレーム数）
+			if (actionFlag == 1) LoadCount = int(LoadCount / 2);
+			e_position = 0.05f * LoadCount;	//ジャンプ初速度
+			if (m_angle < 0) m_position.x -= 0.3f;
+			else  m_position.x += 0.3f;
+			m_position.y += e_position;
+		}
+		break;
+	case MOTION_JUMP2:
+		e_position -= 0.1f;
+		LoadCount--;
+		if (m_angle < 0) m_position.x -= 0.2f;
+		else  m_position.x += 0.2f;
+		m_position.y += e_position;
+		if (LoadCount <= 10){
+			if (actionFlag = 2) {
+				m_curMotionID = MOTION_JUMP_BITE;
+				STR = 35;
+				actionGauge -= 20;
+			}
+			else m_curMotionID = MOTION_JUMP3;
+		}
+		break;
+	case MOTION_JUMP_BITE:
+	case MOTION_JUMP3:
+		if (m_position.y > 0.f){
+			e_position -= 0.1f;
+			if (m_angle < 0) m_position.x -= 0.3f;
+			else  m_position.x += 0.3f;
+			m_position.y += e_position;
+		}
+		else if (LoadCount > 0) {
+			if (m_curMotionID == MOTION_JUMP_BITE){
+				STR = 40;
+				m_boxFlag[HEAD] = true;
+			}
+
+			LoadCount--;
+			m_position.y = 0.f;
+			if (m_angle < 0) m_position.x -= 0.02f*LoadCount;
+			else  m_position.x += 0.02f*LoadCount;
+			m_position.y = 0.f;
+		}
+		if (m_time >= m_animList[m_curMotionID].endTime){
+			m_curMotionID = MOTION_WAIT;
+			interval = 40;
+			actionFlag = 0;
+			m_boxFlag[HEAD] = false;
+			STR = 0;
+		}
+		break;
+	case MOTION_TURN:
+		LoadCount = m_time - m_animList[MOTION_TURN].startTime;
+		if (LoadCount < 15){
+			e_position = 0.45f;
+		}
+		else if (LoadCount < 45){	//ジャンプ＆反転
+			m_angle -= 6;
+			m_position.y += e_position;
+			e_position -= 0.03f;
+			STR = 40;
+			m_boxFlag[TAIL] = true;
+
+		}
+		else if (m_time >= m_animList[MOTION_TURN].endTime){
+			actionGauge -= 10;
+			m_curMotionID = MOTION_WAIT;
+			interval = 40;
+			if (m_angle == -270) 	m_angle = 90;
+			STR = 0;
+			m_boxFlag[TAIL] = false;
+		}
+
+		m_curMotionID == MOTION_ATTACK1;
+		break;
+	case MOTION_BITE:
+		break;
+	case MOTION_FIREBALL:
+		break;
+	case MOTION_TAIL:
+		LoadCount = m_time - m_animList[MOTION_TAIL].startTime;
+		STR = 40;
+		addState = 0;
+		if (LoadCount == 25) {
+			actionGauge -= 15;
+			TailHammer();
+			STR = 60;
+			addState = 1;
+			m_boxFlag[TAIL] = true;
+		}
+		if (m_time >= m_animList[MOTION_TAIL].endTime){
+			m_curMotionID = MOTION_WAIT;
+			interval = 40;
+			m_effect[0]->Release();
+			m_isPlay = false;
+			effectPos[0].y = -3.f;
+			STR = 0;
+			addState = 0;
+			m_boxFlag[TAIL] = false;
+
+		}
+		break;
+	case MOTION_FIRE1:
+		if (m_time >= m_animList[MOTION_FIRE1].endTime) {
+			actionGauge -= 45;
+			m_effect[0]->Release();
+			m_effect[0]->Create(m_effectList[MOTION_FIRE2].name, m_position);
+			m_curMotionID = MOTION_FIRE2;
+			MotionStart = timeGetTime();
+			m_isPlay =  true;
+			STR = 20;
+			m_boxFlag[1] = true;
+		}
+		break;
+	case MOTION_FIRE2:
+		Fire();
+		if (m_effect[0]->GetDrawTime() > 220){	// 220frame間炎吐いたら終了モーションへ
+			m_effect[0]->Release();
+			m_curMotionID = MOTION_FIRE3;
+			effectPos[1].y = -3.f;
+			STR = 0;
+			m_boxFlag[1] = false;
+		}
+		break;
+	case MOTION_FIRE3:
+		if (m_time >= m_animList[MOTION_FIRE3].endTime) {
+			m_curMotionID = MOTION_WAIT;
+			m_curEffect = MOTION_WAIT;
+			MotionStart = timeGetTime();
+			interval = 120;
+			m_isPlay = false;
+		}
+		break;
+	case MOTION_HOWL1:
+		m_effect[EFFECT_MAX_NUM - 1]->Release();
+		m_effect[EFFECT_MAX_NUM - 1]->Create(m_effectList[MOTION_HOWL1].name, m_position);
+		m_effect[EFFECT_MAX_NUM - 1]->Play(m_position, m_effectList[MOTION_HOWL1].scale);
+		if (!(LoadCount % 3) && LoadCount < EFFECT_MAX_NUM * 3 - 3){ //生成負荷軽減
+			m_effect[LoadCount/3]->Release();
+			m_effect[LoadCount/3]->Create(m_effectList[MOTION_HOWL2].name, m_position);
+		}
+		LoadCount++;
+		if (m_time >= m_animList[MOTION_HOWL1].endTime) {
+			actionGauge -= 50;
+			m_curMotionID = MOTION_HOWL2;
+			MotionStart = timeGetTime();
+			STR = 20;
+			addState = 0;
+			for (int i = 0; i<EFFECT_MAX_NUM; i++)
+				m_boxFlag[i] = true;
+		}
+		break;
+	case MOTION_HOWL2:
+		MotionEnd = timeGetTime();
+		if ((MotionEnd - MotionStart) / 1000 >= 2){ // 遠吠え時間（2秒）
+			m_effect[EFFECT_MAX_NUM - 1]->Release();
+			m_effect[EFFECT_MAX_NUM - 1]->Create(m_effectList[MOTION_HOWL2].name, m_position);
+			e_position = -6.f;
+			WolfHead0();
+			m_curMotionID = MOTION_HOWL3;
+		}
+		break;
+	case MOTION_HOWL3:
+		WolfHead();
+		if (m_time >= m_animList[MOTION_HOWL3].endTime) {
+			m_curMotionID = MOTION_HOWL4;
+		}
+		break;
+	case MOTION_HOWL4:
+		WolfHead();
+		if (!m_isPlay) {
+			m_curMotionID = MOTION_WAIT;
+			m_curEffect = MOTION_WAIT;
+			MotionStart = timeGetTime();
+			interval = 150;
+			STR = 0;
+			for (int i = 0; i<EFFECT_MAX_NUM; i++)
+				m_boxFlag[i] = false;
+		}
+		break;
+	case MOTION_ATTACK1:
+		if (m_position.y < 0.1f){
+			m_position.y = 0.11f;
+			m_isPlay = false;
+			m_effect[0]->Release();
+			m_effect[0]->Create(m_effectList[MOTION_ATTACK2].name, m_position);
+		}
+		else if (m_position.y < 4.f) { m_position.y += 0.1f; }
+		else if (m_position.y > 4.f){
+			m_position.y = 4.f;
+			Attack();
+		}
+		if (m_time >= m_animList[MOTION_ATTACK1].endTime) {
+			actionGauge -= 30;
+			m_effect[1]->Release();
+			m_effect[1]->Create(m_effectList[MOTION_ATTACK2].name, m_position);
+			m_curMotionID = MOTION_ATTACK2;
+			MotionStart = timeGetTime();
+			m_isPlay = false;
+			STR = 120;
+			addState = 1;
+			m_boxFlag[BODY] = true;
+			m_boxFlag[HEAD] = true;
+		}
+		break;
+	case MOTION_ATTACK2:
+		Attack();
+		//m_sidePos[2] = (-11.f, 9.f);
+		if ((e_position < 0 && effectPos[0].x < m_sidePos[0] + 3.f) || (e_position > 0 && effectPos[0].x > m_sidePos[1] - 3.f)){	// 壁際まで来たら終了モーションへ
+			m_curMotionID = MOTION_ATTACK3;
+			effectPos[0].y = -3.f;
+		}
+		break;
+	case MOTION_ATTACK3:
+		m_position.y -= 0.2f;
+		if (m_position.y<0.f)m_position.y = 0.f;
+		Attack();
+		if (m_time >= m_animList[MOTION_ATTACK3].endTime) {
+			m_effect[0]->Release();
+			m_effect[1]->Release();
+			m_curMotionID = MOTION_TURN;
+			m_curEffect = MOTION_WAIT;
+			MotionStart = timeGetTime();
+			m_isPlay = false;
+			STR = 0;
+			addState = 0;
+			m_boxFlag[BODY] = false;
+			m_boxFlag[HEAD] = false;
+		}
+		break;
+	}
+	
+	SetMotion(m_curMotionID);
+}
+/*--------------------------------------------------------------
+
+描画
+@param	なし
+@return なし
+
+--------------------------------------------------------------*/
+void CFenrir::Draw()
+{
+	if (!motionStop) // モーションストップフラグが立っていない場合はモーション時間を進める
+		m_time = m_model->AdvanceTime(1.0f / 60.f);
+
+	D3DXMATRIX rotation;							// 回転
+	D3DXMatrixRotationYawPitchRoll(&rotation, D3DXToRadian(m_angle), D3DXToRadian(-90), D3DXToRadian(0));
+
+	//m_position.x += (m_charaSpeed + (m_fieldSpeed.x * 0.15f));
+	//m_position.y += (m_fieldSpeed.y * 0.15f);
+	m_model->Draw(m_position, rotation);
+
+
+	// エフェクト管理
+	D3DXVECTOR3 move = m_effectList[m_curEffect].move;
+	// エフェクトの移動方向を決める
+	move.x = move.x * sin(m_angle);
+	for (int i = 0; i < EFFECT_MAX_NUM; i++){
+		if (m_effect[i]->checkEnd()){
+			m_effect[i]->Control(move, m_position);
+		}
+	}
+	BoxControl();
+
+
+}
+/*--------------------------------------------------------------
+
+アニメーション変更
+@param	int キー情報
+@return なし
+
+--------------------------------------------------------------*/
+void CFenrir::SetMotion(int _motionID)
+{
+	m_curMotionID = _motionID;
+	m_model->ChangeMotion(_motionID);
+
+	if (m_curMotionID <= MOTION_WAIT) m_state = STATE_WAIT;
+	if (m_curMotionID >= MOTION_JUMP_BITE) m_state = STATE_ATTACK;
+	if (m_state == STATE_ATTACK && m_HitCount == 0){
+		m_damage = 0;
+	}
+	else{
+		m_damage = 0;
+	}
+	//if( m_curMotionID == MOTION_JUMP ) m_state = STATE_JUMP;
+	//if( m_curMotionID == MOTION_SQUAT ) m_state = STATE_SQUAT;
+	//if( m_curMotionID == MOTION_SQUAT2 ) m_state = STATE_SQUAT2;
+}
+/*--------------------------------------------------------------
+
+キャラの移動速度を返す
+@param	なし
+@return 移動速度
+
+--------------------------------------------------------------*/
+float CFenrir::GetCharaSpeed()
+{
+	return m_speed;
+}
+
+int CFenrir::GetDamage()
+{
+	return STR*10+addState;
+}
+
+
+void CFenrir::TailHammer(){
+	m_curEffect = MOTION_TAIL;
+	m_effect[0]->StopEffect();
+	m_effect[0]->Release();
+	m_effect[0]->Create(m_effectList[m_curEffect].name, m_position);
+	MYFRAME* m_frame;
+	m_frame = (MYFRAME*)D3DXFrameFind(m_model->GetFrameRoot(), "Tail_3");
+	SetBonePos(&effectPos[0], m_frame);
+	effectPos[0].y -= 0.7f;
+	m_effect[0]->SetRotate(m_angle + 90);
+	m_effect[0]->Play(effectPos[0], m_effectList[m_curEffect].scale);
+	m_isPlay = true;
+}
+
+void CFenrir::Fire()
+{
+	m_curEffect = MOTION_FIRE2;
+	if (!m_effect[0]->checkEnd()){
+		if (m_angle < 0) e_position = -0.9f; else e_position = 0.9f;
+		MYFRAME* m_frame;
+		m_frame = (MYFRAME*)D3DXFrameFind(m_model->GetFrameRoot(), "Jaw");
+		SetBonePos(&effectPos[0], m_frame);
+		//if (m_angle < 0) effectPos[0].x -= (e_position + ((i * 3) % 5)*4.f);
+		////else effectPos[0].x += (e_position + ((i * 3) % 5)*4.f);
+		effectPos[0].x += e_position;
+		effectPos[0].y -= 2.0f;
+		m_effect[0]->SetRotate(m_angle + 180);
+		m_effect[0]->Play(effectPos[0], m_effectList[m_curEffect].scale);
+		effectPos[1] = effectPos[0];
+		effectPos[0].y = -3.0f;
+	}
+	effectPos[1].x += e_position;
+	if (effectPos[1].x == effectPos[0].x + 11 * e_position) effectPos[1].x = effectPos[0].x;
+	return;
+}
+
+void CFenrir::WolfHead0()
+{
+	m_isPlay = true;
+	m_curEffect = MOTION_HOWL2;
+	D3DXVECTOR3 position(m_position);	//生成位置
+	if (m_angle < 0) position.x -= e_position;
+	else position.x += e_position;
+	position.y += 30.f;
+	m_effect[0]->SetRotate(m_angle);
+	m_effect[0]->Play(position, m_effectList[m_curEffect].scale);
+}
+
+void CFenrir::WolfHead()
+{
+	int addi = 0;
+	for (int i = 0; i < EFFECT_MAX_NUM; i++){
+		if (e_position < 14.f){
+			addi = (i + 1) % EFFECT_MAX_NUM;
+			if (m_effect[i]->GetDrawTime() == 10) {	//10frame間隔で生成
+				m_effect[addi]->StopEffect();
+				D3DXVECTOR3 position(m_position);
+				if (m_angle < 0) position.x -= (e_position + ((i * 3) % 5));
+				else position.x += (e_position + ((i * 3) % 5));
+				position.y += 30.f;
+				position.z += ((i * 3) % 5 - 2.f)*0.5f;
+				m_effect[addi]->SetRotate(m_angle);
+				m_effect[addi]->Play(position, m_effectList[m_curEffect].scale);
+				
+			}
+		}
+		else{
+			if (!m_effect[i]->checkEnd()) {
+				m_effect[i]->StopEffect();
+				m_effect[i]->Release();	//4秒経過で順次開放
+				effectPos[i].y = -3.f;
+				addi++;
+				if (addi == EFFECT_MAX_NUM) m_isPlay = false;
+			}
+		}
+	}
+	e_position += 0.1f;
+	return;
+}
+
+void CFenrir::Attack()
+{
+	if (!m_isPlay){
+		m_curEffect = MOTION_ATTACK2;
+		m_effectList[m_curEffect].move.x = 0.03f;
+		if (m_angle < 0) e_position = -0.7f; else e_position = 0.7f;
+		MYFRAME* m_frame;
+		m_frame = (MYFRAME*)D3DXFrameFind(m_model->GetFrameRoot(), "TopJaw");
+		SetBonePos(&effectPos[0], m_frame);
+		effectPos[0].x += e_position * 4;
+		m_effect[0]->SetRotate(m_angle);
+		m_effect[0]->Play(effectPos[0], m_effectList[m_curEffect].scale);
+		m_isPlay = true;
+	}
+	else if (m_curMotionID == MOTION_ATTACK2){
+		m_effectList[m_curEffect].move.x = 0.7f;
+		MYFRAME* m_frame;
+		m_frame = (MYFRAME*)D3DXFrameFind(m_model->GetFrameRoot(), "TopJaw");
+		SetBonePos(&effectPos[0], m_frame);
+		effectPos[0].x += e_position * 5;
+		for (int i = 0; i <= 1; i++)
+		{
+			if (m_effect[i]->GetDrawTime() == 25){
+				m_effect[!i]->StopEffect();
+				m_effect[!i]->SetRotate(m_angle);
+				m_effect[!i]->Play(effectPos[0], m_effectList[m_curEffect].scale);
+			}
+		}
+	}
+	else {
+		m_effectList[MOTION_ATTACK2].move.x = 0.0f;
+		if (e_position > 0)	e_position -= 0.05f;
+		else if (e_position < 0)	e_position += 0.05f;
+	}
+	m_position.x += e_position;
+	return;
+}
+
+
+void CFenrir::SetEffectList()
+{
+//		MOTION_WAIT,		//0.	// 待機
+//		MOTION_FALTER,		//1.	//ひるみ
+//		MOTION_DEATH,		//2.	//死亡
+//		MOTION_JUMP1,		//3.	//ジャンプ溜め	{ 300, 345 }
+//		MOTION_JUMP2,		//5.	//ジャンプ滞空（ここで一端固定	{ 345, 345 }
+//		MOTION_JUMP3,		//4.	//ジャンプ着地	{ 345, 400 }
+//		MOTION_TURN,		//5.	//向き反転 (415-445で跳び上がりつつ180°回転　しっぽにダメージ判定)	{ 400, 460 }
+
+	m_effectList[MOTION_JUMP_BITE].name = L"Effect\\FireBall_01.efk";
+	m_effectList[MOTION_JUMP_BITE].scale = D3DXVECTOR3(1.f, 1.f, 1.f);
+	m_effectList[MOTION_JUMP_BITE].move = D3DXVECTOR3(0.0f, 0.1f, 0.0f);
+
+	m_effectList[MOTION_BITE].name = L"Effect\\FireBall_01.efk";
+	m_effectList[MOTION_BITE].scale = D3DXVECTOR3(0.3f, 0.3f, 0.3f);
+	m_effectList[MOTION_BITE].move = D3DXVECTOR3(0.1f, 0.05f, 0.0f);
+
+	m_effectList[MOTION_FIREBALL].name = L"Effect\\FireBall_01.efk";
+	m_effectList[MOTION_FIREBALL].scale = D3DXVECTOR3(0.3f, 0.3f, 0.3f);
+	m_effectList[MOTION_FIREBALL].move = D3DXVECTOR3(0.0f, 0.1f, 0.0f);
+
+	m_effectList[MOTION_TAIL].name = L"FallStoneDebris.efk";
+	m_effectList[MOTION_TAIL].scale = D3DXVECTOR3(0.9f,0.9f, 0.9f);
+	m_effectList[MOTION_TAIL].move = D3DXVECTOR3(0.f, 0.f, 0.f);
+
+//		MOTION_FIRE1,		//1.	//火炎放射前	{ 690, 730 }
+
+	m_effectList[MOTION_FIRE2].name = L"Effect\\Fire_01.efk";
+	m_effectList[MOTION_FIRE2].scale = D3DXVECTOR3(0.5f, 0.5f, 0.5f);
+	m_effectList[MOTION_FIRE2].move = D3DXVECTOR3(0.f, 0.f, 0.f);
+
+//		MOTION_FIRE3,		//3.	//火炎放射後	{ 730, 770 }
+
+	m_effectList[MOTION_HOWL1].name = L"Effect\\Wolf.efk";
+	m_effectList[MOTION_HOWL1].scale = D3DXVECTOR3(1.f, 1.f, 1.f);
+	m_effectList[MOTION_HOWL1].move = D3DXVECTOR3(0.f, 0.f, 0.f);
+
+	m_effectList[MOTION_HOWL2].name = L"Effect\\WolfHead.efk";
+	m_effectList[MOTION_HOWL2].scale = D3DXVECTOR3(0.8f, 1.0f, 0.8f);
+	m_effectList[MOTION_HOWL2].move = D3DXVECTOR3(0.15f, -0.55f, 0.f);
+
+//		MOTION_HOWL3,		//4.	//遠吠え後	{ 800, 860 }
+//		MOTION_HOWL4,		//4.	//遠吠え後待機	{ 0, 100 }
+//		MOTION_ATTACK1,		//5.	//体当たり前	{ 860, 930 }
+
+	m_effectList[MOTION_ATTACK2].name = L"Effect\\ShockWave_02.efk";
+	m_effectList[MOTION_ATTACK2].scale = D3DXVECTOR3(0.7f, 0.7f, 0.7f);
+	m_effectList[MOTION_ATTACK2].move = D3DXVECTOR3(0.5f, 0.f, 0.f);
+
+//		MOTION_ATTACK3,		//7.	//体当たり後	{ 930, 960 }
+
+	/*std::ifstream ifs("List\\EffectList.txt");
+	std::string str;
+	std::string dummy,s;
+	int i = 0;
+
+	if( ifs.fail() )
+	throw "EffectList読み込み失敗";
+
+	while( std::getline(ifs, str) ){
+	std::string tmp;
+	std::istringstream stream(str);
+	while( std::getline(stream,tmp,':')){
+	char test[32];
+	strcpy_s(test,tmp.c_str());
+	m_effectList[i].name = test;
+	}
+	i++;
+	}
+	m_effectList;*/
+}
+
+/*--------------------------------------------------------------
+
+ボックスを生成
+@param なし
+@return なし
+
+--------------------------------------------------------------*/
+void CFenrir::CreateBox()
+{
+	XFileAnimationMesh::SPHERE sphere;
+	XFileAnimationMesh::BOX		box;
+	// スフィアの生成
+	// 現在未使用
+	//sphere.center = D3DXVECTOR3(0.f,0.f,0.f);
+	//sphere.radius = 10.f;
+	//m_sphere.push_back(sphere);
+	//m_model->CreateSphere(&m_sphere[0]);
+	//体
+	box.max = D3DXVECTOR3(160.0f, 100.0f, 100.0f);
+	box.min = D3DXVECTOR3(0.f, 0.f, 0.f);
+	box.center = D3DXVECTOR3(0.f, 0.f, 0.f);
+	box.length = box.max - box.min;
+	m_box.push_back(box);
+	//頭
+	box.max = D3DXVECTOR3(75.0f, 65.0f, 80.0f);
+	box.length = box.max - box.min;
+	m_box.push_back(box);
+	//尾
+	box.max = D3DXVECTOR3(80.0f, 70.0f, 80.0f);
+	box.length = box.max - box.min;
+	m_box.push_back(box);
+	//エフェクト用
+	box.max = D3DXVECTOR3(30.0f, 30.0f, 30.0f);
+	box.length = box.max - box.min;
+	for (int i = 0; i < EFFECT_MAX_NUM; i++)
+		m_box.push_back(box);
+	for (int i = 0; i < m_box.size(); i++)
+		m_model->CreateBox(&m_box[i]);
+	for (int i = 0; i < sizeof m_boxFlag; i++)
+		m_boxFlag[i] = false;
+
+}
+
+void CFenrir::BoxControl()
+{
+	//BOXの管理
+	MYFRAME* m_frame;
+	D3DXVECTOR3 position;
+	// 体の矩形
+	m_frame = (MYFRAME*)D3DXFrameFind(m_model->GetFrameRoot(), "Back");
+	SetBonePos(&position, m_frame);
+	position.y -= 2.f;
+	UpdateRect(position, BODY);
+	// 頭の矩形
+	m_frame = (MYFRAME*)D3DXFrameFind(m_model->GetFrameRoot(), "Head");
+	SetBonePos(&position, m_frame);
+	position.y -= 1.f;
+	UpdateRect(position, HEAD);
+	// 尾の矩形
+	m_frame = (MYFRAME*)D3DXFrameFind(m_model->GetFrameRoot(), "Tail_3");
+	SetBonePos(&position, m_frame);
+	UpdateRect(position, TAIL);
+	//エフェクトの矩形
+	for (int i = 0; i < EFFECT_MAX_NUM; i++){
+		if (m_boxFlag[EFFECT0 + i]){
+			position = effectPos[i];
+			if (m_effect[i]->checkEnd()) {
+				position = m_effect[i]->GetPosition();
+			}
+			UpdateRect(position, EFFECT0 + i);
+		}
+	}
+}
+
+void CFenrir::UpdateRect(D3DXVECTOR3 _position, int _ID)
+{
+	UpdateBox(_position, &m_box[_ID]);
+	DrawBox(m_box[_ID]);
+}
+/*--------------------------------------------------------------
+
+BaseBone
+Breast
+Back
+Head
+Tail_1~3
+
+---------------------------------------------------------------*/
