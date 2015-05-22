@@ -14,7 +14,6 @@ public:
 		STATE_SQUAT,
 		STATE_JUMP,
 		STATE_ATTACK,
-
 	};
 
 private:
@@ -70,7 +69,9 @@ public:
 	void CharacterChange();
 	void SetAlpha();
 private:
+	// プレイヤーのダメージを計算する
 	void CalcPlayerDamage();
+	// 敵のダメージを計算する
 	void CalcEnemyDamage();
 	// 円同士の衝突判定
 	bool SphereCollision(XFileAnimationMesh::SPHERE _pSphereA, XFileAnimationMesh::SPHERE _pSphereB);
@@ -78,4 +79,11 @@ private:
 	bool AABBtoAABB(XFileAnimationMesh::BOX _box1,XFileAnimationMesh::BOX _box2);
 	// 円とボックスの衝突判定
 	bool SphereToBox(XFileAnimationMesh::SPHERE _pSphere,XFileAnimationMesh::BOX _box);
+	// レイとメッシュの衝突判定
+	bool RayToMesh(XFileAnimationMesh::RAY_PARAM _ray,std::vector<XFileAnimationMesh::BOX> _box);
+
+	bool RayToBox(XFileAnimationMesh::RAY_PARAM _ray,std::vector<XFileAnimationMesh::BOX> _box);
+
+	bool ColSegments(XFileAnimationMesh::RAY_PARAM _ray1,XFileAnimationMesh::RAY_PARAM _ray2);
+
 };

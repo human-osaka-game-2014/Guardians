@@ -46,6 +46,8 @@
 // TODO: プログラムに必要な追加ヘッダーをここで参照してください。
 #include "macro.h"
 #include "define.h"
+
+#include "DVector.h"
 //ライブラリ
 #include "StringConvert.h"
 #include "texture.h"

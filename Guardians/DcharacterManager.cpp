@@ -33,7 +33,6 @@ CCharacterManager::CCharacterManager(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGam
 	// モデルデータを保存
 	m_pModel = _chara;
 	m_activePlayer = m_pModel->player[m_pGameData->m_turnNo[0]];
-
 	// 戦闘開始時の演出の位置をセット
 	if( m_activePlayer->GetStep() == CCharacter::STEP_FADE_IN )
 		m_activePlayer->SetPosition(INIT_PLAYER_POSITION);
@@ -57,7 +56,7 @@ CCharacterManager::CCharacterManager(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGam
 
 	//m_activeEnemy->SetPosition( D3DXVECTOR3(5.f,0.f,2.f) );
 	m_activeEnemy->ResetMotion(CPlayer::MOTION_WAIT);
-	
+
 }
 /*--------------------------------------------------------------
 
@@ -89,9 +88,6 @@ void CCharacterManager::Control()
 	m_playerState =  m_activePlayer->GetState();
 	m_enemyState  =	 m_activeEnemy->GetState();
 
-	//if( (CScene::m_keyStatePush & KEY_Z) != 0 )
-	//	m_pGameData->m_death = true;
-
 	// 両方のキャラクターが攻撃状態以外なら衝突判定を行わない
 	if( m_enemyState < STATE_ATTACK && m_playerState < STATE_ATTACK ) return;
 
@@ -99,7 +95,11 @@ void CCharacterManager::Control()
 	// 敵の攻撃判定
 	if ( m_playerState >= STATE_ATTACK ){
 		// 敵のやられ判定とプレイヤーの攻撃判定をチェック
-		isHit = HitCheck( m_activePlayer->GetHittingBox(),m_activeEnemy->GetunHittingBox() );
+		if( m_pGameData->m_turnNo[0] == MINE ) 
+			// 戦っているキャラがミネルツァの時はレイとメッシュで判定を行う
+			isHit = RayToBox(m_activePlayer->GetRay(),m_activeEnemy->GetunHittingBox());
+		else 
+			isHit = HitCheck( m_activePlayer->GetHittingBox(),m_activeEnemy->GetunHittingBox() );
 		// ヒットしているかどうかをセットする
 		m_activePlayer->SetHitFlag(isHit);
 		// モーション毎のダメージ
@@ -120,6 +120,9 @@ void CCharacterManager::CalcPlayerDamage()
 {
 	srand((unsigned)time(NULL));
 	if( isHit ){
+
+		m_activePlayer->SetHitFlag(isHit);
+
 		int damage = 0; // ダメージ量
 		// プレイヤーの攻撃力を取得
 		int atk = m_pGameData->m_chara[m_pGameData->m_turnNo[0]].atk;
@@ -139,10 +142,7 @@ void CCharacterManager::CalcPlayerDamage()
 		m_activeEnemy->ResetMotion( CEnemy::MOTION_DEATH );
 		m_activePlayer->ResetMotion( CPlayer::MOTION_APPEAL2 );
 	}
-		//if( m_activeEnemy->CheckMotionEnd() ) {
-		//	m_enemy.hp = INIT_BOSS_HP;
-		//	m_pGameData->m_win = true;
-		//}
+
 }
 void CCharacterManager::CalcEnemyDamage()
 {
@@ -160,7 +160,6 @@ void CCharacterManager::CalcEnemyDamage()
 
 		// atkが0でない時(ダメージを受けたとき)
 		if( atk ){
-			m_activePlayer->SetTakeDamageFlg();
 			m_activePlayer->ResetMotion( CPlayer::MOTION_FLINCH ); // ひるみモーションへ
 		}
 	}
@@ -215,13 +214,6 @@ void CCharacterManager::Draw()
 	m_activePlayer->Draw();
 
 	m_activeEnemy->Draw();
-
-#ifdef DEBUG
-	if( isHit )
-		CStringList::MessageStrList[2]->Draw( 300,300, D3DCOLOR_ARGB(255,255,255,255), CStringList::MessageStrList[2]->getLength());
-	else
-		CStringList::MessageStrList[3]->Draw( 300,300, D3DCOLOR_ARGB(255,255,255,255), CStringList::MessageStrList[3]->getLength());
-#endif
 }
 /*--------------------------------------------------------------
 
@@ -297,6 +289,100 @@ bool CCharacterManager::SphereToBox(XFileAnimationMesh::SPHERE _pSphere,XFileAni
 	}
 	return false;
 }
+bool CCharacterManager::RayToBox(XFileAnimationMesh::RAY_PARAM _ray,std::vector<XFileAnimationMesh::BOX> _box)
+{
+	// 四角形の4つの辺を保存する
+	XFileAnimationMesh::RAY_PARAM EnemyRay[4];
+	// 受け取った矩形の数分for文を回す
+	for(int i = 0; i < _box.size(); i++){
+
+		// 左下を始点とした辺
+		// 縦
+		EnemyRay[0].position  = EnemyRay[1].position = D3DXVECTOR3(_box[i].min.x,_box[i].min.y,_box[i].min.z);
+		EnemyRay[0].length = D3DXVECTOR3(0,_box[i].length.y,_box[i].min.z);
+		// 横
+		EnemyRay[1].length = D3DXVECTOR3(_box[i].length.x,0,_box[i].min.z);
+		
+		// 右上
+		// 縦
+		EnemyRay[2].position = EnemyRay[3].position =  D3DXVECTOR3(_box[i].max.x,_box[i].max.y,_box[i].max.z);
+		EnemyRay[2].length = D3DXVECTOR3(0,_box[i].length.y,_box[i].min.z);
+		// 横
+		EnemyRay[3].length = D3DXVECTOR3(_box[i].length.x,0,_box[i].min.z);
+
+		bool isHit = false;
+		// 各辺とレイが交差していないか調べる
+		for(int i = 0; i < 4; i++){
+			isHit = ColSegments(_ray,EnemyRay[i]);
+
+			if( isHit )
+				return true;
+
+		}
+	}
+	return false;
+}
+// 線分の衝突
+bool CCharacterManager::ColSegments(XFileAnimationMesh::RAY_PARAM _ray1,XFileAnimationMesh::RAY_PARAM _ray2)
+{
+	CVector v;
+	D3DXVECTOR3 vector = _ray2.position - _ray1.position;
+	float CrossProduct = v.D3DXVecCross( &_ray1.length,&_ray2.length );
+	if ( CrossProduct == 0.0f ) {
+      // 平行状態
+      return false;
+   }
+
+   float Crs_v_v1 = v.D3DXVecCross( &vector, &_ray1.length );
+   float Crs_v_v2 = v.D3DXVecCross( &vector, &_ray2.length );
+
+   float t1 = Crs_v_v2	/ CrossProduct;
+   float t2 = Crs_v_v1 / CrossProduct;
+
+   const float eps = 0.00001f;
+   if ( t1 + eps < 0 || t1 - eps > 1 || t2 + eps < 0 || t2 - eps > 1 ) {
+      // 交差していない
+      return false;
+   }
+
+   return true;
+}
+
+bool CCharacterManager::RayToMesh(XFileAnimationMesh::RAY_PARAM _ray,std::vector<XFileAnimationMesh::BOX> _box)
+{
+	BOOL isHit = false;
+	DWORD index,pCountOfHits;
+	float p,v,d;
+    LPD3DXBUFFER *ppAllHits = NULL;
+
+	// 受け取ったboxのメッシュの数だけfor文を回す
+	for(int i = 0; i < _box.size(); i++){
+		// ローカル座標系に変換
+		//D3DXVECTOR3 length =  _ray.position + _ray.length;
+		D3DXMATRIX matTrans, matWorld, invWorld, invRotation,matScale;
+		//  拡大（縮小）行列を作成する
+    D3DXMatrixScaling(&matScale,1.0f,1.0f,1.0f);
+		//D3DXMatrixIdentity(&meshRotate);
+		D3DXMatrixTranslation(&matTrans,_box[i].position.x, _box[i].position.y, _box[i].position.z);
+		matWorld = matScale * matTrans;
+		// 逆行列を求める
+		D3DXMatrixInverse(&invWorld, 0, &matWorld);
+		//D3DXMatrixInverse(&invRotation, 0, &meshRotate);
+
+		D3DXVECTOR3 invRayPos,invRayDir;
+		D3DXVec3TransformCoord(&invRayPos, &_ray.position, &invWorld);
+		
+		D3DXVec3TransformCoord(&invRayDir,&_ray.length,&invWorld);
+
+		// ローカル座標に変換して衝突判定を行う
+		D3DXIntersect( _box[i].pMesh,&invRayPos,&invRayDir,&isHit,&index,&p,&v,&d,ppAllHits,&pCountOfHits);
+		if( isHit ){
+			return true;
+		}
+	}
+	// 当たっていない
+	return false;
+}
 void CCharacterManager::setMoveFlag(bool _flag)
 {
 	m_moveFlag = _flag;
@@ -330,8 +416,6 @@ D3DXVECTOR3 CCharacterManager::GetCharaPosition()
 
 
 /*-------------------------------------------------------------------------
-
-	4/30
 
 	モーションが終了しているか調べる
 	@param motionID
@@ -370,6 +454,7 @@ void CCharacterManager::CharacterChange()
 		m_activePlayer = m_pModel->player[m_pGameData->m_turnNo[0]];
 		m_activePlayer->SetCharaSpeed( m_pGameData->m_chara[ m_pGameData->m_turnNo[0] ].spd ); // キャラクターの移動速度をセット
 		m_activePlayer->ResetMotion(CPlayer::MOTION_WAIT); // 待機モーションをセット
+		time = 0; // 経過時間をリセット
 	}
 	
 	time++;

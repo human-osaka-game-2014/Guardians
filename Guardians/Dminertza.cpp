@@ -63,7 +63,6 @@ CMinertza::CMinertza(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_isPlay(
 		//{1260, , },	// 26) 必殺技
 	};
 	m_animList.resize(MOTION_MAX_NUM);
-
 	// 配列にモーション時間をセット
 	for(int i = 0; i < MOTION_MAX_NUM;i++){
 		m_animList[i].startTime = Animation[i][0];
@@ -111,56 +110,17 @@ void CMinertza::Draw()
 	// モデルの描画の
 	m_model->Draw(m_position,rotation);
 
-
-	// ミネルツァの武器を描画
-	D3DXVECTOR3 pos = GetBonePos("R_wrist");
-	m_weapon->Draw(D3DXVECTOR3(pos.x,pos.y + -200.f,pos.z),m_matWeapon); // 武器の描画
+	m_weapon->Draw(D3DXVECTOR3(m_ray.position.x,m_ray.position.y + -200.f,m_ray.position.z),m_matWeapon,m_alpha); // 武器の描画
 
 	D3DXVECTOR3 rayStart,rayDir,pos1,pos2;
-	pos1 = GetBonePos("R_p1");
-	pos2 = GetBonePos("R_i1");
 
-	rayStart = pos2;
-	rayDir = pos2 - pos1;
-
-	m_pDevice->SetVertexShader(NULL);
-	m_pDevice->SetFVF(D3DFVF_XYZ);
-	
-	D3DXVECTOR3 vec[2];
-	D3DXVECTOR3 vec1 = D3DXVECTOR3(0,0,0);
-
-	D3DXMATRIX matWorld;
-	
-	float length;
-	length	 = rayDir.x * rayDir.x + rayDir.z * rayDir.z + rayDir.y * rayDir.y;
-	sqrt(length);
-
-	vec1 = rayDir / length;
-		
-	vec[0] = D3DXVECTOR3(0,0,0);
-	vec[1] = vec1 * 10;
-
-	D3DXMatrixTranslation(&matWorld,pos2.x,pos2.y,pos2.z);
-	m_pDevice->SetTransform(D3DTS_WORLD, &matWorld);
-	//レイのマテリアル設定　（白に設定）
-	D3DMATERIAL9 mtrl;
-	ZeroMemory(&mtrl,sizeof(mtrl));	
-
-	mtrl.Diffuse.a=255;
-	mtrl.Diffuse.r=255;
-	mtrl.Diffuse.g=255;
-	mtrl.Diffuse.b=255;
-	mtrl.Ambient = mtrl.Diffuse;
-	m_pDevice->SetMaterial( &mtrl );
-	//レイのレンダリング
-	m_pDevice->DrawPrimitiveUP(D3DPT_LINELIST, 1, vec, sizeof(D3DXVECTOR3));
+	// レイを描画する
+	DrawRay(m_ray.position,m_ray.length);
 
 
-//// 矩形の描画
-//#ifdef _DEBUG
-//	for(int i = 0; i < m_hitting_box.size(); i++)
-//		DrawBox(m_hitting_box[i]);
-//#endif
+	// 矩形の描画
+	for(int i = 0; i < m_box.size(); i++)
+		DrawBox(m_box[i]);
 	// アニメーション時間の更新
 	UpdateAnimTime();
 }
@@ -256,9 +216,17 @@ void CMinertza::SetMotion(int _motionID)
 void CMinertza::ControlRect()
 {
 	m_matWeapon = GetMatrix("GripPosition"); // GripPositionのMatrixを取得
-	D3DXVECTOR3 rotate = GetYawPitchRoll(m_matWeapon);
-
-	D3DXVECTOR3 pos;
+	D3DXVECTOR3 pos1,pos2;
+	// 2点のボーンの位置から剣のベクトルを求める
+	pos1 = GetBonePos("R_p1");
+	pos2 = GetBonePos("R_i1");
+	// レイの長さを保存
+	m_ray.length = pos2 - pos1;
+	D3DXVec3Normalize(&m_ray.length,&m_ray.length);
+	m_ray.length = m_ray.length * 10;
+	// レイの開始地点を保存
+	m_ray.position = GetBonePos("R_wrist");
+	
 		// モーション毎に状態を変える
 	switch( m_curMotionID )
 	{
@@ -266,29 +234,17 @@ void CMinertza::ControlRect()
 	case MOTION_ATTACK2:	//11.	通常攻撃連撃1
 	case MOTION_ATTACK3:	//12.	通常攻撃連撃2
 		m_correctionValue = 1.f;
-		pos = GetBonePos("R_wrist");
-		UpdateRect(D3DXVECTOR3(pos.x + 50 * cos(D3DXToRadian(m_angle)),pos.y,pos.z),1,rotate.z);
-		m_hitting_box[0] = m_box[1];
 		break;
 	case MOTION_SKILL:		//16.	技1
 		m_correctionValue = 1.2f;
-		pos = GetBonePos("R_wrist");
-		UpdateRect(D3DXVECTOR3(pos.x + 50 * cos(D3DXToRadian(m_angle)),pos.y,pos.z),1);
-		m_hitting_box[0] = m_box[1];
 		break;
 	case MOTION_SKILL2:		//17.	前＋技
 		m_correctionValue = 1.3f;
-		UpdateRect("R_wrist",1);
-		m_hitting_box[0] = m_box[1];
 		break;
 	case MOTION_UPPER:		//13.	上攻撃
 		m_correctionValue = 0.f;
-		UpdateRect("R_wrist",2);
-		m_hitting_box[0] = m_box[2];
 		break;
 	case MOTION_LOWER:		//14.	下攻撃
-		UpdateRect("R_wrist",2);
-		m_hitting_box[0] = m_box[2];
 		m_correctionValue = 1.0f;
 		break;
 	case MOTION_AIR:		//15.	下攻撃（空中）
@@ -296,8 +252,6 @@ void CMinertza::ControlRect()
 		break;
 	case MOTION_SKILL3:		//18.	上＋技
 		m_correctionValue = 1.0f;
-		UpdateRect("R_wrist",2);
-		m_hitting_box[0] = m_box[2];
 		break;
 	case MOTION_SKILL4:		//19.	下＋技
 		m_correctionValue = 0.f;
@@ -378,15 +332,6 @@ void CMinertza::CreateBox()
 		m_model->CreateBox(&m_box[i]);
 	
 }
-D3DXVECTOR3 CMinertza::GetYawPitchRoll(D3DXMATRIX _mat)
-{
-	D3DXVECTOR3 rotate;
-	rotate.y = atan2(_mat._21, _mat._11);
-	rotate.x = atan2(-_mat._31, sqrt(_mat._32*_mat._32+_mat._33*_mat._33));
-	rotate.z = atan2(_mat._32, _mat._33);
-
-	return rotate;
-}
 /*-----------------------------------------------------------------
 
 	Breast
@@ -409,12 +354,15 @@ CMinertzaWeapon::~CMinertzaWeapon()
 {
 	SAFE_DELETE(m_model);
 }
-void CMinertzaWeapon::Draw(D3DXVECTOR3 _position,D3DXMATRIX _mat)
+void CMinertzaWeapon::Draw(D3DXVECTOR3 _position,D3DXMATRIX _mat,float _alpha)
 {
 	D3DXMATRIX mat;
 	D3DXMatrixIdentity(&mat);
 	m_model->SetScale(D3DXVECTOR3(50,50,50));
-	m_model->Draw(_position,_mat);
+
+	if( _alpha == 1.0 )
+		m_model->Draw(_position,_mat);
+
 }
 void CMinertzaWeapon::GetMeshSize(D3DXVECTOR3* _min,D3DXVECTOR3* _max)
 {

@@ -24,7 +24,7 @@ CLayer1::CLayer1(LPDIRECT3DDEVICE9 _pDevice, int _stageID) :
 {
 	m_plane = new C3DModel("image\\xfile\\plane1.x", _pDevice);
 //	m_tex = CTexMgr.Get( TEX_SKY+(_stageID*7) ); // stageID*7をすることでステージごとのレイヤー変化
-	m_plane->SetScale(D3DXVECTOR3( 60.f,160.f,1.f));
+	m_plane->SetScale(D3DXVECTOR3( 80.f,160.f,1.f));
 }
 
 

@@ -175,3 +175,10 @@ void C3DModel::GetMeshSize(D3DXVECTOR3* _min,D3DXVECTOR3* _max)
 	*_min = m_min;
 	*_max = m_max;
 }
+void C3DModel::SetColor(float _a,float _r,float _g,float _b)
+{
+	m_color.a = _a;
+	m_color.r = _r;
+	m_color.g = _g;
+	m_color.b = _b;
+}

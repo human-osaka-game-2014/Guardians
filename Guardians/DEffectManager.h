@@ -1,7 +1,6 @@
 class CEffectManager
 {
 public:
-	
 private:
 	
 protected:

@@ -22,7 +22,6 @@ public:
 class MeshCamera sealed {
 private:
 	LPDIRECT3DDEVICE9 pDevice;
-
 public:
 	/// コンストラクタ
 	/// @param pDev Direct3Dデバイスオブジェクト
@@ -31,7 +30,6 @@ public:
 	~MeshCamera(void);
 	void Look(D3DXVECTOR3 eyePoint, D3DXVECTOR3 lookAtPoint);
 };
-
 
 /// メッシュ用ライト
 class MeshLight sealed {
@@ -52,6 +50,12 @@ public:
 /// Xファイルから読込んだアニメーションメッシュ
 class XFileAnimationMesh sealed {
 public:
+	// レイの情報
+	typedef struct _RAY{
+		D3DXVECTOR3 position;	// 開始地点
+		D3DXVECTOR3 length;		// レイの長さ
+	}RAY_PARAM;
+
 
 	struct SPHERE // スフィア情報格納用構造体
 	{
@@ -119,7 +123,7 @@ private:
 	
 	double						m_AnimTime;										// 
 	std::vector<ANIMLIST>		m_animList;
-	_D3DCOLORVALUE				m_color;										// メッシュの色
+	_D3DCOLORVALUE				m_color;									// メッシュの色
 
 
 	HRESULT AllocateBoneMatrix(LPD3DXMESHCONTAINER);							// メッシュに行列を割り振る

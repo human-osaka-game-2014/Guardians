@@ -170,7 +170,9 @@ void CBattleUI::SetNextPosition()
 	for(int i = 0; i < PLAYER_MAX; i++){
 		m_chara[i].positionID = (m_chara[i].positionID + 1) % PLAYER_MAX;
 		m_pGameData->m_turnNo[i] = (m_pGameData->m_turnNo[i] + 1) % PLAYER_MAX;
+		
 	}
+	m_activeCharaNo = (m_activeCharaNo + 2) % PLAYER_MAX;
 }
 
 

@@ -54,7 +54,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Effekseer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -135,6 +135,7 @@
     <ClInclude Include="DtitleMenu.h" />
     <ClInclude Include="DtitleScene.h" />
     <ClInclude Include="DtitleSelect.h" />
+    <ClInclude Include="DVector.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="endingScene.h" />
     <ClInclude Include="fenrir.h" />
@@ -286,6 +287,7 @@
     <ClCompile Include="TexCharacter.cpp" />
     <ClCompile Include="TexString.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="DVector.cpp" />
     <ClCompile Include="vertex.cpp" />
   </ItemGroup>
   <ItemGroup>

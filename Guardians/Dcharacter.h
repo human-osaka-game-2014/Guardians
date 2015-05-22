@@ -20,21 +20,7 @@ public:
 		STEP_FADE_IN,
 		STEP_MOVE,
 	};
-
-	enum EFFECT{
-		MAIN_EFK,
-		SUB_EFK,
-	};
 protected:
-
-	struct EFFECT_LIST{
-		LPCWSTR name;		// ファイル名
-		LPCWSTR subName;	// 2つエフェクトを生成する技の場合(配列で持ちたくないのでsubNameとする) 
-		D3DXVECTOR3 scale;	// 倍率
-		D3DXVECTOR3 move;	// 移動量
-		float  damage;
-	};
-
 	enum STATE{ // キャラクターの状態
 		STATE_WAIT,
 		STATE_RUN,
@@ -42,9 +28,9 @@ protected:
 		STATE_SQUAT,
 		STATE_SQUAT2,
 		STATE_AVOID,
-		STATE_INVICIBLE,
-		STATE_ATTACK,
-		STATE_PROJECTILE,
+		STATE_INVICIBLE,	// 無敵状態
+		STATE_ATTACK,		// 物理攻撃状態
+		STATE_PROJECTILE,	// 飛び道具を使用している状態
 	};
 
 	enum MOTION_STATE{
@@ -81,7 +67,6 @@ protected:
 	int					m_damage; // 技のダメージ
 
 	bool				m_isHit;		// 衝突判定用
-	bool				m_takeDamage;	// ダメージを受けた時
 	bool				m_motionStop;	// モーション停止フラグ
 	bool				m_invincible;   // 無敵
 
@@ -89,17 +74,19 @@ protected:
 	// 以下2つは構造体にする予定
 	int					m_actionGauge; // 行動値
 	float				m_correctionValue;	// 技補正値
+	std::vector<XFileAnimationMesh::BOX>		m_box;					// 衝突判定用矩形
+	std::vector<XFileAnimationMesh::BOX>		m_unhitting_box;		// やられ判定用
+	std::vector<XFileAnimationMesh::BOX>		m_hitting_box;			// 攻撃判定用
+	XFileAnimationMesh::RAY_PARAM				m_ray;					// レイの情報	
 
-	//std::vector<XFileAnimationMesh::SPHERE>		m_sphere; // 衝突判定用矩形
-	std::vector<XFileAnimationMesh::BOX>		m_box;	  // 衝突判定用矩形
-	std::vector<XFileAnimationMesh::BOX>		m_unhitting_box;	  // やられ判定用
-	std::vector<XFileAnimationMesh::BOX>		m_hitting_box;	  // 攻撃判定用
 
 	std::vector<XFileAnimationMesh::ANIMLIST> m_animList;	// アニメーション用リスト
 
+
+	CVector m_vector;
 private:
 
-	int				m_turnNo;
+//	int				m_turnNo;
 public:
 	CCharacter(LPDIRECT3DDEVICE9 _pDevice , float _angle);	// コンストラクタ
 	~CCharacter();											// デストラクタ
@@ -109,46 +96,37 @@ public:
 
 	void SetRect();				// 衝突判定に使用する矩形のセット
 
-	D3DXMATRIX GetMatrix(LPCTSTR);
-
-	void ResetMotion(int _motionID);	// 割り込んでモーションを変更する
-	bool CheckMotionEnd(int _motioniD);			// モーションが終わっているか
+	void ResetMotion(int _motionID);		// 割り込んでモーションを変更する
+	bool CheckMotionEnd(int _motioniD);		// モーションが終わっているか
 	
-	virtual void ChangeEffect() = 0; // エフェクトの生成
-	// セッタ
+	//=================セッタ===========================================================
 	virtual void SetMotion(int _motionID) = 0;						// モーションIDをセット
-	//void SetPosition(D3DXVECTOR3 _position);			// characterの位置をセットする
 	void SetBonePos(D3DXVECTOR3* _position , MYFRAME* _pFrame);		// ボーンの位置をセットする
-	//void SetFieldSpeed(D3DXVECTOR2 _spd);
 	void SetCharaSpeed(int);
 	void SetHitFlag(bool);
 	void SetTakeDamageFlg();
-	
-	//void AddAlpha(float _value);
+	//=================ゲッタ=============================================================
+	std::vector<XFileAnimationMesh::BOX> GetHittingBox();		// 攻撃判定矩形を取得
+	std::vector<XFileAnimationMesh::BOX> GetunHittingBox();		// 被ダメージ判定矩形を取得
+	XFileAnimationMesh::RAY_PARAM GetRay();
 
-	// ゲッタ
-	std::vector<XFileAnimationMesh::BOX> GetHittingBox();
-	std::vector<XFileAnimationMesh::BOX> GetunHittingBox();
-	std::vector<XFileAnimationMesh::SPHERE> GetSphere();
-
-	D3DXVECTOR3 GetBonePos(LPCTSTR _name);
-
-
-	float		GetDamage();	// ダメージを取得
+	D3DXMATRIX GetMatrix(LPCTSTR);
 	D3DXVECTOR2 GetCharaSpeed();								// キャラクターの移動速度を返す
+	D3DXVECTOR3 GetBonePos(LPCTSTR _name);
 	STATE		GetState();
 	STEP		GetStep();
-	bool		GetMotionEnd();
+	float		GetDamage();	// ダメージを取得
 protected:
+	// アニメーション時間を更新する
 	void UpdateAnimTime(float _time = (1.0f/60.f));
 	// 衝突判定矩形の更新
 	void UpdateRect(D3DXVECTOR3 _position , int _ID,float radian = 0);
 	void UpdateRect(LPCTSTR _name , int _ID );
 	void UpdateSphere(D3DXVECTOR3 _position , XFileAnimationMesh::SPHERE* _sphere);							// スフィアの位置情報を更新
-	void DrawSphere(XFileAnimationMesh::SPHERE _sphere);
 	void UpdateBox(D3DXVECTOR3 _position , XFileAnimationMesh::BOX* _box,float radian = 0);							// スフィアの位置情報を更新
 	// 矩形の描画
 	void DrawBox(XFileAnimationMesh::BOX _box);
+	void DrawRay(D3DXVECTOR3 _pos,D3DXVECTOR3 _rayDir);
 
-	virtual void PlayEffect(int) = 0; //エフェクトを再生
+	void SetHitFlag();
 };

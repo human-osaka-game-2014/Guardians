@@ -27,6 +27,8 @@ private:
 	D3DXVECTOR3 m_min;
 	D3DXVECTOR3 m_max;
 	D3DXVECTOR3 m_length;
+
+	_D3DCOLORVALUE				m_color;
 public:
 	C3DModel(LPCTSTR _fileName, LPDIRECT3DDEVICE9 _pDevice);     // コンストラクタ
 	~C3DModel();                                                 // デストラクタ(宣言の前に~をつける)->解放処理
@@ -36,6 +38,8 @@ public:
 	void SetPosition(D3DXVECTOR3 _position);
 
 	void GetMeshSize(D3DXVECTOR3* _miin,D3DXVECTOR3* _max);
+
+	void SetColor(float _a = 1.0f,float _r = 1.0f,float _g = 1.0f,float _b = 1.0f);
 };
 
 #endif

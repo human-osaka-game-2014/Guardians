@@ -3,7 +3,7 @@
 #include "stdafx.h"
 
 // 静的なメンバー変数の実体宣言
-const float CPlayer::JUMP_SPD_MAX = 0.3f;	// ジャンプ初速度
+const float CPlayer::JUMP_SPD_MAX = 0.35f;	// ジャンプ初速度
 
 const float CPlayer::INIT_HEIGHT_POSITION = -0.5f;
 
@@ -144,15 +144,17 @@ void CPlayer::Jump()
 	// ジャンプ中はジャンプできない状態
 	if( m_motionState == MSTATE_WAIT && !m_jumpFlag && (CScene::m_keyStateOn & UP) != 0){	
 		TOTAL_FRAME++;
-		if(TOTAL_FRAME == DELAY_FRAME){
+		// ボタンを押している時間が一定以上(上＋攻撃キーを優先させる)
+		if(TOTAL_FRAME == DELAY_FRAME)
 			m_motionID = MOTION_JUMP;
-			m_jumpFlag = true;
-			m_jumpSpeed = JUMP_SPD_MAX;
+	}
 
-			// ジャンプ開始した地点を保存
-			m_jumpStartPoint = m_position.y;
-		}
-	}	
+	if( m_curMotionID == MOTION_JUMP && !m_jumpFlag){
+		m_jumpFlag = true;
+		m_jumpSpeed = JUMP_SPD_MAX;
+		// ジャンプ開始した地点を保存
+		m_jumpStartPoint = m_position.y;
+	}
 	// ジャンプしている時
 	if(m_jumpFlag){
 		m_position.y += m_jumpSpeed;
@@ -306,7 +308,7 @@ void CPlayer::Attack()
 	}
 	// Ｄ＋上キー
 	if( (CScene::m_keyStateOn & KEY_D ) != 0 && (CScene::m_keyStateOn & UP) != 0 ){
-		//m_motionID = MOTION_SKILL3;
+		m_motionID = MOTION_SKILL3;
 	}
 
 

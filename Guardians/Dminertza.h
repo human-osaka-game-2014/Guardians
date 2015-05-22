@@ -8,7 +8,7 @@ public:
 	// デストラクタ
 	~CMinertzaWeapon();
 	// 描画
-	void Draw(D3DXVECTOR3 _position,D3DXMATRIX _rotate);
+	void Draw(D3DXVECTOR3 _position,D3DXMATRIX _rotate,float _alpha);
 
 	void GetMeshSize(D3DXVECTOR3*,D3DXVECTOR3*);
 private:
@@ -51,6 +51,4 @@ private:
 	void ControlRect();
 	// エフェクトの制御
 	void ControlEffect();
-
-	D3DXVECTOR3 GetYawPitchRoll(D3DXMATRIX _mat);
 };

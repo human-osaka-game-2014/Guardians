@@ -18,11 +18,7 @@ CNeru::CNeru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_teleportState(T
 	
 	m_model = new XFileAnimationMesh(_T("image\\xfile\\Player\\PC_2-1_Neru.X"),m_pDevice,m_scale);
 	//m_maru = new CMaru(m_pDevice);
-	// エフェクトの生成
-	for(int i = 0; i < EFFECT_MAX_NUM;i++){
-		m_effect[i] = new CEffectt(m_position , m_pDevice);
-		m_effect[i]->SetCharaHeight(m_charaHeight);
-	}
+
 	// 使用する矩形を作成
 	CreateBox();
 
@@ -57,10 +53,6 @@ CNeru::CNeru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_teleportState(T
 		{1145, 1265 },	// 25) 固有モーション2（勝利時）
 	};
 
-	for(int i = 0; i < MOTION_MAX_NUM;i++){
-		m_effectList[i].name = NULL;
-		m_effectList[i].subName = NULL;	
-	}
 	SetEffectList();
 
 	m_animList.resize(MOTION_MAX_NUM);
@@ -129,7 +121,6 @@ CNeru::~CNeru()
 
 	for(int i = 0;i < EFFECT_MAX_NUM;i++){
 		SAFE_DELETE( m_efk[i] );
-		SAFE_DELETE( m_effect[i] );
 	}
 	//SAFE_DELETE(m_maru);
 }
@@ -187,13 +178,13 @@ void CNeru::ControlEffect()
 		FireBall();
 		break;
 	case MOTION_LOWER:		//14.	下攻撃
-		ThunderWhip();
+		//ThunderWhip();
 		break;
 	case MOTION_SKILL:		//16.	技1
 		IceWall();
 		break;
 	case MOTION_SKILL4:		//19.	下＋技
-		StoneImpact();
+		//StoneImpact();
 		break;
 	case MOTION_SKILL3:		//18.	上＋技
 	case MOTION_SKILLAIR:	//20.	下＋技（空中
@@ -212,37 +203,7 @@ void CNeru::ControlEffect()
 	//}
 	// 技が当たっていたらエフェクト再生停止
 	if( m_isHit ) {
-		for(int i = 0; i < EFFECT_MAX_NUM;i++)
-			m_effect[i]->StopEffect();
 		m_isPlay = false;
-	}
-}
-/*--------------------------------------------------------------
-
-	衝突判定に使用する矩形のセット
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
-void CNeru::ChangeEffect()
-{
-	//D3DXVECTOR3 scale; // 倍率
-	//D3DXVECTOR3 position; //位置
-	LPCWSTR name = NULL; // エフェクトのファイル名
-
-	if( m_effectList[m_curMotionID].name )
-		name = m_effectList[m_curMotionID].name;
-
-	// もし生成しているエフェクトと現在のモーションが違うなら生成し直す
-	if( m_curMotionID != m_nowEffect && name != NULL ){
-		// 解放
-		for(int i = 0; i < EFFECT_MAX_NUM;i++)
-			m_effect[i]->Release();
-		// 生成
-		m_effect[MAIN_EFK]->Create( name , m_position);
-		if( m_effectList[m_curMotionID].subName != NULL ) m_effect[SUB_EFK]->Create( m_effectList[m_curMotionID].subName , m_position); // 発生させるエフェクトが2つ以上なら生成
-		
-		m_nowEffect = m_curMotionID;
 	}
 }
 
@@ -341,8 +302,6 @@ void CNeru::SetMotion(int _motionID)
 		break;
 	}
 	if( m_isPlay ) m_state = STATE_PROJECTILE;
-	// モーション変更時にエフェクトを生成する
-	ChangeEffect();
 }
 void CNeru::IceWall()
 {
@@ -365,13 +324,6 @@ void CNeru::Teleport()
 	static float add = 0;
 	static float jumpSpeed = -0.06f;
 
-
-	// テレポートのエフェクトはキャラに付随
-	if( m_curEffect == MOTION_AIR || m_curEffect == MOTION_SKILL3){
-		m_efkPos = m_position;
-		m_effect[SUB_EFK]->SetLocation(m_efkPos);
-		m_effect[MAIN_EFK]->SetLocation(m_efkPos);
-	}
 
 	switch( m_teleportState ){
 	case TPSTATE_WAIT:
@@ -403,7 +355,6 @@ void CNeru::Teleport()
 				m_teleportState = TPSTATE_AERIAL;
 				ResetMotion(MOTION_JUMP_FALL); // ごり押し
 			}
-			m_effect[SUB_EFK]->replay( m_efkPos , m_effectList[m_curEffect].scale);
 			// 上技ならキャラクターを空中へ
 			if( m_curEffect == MOTION_SKILL3){
 				m_position.y += 7;
@@ -485,7 +436,7 @@ void CNeru::PlayEffect(int _frame)
 		flag = true;
 		break;
 	case MOTION_LOWER:		//14.	下攻撃
-		ThunderWhip();
+		//ThunderWhip();
 		break;
 	case MOTION_SKILL:		//16.	技1
 		m_efk[ICE_WALL] = new CIceWallManager(m_pDevice);
@@ -493,29 +444,12 @@ void CNeru::PlayEffect(int _frame)
 		flag = true;
 		break;
 	case MOTION_SKILL4:		//19.	下＋技
-		StoneImpact();
+		//StoneImpact();
 		break;
 	case MOTION_SKILLAIR:		//20.	下＋技（空中）
 		Teleport();
 		break;
 	}
-
-
-	////// エフェクトを複数出現させない場合
-	//if( _frame == 0 ){
-	//		// モーションスタート時間と同じフレームにエフェクトを再生
-	//		if( m_effect[MAIN_EFK]->Play( m_efkPos , m_effectList[m_curMotionID].scale) ) flag = true;
-	//}
-	//// エフェクトを複数出現させたい場合
-	//else{ 
-	//	// モーションスタート時間と同じフレームにSubEffectを再生
-	//	if( m_effect[SUB_EFK]->Play( m_efkPos , m_effectList[m_curMotionID].scale) ) flag = true;		
-	//
-
-	//	if( m_effect[SUB_EFK]->GetDrawTime() >= _frame ) // 再生から指定したフレーム後にMainEffectを再生
-	//		if( m_effect[SUB_EFK]->checkEnd() ) m_effect[MAIN_EFK]->Play( m_efkPos , m_effectList[m_curMotionID].scale);
-	//}
-
 	if( flag ){ // エフェクト再生したフレーム
 		m_curEffect = m_curMotionID;					// 再生しているモーションを保存
 		m_isPlay = true;
@@ -523,23 +457,7 @@ void CNeru::PlayEffect(int _frame)
 		
 		m_efkAngle = m_angle;							// 再生時の向きを保存
 		m_actionGauge -= 30;							// アクションゲージを減らす
-		m_effect[MAIN_EFK]->SetRotate(m_angle);			// エフェクトの再生方向を保存
-								// エフェクト再生フラグ
-		m_moveValue = m_effectList[m_curEffect].move;
-		if( m_angle == LEFT_ANGLE ) m_moveValue.x = m_effectList[m_curEffect].move.x * -1;
-		else m_moveValue.x = m_effectList[m_curEffect].move.x;
 	}
-}
-/*--------------------------------------------------------------
-
-	キャラの移動速度を返す
-	@param	なし
-	@return 移動速度
-
---------------------------------------------------------------*/
-float CNeru::GetCharaSpeed()
-{
-	return m_speed.x;
 }
 /*-----------------------------------------------------------------
 	
