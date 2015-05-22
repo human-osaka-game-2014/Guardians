@@ -1,3 +1,13 @@
+/**
+ * @file  DVector.h
+ * @brief 簡単な説明
+ * @author danjo
+ * @date 日付（開始日？）
+ */
+
+/**
+ * この下のクラスについての簡単な説明
+ */
 class CVector
 {
 public:

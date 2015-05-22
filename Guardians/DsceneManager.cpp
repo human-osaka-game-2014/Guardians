@@ -1,5 +1,10 @@
-#include "stdafx.h"
+/**
+ @file DsceneManager.cpp
+ @date 作成日：2014/10/16
+ @author 檀上
+ */
 
+#include "stdafx.h"
 
 
 // グローバル変数(スレッド起動時に使用)
@@ -14,13 +19,12 @@ typedef struct {
 PARAM param;
 
 DWORD dwID;
-/*---------------------------------------------------------------
 
-	モデルをロードする
- 	@param LPVOID 
-	@return 
-
- ---------------------------------------------------------------*/
+/**
+ * モデルをロードする
+ * @param vdParam スレッド起動用パラメータ
+ * @return 常に0
+ */
 unsigned __stdcall ThreadFuncCreate(LPVOID vdParam) {
 	lpPARAM lpParam = (lpPARAM)vdParam;
 	lpParam->isEnd = false;
@@ -29,13 +33,12 @@ unsigned __stdcall ThreadFuncCreate(LPVOID vdParam) {
 	lpParam->isEnd = true;
 	return 0;
 }
-/*---------------------------------------------------------------
 
- 	モデルの再ロード
- 	@param LPVOID 
-	@return 
-
- ---------------------------------------------------------------*/
+/**
+ * モデルの再ロード
+ * @param vdParam スレッド起動用パラメータ
+ * @return 常に0
+ */
 unsigned __stdcall ThreadFuncUpdate(LPVOID vdParam) {
 	lpPARAM lpParam = (lpPARAM)vdParam;
 	lpParam->isEnd = false;
@@ -44,15 +47,16 @@ unsigned __stdcall ThreadFuncUpdate(LPVOID vdParam) {
 	lpParam->isEnd = true;
 	return 0;
 }
-/*---------------------------------------------------------------
 
- 	コンストラクタ
- 	(各メンバ変数の初期化を行う)
-
- ---------------------------------------------------------------*/
-CSceneManager::CSceneManager(HWND hWnd,CGraphicsDevice _gaphics) : 
+/**
+ * コンストラクタ
+ * 各メンバ変数の初期化を行う
+ * @param hWnd ウィンドウハンドル
+ * @param _graphics グラフィックデバイス
+ */
+CSceneManager::CSceneManager(HWND hWnd,CGraphicsDevice _graphics) : 
 	m_pScene( nullptr ), m_step( STEP_CREATE ), m_nextSceneID( CScene::SCENE_LOGO ),
-m_hWnd(hWnd),m_graphics(_gaphics) ,m_time(0)
+m_hWnd(hWnd),m_graphics(_graphics) ,m_time(0)
 {
 	m_pGameData = new CGameData();	// コンストラクタでデータがロードされる	
 	m_pGameData->Load(0);
@@ -102,8 +106,6 @@ CSceneManager::~CSceneManager()
 
 /**
  *	シーンごとの処理(操作)を行う
- *	@param	なし
- *	@return	なし
  */
 void CSceneManager::Control()
 {
@@ -191,8 +193,6 @@ void CSceneManager::Control()
 }
 /**
  *	シーンごとの描画を行う
- *	@param	なし
- *	@return	なし
  */
 void CSceneManager::Render()
 {
@@ -205,8 +205,6 @@ void CSceneManager::Render()
 
 /**
  *	シーン内の管理を行う
- *	@param	なし
- *	@return	なし
  */
 void CSceneManager::Run()
 {
@@ -239,6 +237,7 @@ void CSceneManager::Run()
 	}
 
 }
+
 bool CSceneManager::Load(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,CCharacterManager::MODELDATA* _model,CField::FIELD_DATA* _field)
 {
 	// プレイヤークラスオブジェクトの生成
@@ -270,6 +269,7 @@ bool CSceneManager::Load(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,CChara
 
 	return true;
 }
+
 bool CSceneManager::Update(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,CCharacterManager::MODELDATA* _model,CField::FIELD_DATA* _field)
 {
 	//// もしステージボスを倒していたら敵を生成し直す

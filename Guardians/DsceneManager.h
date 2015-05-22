@@ -1,35 +1,34 @@
-/*=======================================
+/**
+ @file DsceneManager.h
+ @date 作成日：2014/10/16
+ @author 檀上
+ */
 
-	シーンの遷移、管理を行うクラス
-	作成日  :2014/10/16
-	作成者  : 檀上
-	更新日  :
-	更新者  :
-	更新内容:
-
-=======================================*/
+/**
+ * シーンの遷移、管理を行うクラス
+ */
 class CSceneManager
 {
 public:
 
 
 protected:
-	// 処理ステップ
+	/// 処理ステップ
 	enum Step {
-		STEP_CREATE,	// 生成
-		STEP_PROC,		// 処理中
-		STEP_RELEASE,	// 解放
+		STEP_CREATE,	///< 生成
+		STEP_PROC,		///< 処理中
+		STEP_RELEASE,	///< 解放
 	};
 
-	DWORD		m_time; // プレイ時間格納用
+	DWORD		m_time; ///< プレイ時間格納用
 
 
-	/** シーンクラスオブジェクト */
+	/// シーンクラスオブジェクト
 	CScene*		m_pScene;
 	CScene::SceneID m_nextSceneID;
-	/** ステップ変数 */
+	/// ステップ変数
 	Step		m_step;
-	/** グラフィックスクラスオブジェクト */
+	/// グラフィックスクラスオブジェクト
 	CGraphicsDevice	m_graphics;
 	DWORD time;
 

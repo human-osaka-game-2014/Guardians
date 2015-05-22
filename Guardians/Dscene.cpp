@@ -1,3 +1,9 @@
+/**
+ * @file  Dscene.cpp
+ * @brief シーンの共通処理(描画など)をまとめたクラス
+ * @author danjo
+ */
+
 #include "stdafx.h"
 
 // 静的な変数の実体を宣言

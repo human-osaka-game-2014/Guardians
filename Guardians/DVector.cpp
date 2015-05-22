@@ -1,5 +1,5 @@
 /**
- * @file  DVector.h
+ * @file  DVector.cpp
  * @brief 簡単な説明
  * @author danjo
  * @date 日付（開始日？）
@@ -8,9 +8,8 @@
 #include "stdafx.h"
 
 /**
- * @fn
  * ベクトルの長さを返す
- * @param (D3DXVECTOR3) ベクトル
+ * @param _vector ベクトル
  * @return ベクトルの長さ
  */
 float CVector::GetVecLength(D3DXVECTOR3 _vector)
@@ -22,10 +21,10 @@ float CVector::GetVecLength(D3DXVECTOR3 _vector)
 
 	return length;
 }
+
 /**
- * @fn
  * 単位ベクトルを返す
- * @param (D3DXVECTOR3) ベクトル
+ * @param _vector ベクトル
  * @return 単位ベクトル
  */
 D3DXVECTOR3 CVector::GetUnitVector(D3DXVECTOR3 _vector)
@@ -38,10 +37,11 @@ D3DXVECTOR3 CVector::GetUnitVector(D3DXVECTOR3 _vector)
 	return _vector / length;
 
 }
+
 /**
- * @fn
- * ベクトルの外積を返す
- * @param (D3DXVECTOR3) ベクトル
+ * 引数で渡された2つのベクトルの外積を返す
+ * @param v1 ベクトル1
+ * @param v2 ベクトル2
  * @return 外積
  */
 float CVector::D3DXVecCross( D3DXVECTOR3* v1, D3DXVECTOR3* v2 ) 

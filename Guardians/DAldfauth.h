@@ -1,3 +1,11 @@
+/**
+ * @file DAldfauth.h
+ * @author 檀上
+ */
+
+/**
+ * アルドファウトの制御
+ */
 class CAldfauth : public CPlayer
 {
 public:
