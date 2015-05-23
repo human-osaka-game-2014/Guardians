@@ -35,9 +35,11 @@ const D3DXVECTOR2 CGameMapPointer::m_checkPointPos[CHECK_POINT_NUM] = {
 const D3DXVECTOR2 CGameMapPointer::POINTER_SIZE = D3DXVECTOR2(60.f,130.f);
 
 CGameMapPointer::CGameMapPointer(LPDIRECT3DDEVICE9 _pDevice, D3DXVECTOR2 _position,int _clearStageNum,CGameData* _pGameData):
-	CChip( _pDevice, _position, CChip::START, true ),	m_pCount(0),m_pTime(POINT_ANIME_TIME),m_state(STATE_WAIT),m_shake(0.0f), m_shakeSpeed(0.1f),m_shakeCount(0),m_clearCount(_clearStageNum),m_move(1.0f,1.0f)
+	CChip( _pDevice, _position, CChip::START, true ),	m_pCount(0),m_pTime(POINT_ANIME_TIME),m_state(STATE_WAIT),m_shake(0.0f),
+	m_shakeSpeed(0.1f),m_shakeCount(0),m_clearCount(_clearStageNum),m_move(1.0f,1.0f)
 	,m_nextPosition(595.f,2280.f),m_checkPointNum(0),m_nextCheckPointNum(1),m_backCount(1),m_pMoveTime(0),m_pGameData(_pGameData)
 {
+	m_position = D3DXVECTOR2(m_checkPointPos[_clearStageNum].x - 60,m_checkPointPos[_clearStageNum].y - 130);
 	m_pointTexture = CTexMgr.Get( TEX_MAP_CHIP );
 
 	//m_position.push_back(D3DXVECTOR2(510.f, 2360.f));

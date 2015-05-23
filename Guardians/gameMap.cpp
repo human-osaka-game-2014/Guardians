@@ -145,7 +145,7 @@ CGameMap::CGameMap(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,D3DXVECTOR2 
 
 	// マップポインタ
 	int index = m_pGameData->m_nowClearStageNum == 0 ? 1 : m_pGameData->m_nowClearStageNum + m_stageID * 2;
-	m_mapPointa = new CGameMapPointer(_pDevice,D3DXVECTOR2(CHIP_DATA[index].position.x - 60,CHIP_DATA[index].position.y - 130),m_pGameData->m_nowClearStageNum,m_pGameData);
+	m_mapPointa = new CGameMapPointer(_pDevice,D3DXVECTOR2(CHIP_DATA[index].position.x - 60,CHIP_DATA[index].position.y - 130),m_pGameData->m_selectStageNum,m_pGameData);
 //	m_mapPointa = new CGameMapPointer(_pDevice,D3DXVECTOR2(CHIP_DATA[_stageID * 3 + 1].position.x - 60,CHIP_DATA[_stageID * 3 + 1].position.y-130));
 	m_clearCount = 0;
 
