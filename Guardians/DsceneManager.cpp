@@ -55,7 +55,7 @@ unsigned __stdcall ThreadFuncUpdate(LPVOID vdParam) {
  * @param _graphics グラフィックデバイス
  */
 CSceneManager::CSceneManager(HWND hWnd,CGraphicsDevice _graphics) : 
-	m_pScene( nullptr ), m_step( STEP_CREATE ), m_nextSceneID( CScene::SCENE_LOGO ),
+	m_pScene( nullptr ), m_step( STEP_CREATE ), m_nextSceneID( CScene::SCENE_GAME ),
 m_hWnd(hWnd),m_graphics(_graphics) ,m_time(0)
 {
 	m_pGameData = new CGameData();	// コンストラクタでデータがロードされる	
@@ -245,9 +245,9 @@ bool CSceneManager::Load(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,CChara
 	
 	
 	for(int i = 0; i < PLAYER_MAX;i++){
-		if( _pGameData->m_turnNo[i] == ALDO )
+		if( i == ALDO )
 			_model->player[i] = new CAldfauth(_pDevice);
-		else if ( _pGameData->m_turnNo[i] == MINE )
+		else if ( i == NERU_MARU )
 			_model->player[i] = new CMinertza(_pDevice);
 		else
 			_model->player[i] = new CNeru(_pDevice);

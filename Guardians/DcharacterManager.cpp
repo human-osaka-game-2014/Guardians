@@ -32,7 +32,7 @@ CCharacterManager::CCharacterManager(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGam
 {	
 	// モデルデータを保存
 	m_pModel = _chara;
-	m_activePlayer = m_pModel->player[m_pGameData->m_turnNo[0]];
+	m_activePlayer = m_pModel->player[m_pGameData->m_playerCharaNo];
 	// 戦闘開始時の演出の位置をセット
 	if( m_activePlayer->GetStep() == CCharacter::STEP_FADE_IN )
 		m_activePlayer->SetPosition(INIT_PLAYER_POSITION);
@@ -451,8 +451,8 @@ void CCharacterManager::CharacterChange()
 		m_activePlayer->addAlpha(-addAlpha);
 	else{
 		// モデルデータを先頭のキャラへ入れ替える
-		m_activePlayer = m_pModel->player[m_pGameData->m_turnNo[0]];
-		m_activePlayer->SetCharaSpeed( m_pGameData->m_chara[ m_pGameData->m_turnNo[0] ].spd ); // キャラクターの移動速度をセット
+		m_activePlayer = m_pModel->player[m_pGameData->m_playerCharaNo];
+		m_activePlayer->SetCharaSpeed( m_pGameData->m_chara[ m_pGameData->m_playerCharaNo ].spd ); // キャラクターの移動速度をセット
 		m_activePlayer->ResetMotion(CPlayer::MOTION_WAIT); // 待機モーションをセット
 		time = 0; // 経過時間をリセット
 	}

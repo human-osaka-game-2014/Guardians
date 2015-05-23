@@ -82,6 +82,8 @@ void CMenuSelectScreen::Control(int _keyState)
 		if( m_gameCursor[i] == NULL ) continue;
 		m_gameCursor[i]->Control();
 	}
+
+
 	if ( (CScene::m_keyStatePush & RIGHT) != 0){
 		if( m_selectCount < 3 ){
 			do{
@@ -90,6 +92,7 @@ void CMenuSelectScreen::Control(int _keyState)
 			}while(m_pGameData->m_turnNo[m_charaID] != -1);
 		}
 	}
+
 	if ( (CScene::m_keyStatePush & LEFT) != 0){
 		if( m_selectCount < 3 ){
 			do{
@@ -98,18 +101,21 @@ void CMenuSelectScreen::Control(int _keyState)
 			}while(m_pGameData->m_turnNo[m_charaID] != -1);
 		}
 	}
+
 	if ( (CScene::m_keyStatePush & UP) != 0){					// 上矢印キーが押されたら
 		if(m_gameCursor[CUR_SELECT] != NULL ){
 			m_selectID = (m_selectID+1)%2;
 			m_gameCursor[CUR_SELECT]->SetNextPosition(D3DXVECTOR2(INIT_SELECT_CURSOR_POSITION.x, INIT_SELECT_CURSOR_POSITION.y + m_selectID * (80.f)));	
 		}
 	}
+
 	if ( (CScene::m_keyStatePush & DOWN) != 0){	// 下矢印キーが押されたら
 		if(m_gameCursor[CUR_SELECT] != NULL ){
 			m_selectID = (m_selectID+1)%2;
 			m_gameCursor[CUR_SELECT]->SetNextPosition(D3DXVECTOR2(INIT_SELECT_CURSOR_POSITION.x, INIT_SELECT_CURSOR_POSITION.y + m_selectID * (80.f)));	
 		}
 	}
+
 	if ( (CScene::m_keyStatePush & KEY_S) != 0){
 		if( m_gameWindow[WND_SELECT] != NULL && m_selectID == 0 ){			//選択肢「はい」なら戦闘開始
 			m_battleFlag = true;
@@ -123,6 +129,8 @@ void CMenuSelectScreen::Control(int _keyState)
 			}
 		}else if( m_pGameData->m_turnNo[m_charaID] == -1 ){
 			m_pGameData->m_turnNo[m_charaID] = m_selectCount;	//出撃順をturnNoに
+			// 先頭のキャラを決めた時に番号を保存しておく
+			if( m_pGameData->m_turnNo[m_charaID] == 0 ) m_pGameData->m_playerCharaNo = m_charaID;
 			m_oldID[m_selectCount] = m_charaID;
 			m_selectCount++;
 			if(m_selectCount < 3){	

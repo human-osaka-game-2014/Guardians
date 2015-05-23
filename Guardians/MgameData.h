@@ -104,6 +104,7 @@ public:
 	int						m_selectStageNum;
 	int						m_oldClearStageNum;				// バトル出撃前のステージクリア数(モデルのリロードが必要か判断)
 	int						m_turnNo[PLAYER_MAX];			// 出撃順番
+	int						m_playerCharaNo;				// 先頭のキャラの番号(出撃順を決めるときに保存)
 	int						m_unlockTools[UNLOCK_TOOL_MAX];	// 商品アンロックリスト(道具)
 	int						m_unlockEquip[UNLOCK_EQUIP_MAX];// 商品アンロックリスト(装備)
 	Time                    m_time;                         // セーブ日付
