@@ -279,8 +279,8 @@ void CBattleUI::Draw()
 		m_vertex.SetSizeY(m_chara[i].scale);
 		m_vertex.SetAngle(-90);
 		m_vertex.DrawTextureLT(m_pDevice,UI,m_chara[i].position.x + (HP_GAUGE_POS * m_chara[i].scale),m_chara[i].position.y,CHARA_GAUGE_VERTEX);	//選んでいるキャラの黒ゲージ表示
-		m_vertex.DrawTextureLT(m_pDevice,UI,m_chara[i].position.x + (HP_GAUGE_POS * m_chara[i].scale),m_chara[i].position.y + HPper[i],0,465+HPper[i],60,570);	//選んでいるキャラのHP表示
-		m_vertex.DrawTextureLT(m_pDevice,UI,m_chara[i].position.x + (MP_GAUGE_POS * m_chara[i].scale),m_chara[i].position.y + MPper[i],60,465+MPper[i],120,570);	//選んでいるキャラのMP表示
+		m_vertex.DrawTextureLT(m_pDevice,UI,m_chara[i].position.x + (HP_GAUGE_POS * m_chara[i].scale),m_chara[i].position.y + HPper[i] * m_chara[i].scale,0,465+HPper[i],60,570);	//選んでいるキャラのHP表示
+		m_vertex.DrawTextureLT(m_pDevice,UI,m_chara[i].position.x + (MP_GAUGE_POS * m_chara[i].scale),m_chara[i].position.y + MPper[i] * m_chara[i].scale,60,465+MPper[i],120,570);	//選んでいるキャラのMP表示
 		m_vertex.DrawTextureLT(m_pDevice,UI,m_chara[i].position.x,m_chara[i].position.y,0+((float)i*145),360,145+((float)i*145),465);	//選んでいるキャラの表示
 	}
 	m_vertex.SetSizeX(1.f);
