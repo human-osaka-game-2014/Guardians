@@ -59,7 +59,7 @@ CPrepareMission::CPrepareMission(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGamedat
 	//				
 	m_pWindow = new CGameDataWindow(_pDevice, D3DXVECTOR2(-199.f, 888.f), m_pGameData);	// ゲームデータ
 
-	m_pMap = new CGameMap(_pDevice,m_pGameData,m_mapPosition, (m_pGameData->m_nowClearStageNum+1)/4);		// マップ
+	m_pMap = new CGameMap(_pDevice,m_pGameData,m_mapPosition, (m_pGameData->m_nowClearStageNum)/4);		// マップ
 	// デバッグ用
 	//m_pMap = new CGameMap(_pDevice, m_mapPosition,m_pGameData->m_nowClearStageNum%4);		// マップ
 

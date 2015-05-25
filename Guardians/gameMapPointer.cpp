@@ -128,8 +128,8 @@ void CGameMapPointer::SetMoveDirection(State _state)
 	}else if( m_state == STATE_MOVE_RIGHT ){
 		// 選択しているステージ番号を減らす
 		m_pGameData->m_selectStageNum++;
-		if( m_pGameData->m_selectStageNum > m_clearCount )
-			m_pGameData->m_selectStageNum = m_clearCount;
+		if( m_pGameData->m_selectStageNum > m_pGameData->m_nowClearStageNum )
+			m_pGameData->m_selectStageNum = m_pGameData->m_nowClearStageNum;
 	}
 }
 

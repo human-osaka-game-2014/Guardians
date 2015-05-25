@@ -48,7 +48,7 @@ CCharacterManager::CCharacterManager(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGam
 	m_activePlayer->ResetMotion(CPlayer::MOTION_WAIT);
 
 
-	if( (m_pGameData->m_nowClearStageNum + 1) % 4 == 0 )
+	if( (m_pGameData->m_selectStageNum + 1) % 4 == 0 )
 		m_activeEnemy = _chara->enemy[3];
 	else 
 		m_activeEnemy = _chara->enemy[0];

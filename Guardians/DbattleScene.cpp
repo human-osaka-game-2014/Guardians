@@ -138,7 +138,6 @@ CBattleScene::SceneID CBattleScene::Control()
 	// Ÿ—˜Žž
 	if( m_pGameData->m_win ){
 		if ( m_character->GetMotionEnd(CPlayer::MOTION_APPEAL2) ){
-			m_pGameData->m_win = false;
 			return SCENE_RESULT;
 		}
 	}

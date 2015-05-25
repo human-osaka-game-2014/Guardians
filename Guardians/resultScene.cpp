@@ -115,7 +115,10 @@ CScene( _pDevice , _input ), m_cntMoney( 0 ), m_pGameData( _pGameData )
 	m_texIcon = CTexMgr.Get( TEX_ICON );
 
 	// 称号玉生成
+
+	// クリアしてるステージ数よりステージ毎のチェックポイント数が多ければ
 	m_embBallNum = m_pGameData->m_nowClearStageNum < STAGE_NUMS[ m_stageID ]-1 ? NUM_CHECK_EMB : EMBBALL_NUMS[ m_stageID ];
+	// 死亡フラグが立っていたら敗北画面用？
 	bool isLose = m_pGameData->m_death;
 	if( isLose ) { m_embBallNum = NUM_CHECK_EMB*3; }
 	m_embBall = new EmblemBall*[ m_embBallNum ];
@@ -201,15 +204,30 @@ CResultScene::SceneID CResultScene::Control()
 	{
 		if( m_state <= STATE_BONUS ) m_state = STATE_NEXTSCENE;
 		else if( m_state == STATE_NEXTSCENE ) {
+			// 死亡時は戦闘準備へ戻る
 			if( m_pGameData->m_death ){
 				return SCENE_GAME;
 			}
-			if( m_embBallNum == EMBBALL_NUMS[ m_stageID ] )	return SCENE_GAME;
+			// 選んでいるステージがボスステージならゲームシーンへ？
+			if( (m_pGameData->m_selectStageNum + 1) % 4 == 0 ){
+				return SCENE_GAME;
+			}else if( m_pGameData->m_selectStageNum >= m_pGameData->m_nowClearStageNum ){
+				// 選択したステージが未クリア状態なら
+				m_pGameData->m_selectStageNum++;
+				m_pGameData->m_nowClearStageNum++;
+			}else
+				// クリア済みであれば選択しているステージIDのみを勧める？
+				m_pGameData->m_selectStageNum++;
+
+			// ここまで来たら小ボスステージなのでwinフラグは解除
+			m_pGameData->m_win = false;
+			return SCENE_BATTLE;
+			/*if( m_pGameData->m_selectStageNum < 
+				m_embBallNum == EMBBALL_NUMS[ m_stageID ] )	return SCENE_GAME;
 			else{			
 				m_pGameData->m_nowClearStageNum++;
 				return SCENE_BATTLE;
-
-			}
+			*/
 		}
 	}
 

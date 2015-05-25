@@ -86,7 +86,7 @@ CGameMap::CGameMap(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,D3DXVECTOR2 
 		m_state( STATE_CHECKMOVE ), m_pointNow( 0 ), m_pointMoveCnt( 0 ), m_chipMin( 0 ), m_chipMax( 2 ),
 		m_stageID( _stageID ),m_pGameData(_pGameData)
 {
-	if( m_stageID > 0 ) {	// ステージ2以降
+	if( m_stageID > 0  ) {	// ステージ2以降
 		m_state = STATE_MAPMOVE;
 		m_pointMin = POINT_LIST[m_stageID].x;
 		m_pointMax = POINT_LIST[m_stageID].y;
@@ -164,24 +164,44 @@ CGameMap::~CGameMap()
 }
 bool CGameMap::Control()
 {
+	// ゲームシーンに戻ってきて進行ラインが描画済み(-1)であれば？
+	if( m_pGameData->m_win && *STAGE_LINE_NUMLIST[m_stageID] == -1){
+		// カメラを移動後の位置へ
+		m_cameraPosition.y = (CHIP_DATA[(m_stageID-1) * 5 + 1].position.y - 500.f);
+		m_pGameData->m_win = false;
+		STAGE_LINE_NUMLIST[m_stageID] -= 4;
+	}
+	//if( *STAGE_LINE_NUMLIST[m_stageID] == -1 &&	(m_pGameData->m_nowClearStageNum == m_pGameData->m_selectStageNum) )
+	//	
+
+
 	if( m_pGameData->m_death ){
-		for(int i = 0; i < 4; i++)
-			STAGE_LINE_NUMLIST[m_stageID]--;
 		m_pGameData->m_death = false;
+		STAGE_LINE_NUMLIST[m_stageID] -= 4;
 	}
 	// 状態分けする
 	switch( m_state ) {
 	case STATE_CHECKMOVE:
 		if( m_pointNow < *STAGE_LINE_NUMLIST[m_stageID] ) {
+			// 進行ラインは５フレーム間隔で置く？
 			if( m_pointMoveCnt++ < POINT_MOVE_SPD ) break;
+
+			// 描画している進行ラインを増やしていく
 			m_pointNow++;
+			// 移動に移るインターバル？を0に
 			m_pointMoveCnt = 0;
+			// チェックポイントの描画位置まで進行ラインを描画し終わったら？
 			if( m_pointNow == *STAGE_LINE_NUMLIST[m_stageID] ) {
+				// ポインタを進める
 				STAGE_LINE_NUMLIST[m_stageID]++;
-				if( m_threwBoss && CHIP_DATA[m_chipMax].type >= CChip::MONSCHIP_STAGE1BOSS ) { m_threwBoss = false; m_chipMax++; }
+				
+				if( m_threwBoss && CHIP_DATA[m_chipMax].type >= CChip::MONSCHIP_STAGE1BOSS ) { 
+					m_threwBoss = false; m_chipMax++;
+				}
 				m_chipMax++;
  
-				if( m_chipMax <  CHIP_MAX && CHIP_DATA[m_chipMax].type <= CChip::STAGE6BOSS ) m_chipMax++;
+				if( m_chipMax <  CHIP_MAX && CHIP_DATA[m_chipMax].type <= CChip::STAGE6BOSS ) 
+					m_chipMax++;
 
 			}
 			if( *STAGE_LINE_NUMLIST[m_stageID] == -1 ) m_state = STATE_POINTMOVE;
@@ -228,7 +248,6 @@ bool CGameMap::Control()
 			// 超えたら同じ位置に
 			m_cameraPosition.y = m_nextMapPosition.y;
 			m_state = STATE_POINTMOVE;
-			m_pointNow = m_pointMax;
 		}
 
 		//if( m_nextMapPosition.y > m_cameraPosition.y ) {
