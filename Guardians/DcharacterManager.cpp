@@ -294,7 +294,7 @@ bool CCharacterManager::RayToBox(XFileAnimationMesh::RAY_PARAM _ray,std::vector<
 	// 四角形の4つの辺を保存する
 	XFileAnimationMesh::RAY_PARAM EnemyRay[4];
 	// 受け取った矩形の数分for文を回す
-	for(int i = 0; i < _box.size(); i++){
+	for(unsigned i = 0; i < _box.size(); i++){
 
 		// 左下を始点とした辺
 		// 縦
@@ -356,7 +356,7 @@ bool CCharacterManager::RayToMesh(XFileAnimationMesh::RAY_PARAM _ray,std::vector
     LPD3DXBUFFER *ppAllHits = NULL;
 
 	// 受け取ったboxのメッシュの数だけfor文を回す
-	for(int i = 0; i < _box.size(); i++){
+	for(unsigned i = 0; i < _box.size(); i++){
 		// ローカル座標系に変換
 		//D3DXVECTOR3 length =  _ray.position + _ray.length;
 		D3DXMATRIX matTrans, matWorld, invWorld, invRotation,matScale;

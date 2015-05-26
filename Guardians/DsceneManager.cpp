@@ -59,7 +59,7 @@ CSceneManager::CSceneManager(HWND hWnd,CGraphicsDevice _graphics) :
 m_hWnd(hWnd),m_graphics(_graphics) ,m_time(0)
 {
 	m_pGameData = new CGameData();	// コンストラクタでデータがロードされる	
-	m_pGameData->Load(0);
+	m_pGameData->newGame();
 	m_Input = new CInput();
 	m_Input->Create(hWnd);
 

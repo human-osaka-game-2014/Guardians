@@ -119,7 +119,7 @@ void CMinertza::Draw()
 
 
 	// 矩形の描画
-	for(int i = 0; i < m_box.size(); i++)
+	for(unsigned i = 0; i < m_box.size(); i++)
 		DrawBox(m_box[i]);
 	// アニメーション時間の更新
 	UpdateAnimTime();

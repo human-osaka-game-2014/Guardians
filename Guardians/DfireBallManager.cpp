@@ -62,7 +62,7 @@ void CFireBallManager::Play( float _angle,D3DXVECTOR3 _position )
 			m_particle[i].position = m_position;
 			m_particle[i].scale = INIT_SCALE;
 			m_particle[i].color = D3DCOLOR_ARGB(0,255,255,255);				// ƒ¿’l‚ğ‰Šú‰»
-			m_particle[i].addAlpha = rand() % 20 + 10;
+			m_particle[i].addAlpha = (float)(rand() % 20 + 10);
 			
 			m_particle[i].scale = INIT_SCALE;
 		}

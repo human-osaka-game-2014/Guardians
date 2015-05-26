@@ -15,7 +15,6 @@
 CGameSaveDataWindow::CGameSaveDataWindow(LPDIRECT3DDEVICE9 _pDevice,D3DXVECTOR2 _position,int m_state):
 CGameWindow(_pDevice,_position,static_cast<float>(MAX_WIDTH), static_cast<float>(MAX_HEIGHT))
 {
-
 	for(int i=0;i<10;i++){   //データ１０個分ロード
 		Load(i);
 	}
@@ -56,147 +55,36 @@ void CGameSaveDataWindow::Load(int _ID)
 		std::string str;	//文字列型
 		int count=0;
 		//ファイル内のデータの終わりまでループ
-		while(std::getline(ifs,str)){
+		while( std::getline(ifs,str) ){
 			switch(count){
 				case 0: // セーブ日付
-					sscanf_s(str.c_str(),"セーブ日時：%d/%d/%d %d:%d", &m_Data[_ID].year,&m_Data[_ID].month,&m_Data[_ID].date,&m_Data[_ID].realhour,&m_Data[_ID].realminutes);
+					sscanf_s(str.c_str(),"セーブ日時:%d/%d/%d %d:%d", &m_Data[_ID].year,&m_Data[_ID].month,&m_Data[_ID].date,&m_Data[_ID].realhour,&m_Data[_ID].realminutes);
 					break;
 				case 1: // プレイタイム
-					sscanf_s(str.c_str(),"プレイ時間：%d：%d：%d", &m_Data[_ID].hour, &m_Data[_ID].minute, &m_Data[_ID].second);
+					sscanf_s(str.c_str(),"プレイ時間:%d:%d:%d", &m_Data[_ID].hour, &m_Data[_ID].minute, &m_Data[_ID].second);
 					break;
 				case 2: // 所持金
-					sscanf_s(str.c_str(),"所持金：%d", &m_Data[_ID].money);
+					sscanf_s(str.c_str(),"所持金:%d", &m_Data[_ID].money);
 					break;
 
 				case 3: // 取得装備
 					sscanf_s(str.c_str(),"取得装備:%d", &m_Data[_ID].equipper);
 					break;
 				case 4: //ステージクリア数
-					sscanf_s(str.c_str(),"ステージクリア数：%d",&m_Data[_ID].stageclear);
+					sscanf_s(str.c_str(),"ステージクリア数:%d",&m_Data[_ID].stageclear);
 					break;
-				// 装備品
-				case 5:    // 力の腕輪
-				case 6:    // 破壊の腕輪
-				case 7:    // 白虎の腕輪
-				case 8:    // 守りのローブ
-				case 9:    // 破邪のローブ
-				case 10:   // 玄武のローブ
-				case 11:   // 燕の靴
-				case 12:   // 隼の靴
-				case 13:   // 朱雀の靴
-				case 14:   // 修験者の帯
-				case 15:   // 青龍の帯
-				case 16:   // 導師の魔力器
-				case 17:   // 麒麟の魔力器
-				case 18:   // 吸魔の指輪
-				case 19:   // 毒蛇のピアス
-				case 20:   // 身代わりのお守り
-				// 消費アイテム
-				case 21:   // 治癒の宝珠
-					sscanf_s(str.c_str(),"治癒の宝珠:%d",&onlyitemcount[0]);
-					if(onlyitemcount[0]>0)itemcount++;
+				case 47:
+					sscanf_s(str.c_str(),"取得アイテム:%d",&m_Data[_ID].itemper);
 					break;
-				case 22:   // 快癒の宝珠
-					sscanf_s(str.c_str(),"快癒の宝珠:%d",&onlyitemcount[1]);
-					if(onlyitemcount[1]>0)itemcount++;
+				case 48:
+					sscanf_s(str.c_str(),"取得称号:%d",&m_Data[_ID].achieve);
 					break;
-				case 23:   // 魔力の宝珠
-					sscanf_s(str.c_str(),"魔力の宝珠:%d",&onlyitemcount[2]);
-					if(onlyitemcount[2]>0)itemcount++;
-					break;
-				case 24:   // 天魔の宝珠
-					sscanf_s(str.c_str(),"天魔の宝珠:%d",&onlyitemcount[3]);
-					if(onlyitemcount[3]>0)itemcount++;
-					break;
-				case 25:   // 解毒の宝珠
-					sscanf_s(str.c_str(),"解毒の宝珠:%d",&onlyitemcount[4]);
-					if(onlyitemcount[4]>0)itemcount++;
-					break;
-				case 26:   // 全快の宝珠
-					sscanf_s(str.c_str(),"全快の宝珠:%d",&onlyitemcount[5]);
-					if(onlyitemcount[5]>0)itemcount++;
-					break;
-				case 27:   // 神癒の宝珠
-					sscanf_s(str.c_str(),"神癒の宝珠:%d",&onlyitemcount[6]);
-					if(onlyitemcount[6]>0)itemcount++;
-					break;
-				case 28:   // 強撃の護符
-					sscanf_s(str.c_str(),"強撃の護符:%d",&onlyitemcount[7]);
-					if(onlyitemcount[7]>0)itemcount++;
-					break;
-				case 29:   // 守護の護符
-					sscanf_s(str.c_str(),"守護の護符:%d",&onlyitemcount[8]);
-					if(onlyitemcount[8]>0)itemcount++;
-					break;
-				case 30:   // 俊足の護符
-					sscanf_s(str.c_str(),"俊足の護符:%d",&onlyitemcount[9]);
-					if(onlyitemcount[9]>0)itemcount++;
-					break;
-				case 31:   // 天来の護符
-					sscanf_s(str.c_str(),"天来の護符:%d",&onlyitemcount[10]);
-					if(onlyitemcount[10]>0)itemcount++;
-					break;
-				case 32:   // 炎舞の魔術書
-					sscanf_s(str.c_str(),"炎舞の魔術書:%d",&onlyitemcount[11]);
-					if(onlyitemcount[11]>0)itemcount++;
-					break;
-				case 33:   // 吸魔の魔術書
-					sscanf_s(str.c_str(),"吸魔の魔術書:%d",&onlyitemcount[12]);
-					if(onlyitemcount[12]>0)itemcount++;
-					break;
-				case 34:   // 鈍足の魔術書
-					sscanf_s(str.c_str(),"鈍足の魔術書:%d",&onlyitemcount[13]);
-					if(onlyitemcount[13]>0)itemcount++;
-					m_Data[_ID].itemper=static_cast<int>(static_cast<float>(itemcount)/MAX_ITEM*100);
-					break;
-				// 実績
-				case 35:  // 並ぶものなし
-					sscanf_s(str.c_str(),"並ぶものなし:%d",&onlyemblemcount[0]);
-					if(onlyemblemcount[0]>0)emblemcount++;
-					break;
-				case 36:  // 猪突猛進
-					sscanf_s(str.c_str(),"猪突猛進:%d",&onlyemblemcount[1]);
-					if(onlyemblemcount[1]>0)emblemcount++;
-					break;
-				case 37:  // 怖いもの知らず
-					sscanf_s(str.c_str(),"怖いもの知らず:%d",&onlyemblemcount[2]);
-					if(onlyemblemcount[2]>0)emblemcount++;
-					break;
-				case 38:  // 騎士長の誇り
-					sscanf_s(str.c_str(),"騎士長の誇り:%d",&onlyemblemcount[3]);
-					if(onlyemblemcount[3]>0)emblemcount++;
-					break;
-				case 39:  // 止まらぬ進撃
-					sscanf_s(str.c_str(),"止まらぬ進撃:%d",&onlyemblemcount[4]);
-					if(onlyemblemcount[4]>0)emblemcount++;
-					break;
-				case 40:  // 身一つの勝利
-					sscanf_s(str.c_str(),"身一つの勝利:%d",&onlyemblemcount[5]);
-					if(onlyemblemcount[5]>0)emblemcount++;
-					break;
-				case 41:  // 道具要らず
-					sscanf_s(str.c_str(),"道具要らず:%d",&onlyemblemcount[6]);
-					if(onlyemblemcount[6]>0)emblemcount++;
-					break;
-				case 42:  // 不断の前進
-					sscanf_s(str.c_str(),"不断の前進:%d",&onlyemblemcount[7]);
-					if(onlyemblemcount[7]>0)emblemcount++;
-					break;
-				case 43:  // お宝発掘
-					sscanf_s(str.c_str(),"お宝発掘:%d",&onlyemblemcount[8]);
-					if(onlyemblemcount[8]>0)emblemcount++;
-					break;
-				case 44:  // 力の証明
-					sscanf_s(str.c_str(),"力の証明:%d",&onlyemblemcount[9]);
-					if(onlyemblemcount[9]>0)emblemcount++;
-					break;
-				case 45:  // 必殺の心得
-					sscanf_s(str.c_str(),"必殺の心得:%d",&onlyemblemcount[10]);
-					if(onlyemblemcount[10]>0)emblemcount++;
-					m_Data[_ID].achieve=static_cast<int>(static_cast<float>(emblemcount)/MAX_EMBLEM*100);
 			}
-		count++;
+			count++;
 		}
+	
+
+
 		m_Data[_ID].data = TRUE;
 	}
 }
@@ -400,7 +288,7 @@ void CGameSaveDataWindow::Draw()    //描画
 		l_monthdiv[i][j]=l_monthnum[i]%10;	
 		l_monthnum[i]/=10;
 		}
-		if(l_monthdiv[i][0]==0)l_monthdiv[i][0]=29;
+		if(l_monthdiv[i][0]==0)l_monthdiv[i][0]=0;
 		for(int j = 0; j < 2; j++ ) {	//月数の表示		
 		CStringList::middleNumberStrList[l_monthdiv[i][j]]->Draw(m_position.x-285+16*j+20*i,  m_position.y-85+130*i, D3DCOLOR_ARGB(255,255,255,255), CStringList::middleNumberStrList[i]->getLength());
 		}

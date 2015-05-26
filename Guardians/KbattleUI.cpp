@@ -141,7 +141,7 @@ void CBattleUI::Control()
 
 	int MPuse=0;  //‚l‚oÁ”ï—Ê
 
-	static int add = 2.f; // 1f‚ÉŒ¸‚ç‚·ƒQ[ƒW—Ê
+	static int add = 2; // 1f‚ÉŒ¸‚ç‚·ƒQ[ƒW—Ê
 	// HP‚ðŒ¸‚ç‚·
 	if( m_pGameData->m_pDamage.damageTaken > 0 ){
 		m_chara[m_activeCharaNo].hp -= add;

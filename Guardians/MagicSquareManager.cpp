@@ -11,7 +11,7 @@ const float CMagicSquare::INIT_MAGIC_SCALE = 5.f;
 // 円の初期スケール
 const float CMagicSquare::INIT_CIRCLE_SCALE = CMagicSquare::INIT_MAGIC_SCALE * 2.5f;
 // 魔方の最大スケール
-const float CMagicSquare::MAX_CIRCLE_SCALE = CMagicSquare::INIT_MAGIC_SCALE * 1.6;
+const float CMagicSquare::MAX_CIRCLE_SCALE = CMagicSquare::INIT_MAGIC_SCALE * 1.6f;
 
 CMagicSquare::CMagicSquare(LPDIRECT3DDEVICE9 _pDevice) : CEffectManager(_pDevice)
 {

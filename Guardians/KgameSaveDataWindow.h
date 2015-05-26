@@ -29,14 +29,13 @@ private:
 	int m_drawFirst;
 	int m_head;
 	int m_tail;
-	static const int MAX_ITEM=14;			//最大アイテム商品数
-	static const int MAX_EQUIP=16;			//最大装備商品数
 	static const int MAX_WIDTH	= 1150;		// ウィンドウ最大幅
 	static const int MAX_HEIGHT = 520;		// ウィンドウ最大高さ
 	static const int MAX_ITEMNUMBER=14;		//アイテム最大所持数
 	static const int MAX_STAGENUMBER=6;		//ステージ最大数
 	static const int MAX_EMBLEM=11;			//最大称号数
-
+		static const int MAX_ITEM=14;			//最大アイテム商品数
+	static const int MAX_EQUIP=16;			//最大装備商品数
 	Data    m_Data[10];                     //データ10個分
 	CGameData*  m_pGameData;                //ゲームデータの参照
 	CTexture	m_textureChip;				//マップチップアイコン

@@ -74,7 +74,7 @@ CBattleScene::SceneID CBattleScene::Control()
 		}
 		break;
 	case STATE_CHARA_CHANGE:
-		float add = CC_MAX_ALPHA / CC_ADDALPHA_FRAME;	// 1Fのアルファ増加量
+		int add = CC_MAX_ALPHA / CC_ADDALPHA_FRAME;	// 1Fのアルファ増加量
 		// キャラ変更時は画面を暗く
 		if( m_changeTime <= CC_ADDALPHA_FRAME ){
 			m_alpha += add;

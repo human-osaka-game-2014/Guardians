@@ -299,7 +299,7 @@ void CAldfauth::Upper()
 	static float INIT_JUMP_SPEED = 0.006f;
 	static bool keyPush = false;
 
-	static float MOTION_CHANGE_FRAME = m_animList[MOTION_SKILL3].endTime - 1;
+	static float MOTION_CHANGE_FRAME = (float)m_animList[MOTION_SKILL3].endTime - 1;
 	// ジャンプ中はジャンプできない状態
 	if( m_curMotionID == MOTION_SKILL3 && !m_jumpFlag ){	
 		m_motionID = MOTION_JUMP;

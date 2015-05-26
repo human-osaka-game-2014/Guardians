@@ -4,6 +4,10 @@
 class CGameData
 {
 public:
+	static const int MAX_EMBLEM=11;			//最大称号数
+	static const int MAX_ITEM = 14;			//最大アイテム商品数
+	static const int MAX_EQUIP = 16;			//最大装備商品数
+
 	CGameData();
 
 	enum stType{
@@ -82,18 +86,21 @@ public:
 		float hp;
 		float maxHP;
 	};
-
+	struct EMBLEM
+	{
+		char name[256];
+	};
 
 	enum { HAVE_TOOL_MAX = 4 };		// 持ち込める道具の最大数
 	enum { UNLOCK_TOOL_MAX = 10 };	// アンロックできる道具最大数(仮)
 	enum { UNLOCK_EQUIP_MAX = 10 };	// アンロックできる装備最大数(仮)
-	
+
 	std::vector<Equip>		m_itemList;						// ゲームで使用するアイテム一覧
 	std::vector<Equip>		m_equipList;
 	std::vector<HaveTool>	m_hasTools;						// 所持道具
 	std::vector<Equip>		m_hasEquip;						// 所持装備品
 	std::vector<bool>		m_emblemFlag;					// 実績（称号）フラグ
-	std::vector<char*>		m_emblemList;					// 実績リスト
+	std::vector<EMBLEM>		m_emblemList;					// 実績リスト
 	HaveTool				m_tools[HAVE_TOOL_MAX];			// 持ち込み道具(4個)
 	Character				m_initchara[PLAYER_MAX];
 	Character				m_chara[PLAYER_MAX];			// 3人分
@@ -118,10 +125,15 @@ public:
 
 
 	bool					m_win;
+
+	int m_equipPer;
+	int m_itemPer;
+	int m_emblemPer;
 public:
-	int Sarch(int _itemNum,ItemType _type);		//アイテムナンバーから配列番号を探す
+	int Search(int _itemNum,ItemType _type);		//アイテムナンバーから配列番号を探す
 	void Load(int _dataID);	// セーブファイルから読み込み
 	void Save(int _dataID);    // ファイルをセーブ  10/18追加
+	void newGame();			// ニューゲームのデータをロードする
 };
 
 #endif
