@@ -1,11 +1,12 @@
+/**
+ * @file Daru.cpp
+ */
+
 #include  "stdafx.h"
-/*--------------------------------------------------------------
-
-	コンストラクタ
-	@param	LPDIRECT3DDEVICE9 描画デバイス
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * コンストラクタ
+ * @param _pDevice 描画デバイス
+ */
 CAru::CAru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 {
 	m_scale = D3DXVECTOR3(0.01f,0.02f,0.01f);
@@ -66,11 +67,10 @@ void CAru::Load()
 {
 
 }
-/*--------------------------------------------------------------
 
-	デストラクタ
-
---------------------------------------------------------------*/
+/**
+ * デストラクタ
+ */
 CAru::~CAru()
 {
 	SAFE_DELETE(m_model);
@@ -78,13 +78,10 @@ CAru::~CAru()
 	SAFE_DELETE(m_box[0].pMaterials);
 	SAFE_DELETE(effect);
 }
-/*--------------------------------------------------------------
 
-	描画
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * 描画
+ */
 void CAru::Draw()
 {
 	//effect->Create(L"Effect\\WolfHead.efk",m_position,D3DXVECTOR3(1,1,1));
@@ -125,13 +122,10 @@ void CAru::Draw()
 
 }
 
-/*--------------------------------------------------------------
-
-	アニメーション変更
-	@param	int キー情報
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * アニメーション変更
+ * @param[in] _motionID キー情報
+ */
 void CAru::SetMotion(int _motionID)
 {
 	static double endTime = m_animList[MOTION_WAIT].endTime;
@@ -153,13 +147,11 @@ void CAru::SetMotion(int _motionID)
 		m_damage = 0;
 	}
 }
-/*--------------------------------------------------------------
 
-	キャラの移動速度を返す
-	@param	なし
-	@return 移動速度
-
---------------------------------------------------------------*/
+/**
+ * キャラの移動速度を返す
+ * @return 移動速度
+ */
 float CAru::GetCharaSpeed()
 {
 	return m_speed.x;

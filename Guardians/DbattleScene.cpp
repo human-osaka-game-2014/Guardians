@@ -1,11 +1,15 @@
+/**
+ * @file DbattleScene.cpp
+ */
+
 #include "stdafx.h"
 
 bool CBattleScene::m_pause = false;
 // コンボ数
 int  CBattleScene::comboCount = 0;
 // 左右の壁
-const float CBattleScene::RIGHT_WALL = 20.f; 
-const float CBattleScene::LEFT_WALL = 4.8f; 
+const float CBattleScene::RIGHT_WALL = 20.f;
+const float CBattleScene::LEFT_WALL = 4.8f;
 
 
 CBattleScene::CBattleScene(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,CInput* _input,CCharacterManager::MODELDATA* _chara,CField* _field) :
@@ -164,13 +168,11 @@ void CBattleScene::Draw()
 	// フェードイン用画像の描画
 	DrawBlackPic(m_alpha);
 }
-/*---------------------------------------------------------------
 
-	FadeIn Out 用画像の制御
-	@param アルファ値
-	@return なし
-
----------------------------------------------------------------*/
+/**
+ * FadeIn Out 用画像の制御
+ * @param[in] _alpha アルファ値
+ */
 void CBattleScene::DrawBlackPic(int _alpha)
 {
 	m_pDevice->SetRenderState(D3DRS_ZENABLE, FALSE);

@@ -3,13 +3,11 @@
 #pragma comment (lib, "d3d9.lib")
 #pragma comment (lib, "d3dx9.lib")
 
-/*------------------------------------------
-   
-    コンストラクタ
-	@param LPCTSTR            ファイル名        
-	@param LPDIRECT3DDEVICE9  描画デバイス
-
-------------------------------------------*/
+/**
+ * コンストラクタ
+ * @param _fileName ファイル名        
+ * @param _pDevice 描画デバイス
+ */
 C3DModel::C3DModel(LPCTSTR _fileName, LPDIRECT3DDEVICE9 _pDevice) : m_pDevice(_pDevice),m_angle(D3DXVECTOR3(0,0,0))
 {
 	// マテリアル情報を格納する領域を宣言
@@ -94,11 +92,9 @@ C3DModel::C3DModel(LPCTSTR _fileName, LPDIRECT3DDEVICE9 _pDevice) : m_pDevice(_p
 	SAFE_RELEASE( pD3DXMtrlBuffer );
 }
 
-/*------------------------------------------
-   
-    デストラクタ（モデルの解放）
-
-------------------------------------------*/
+/**
+ * デストラクタ（モデルの解放）
+ */
 C3DModel::~C3DModel()
 {
 	SAFE_RELEASE(m_pMesh);    // メッシュ解放
@@ -109,13 +105,11 @@ C3DModel::~C3DModel()
 	SAFE_DELETE(m_pMeshMaterials);   // マテリアル解放
 }
 
-/*------------------------------------------
-   
-    モデルの描画
-	@param D3DXVECTOR3   表示位置      
-	@param D3DXMATRIX    座標変換行列   
-
-------------------------------------------*/
+/**
+ * モデルの描画
+ * @param _position 表示位置      
+ * @param _matrix 座標変換行列   
+ */
 void C3DModel::Draw(D3DXVECTOR3 _position, D3DXMATRIX _matrix)
 {
 	D3DXMATRIX matWorld = _matrix, matTrans, matScale, matRotate;

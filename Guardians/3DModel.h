@@ -4,12 +4,12 @@
 class C3DModel
 {
 private:
-	LPDIRECT3DDEVICE9    m_pDevice;        // 描画用デバイス
-	LPD3DXMESH           m_pMesh;           // メッシュ情報
-	D3DMATERIAL9*        m_pMeshMaterials;  // マテリアル情報
-	LPDIRECT3DTEXTURE9*  m_pTextures;       // テクスチャ情報
-	DWORD                m_NumMaterials;    // マテリアル数
-	D3DXVECTOR3			 m_vecScale;		// モデルのサイズ
+	LPDIRECT3DDEVICE9    m_pDevice;        ///< 描画用デバイス
+	LPD3DXMESH           m_pMesh;           ///< メッシュ情報
+	D3DMATERIAL9*        m_pMeshMaterials;  ///< マテリアル情報
+	LPDIRECT3DTEXTURE9*  m_pTextures;       ///< テクスチャ情報
+	DWORD                m_NumMaterials;    ///< マテリアル数
+	D3DXVECTOR3			 m_vecScale;		///< モデルのサイズ
 	D3DXVECTOR3			 m_position;
 	
 	D3DXVECTOR3			 m_angle;
@@ -17,10 +17,10 @@ private:
 //	int					 m_angleY;			// Y軸の回転度数
 //	int					 m_angleZ;			// Z軸の回転度数
 
-	D3DXMATRIX	m_world;	// モデルの配置
-	D3DXMATRIX	mScale;	// モデルの配置
-	D3DXMATRIX	mRot;	// モデルの配置
-	D3DXMATRIX	mMove;	// モデルの配置
+	D3DXMATRIX	m_world;	///< モデルの配置
+	D3DXMATRIX	mScale;	///< モデルの配置
+	D3DXMATRIX	mRot;	///< モデルの配置
+	D3DXMATRIX	mMove;	///< モデルの配置
 	D3DXMATRIX  mMult;
 
 

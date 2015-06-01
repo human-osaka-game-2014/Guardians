@@ -1,16 +1,11 @@
-/*--------------------------------------------------------------
+/**
+ * @file Dcharacter.cpp
+ * @brief 処理内容:
+ * @author 檀上
+ * @date 作成日: 11/6
+ * @date 更新日: 11/6
+ */
 
-	処理内容:
-	作成者:檀上
-	作成日: 11/6
-	更新日: 11/6
-
-	更新内容:
-	関数　
-
-	変数　
-
---------------------------------------------------------------*/
 #include "stdafx.h"
 
 const float CCharacter::RIGHT_WALL = 58.f;
@@ -21,12 +16,11 @@ const float CCharacter::RIGHT_ANGLE = -90;	// キャラクターの向き 右
 
 float CCharacter::m_alpha = 1.0f;
 
-/*--------------------------------------------------------------
-
-	コンストラクタ(デバイスをセット)
-	@param LPDIRECT3DDEVICE9	描画デバイス
-
---------------------------------------------------------------*/
+/**
+ * コンストラクタ(デバイスをセット)
+ * @param _pDevice 描画デバイス
+ * @param[in] _angle
+ */
 CCharacter::CCharacter(LPDIRECT3DDEVICE9 _pDevice,float _angle) : m_pDevice(_pDevice) , m_state(STATE_WAIT) , m_angle(_angle) 
 ,m_curMotionID(0),m_speed(0.f,0.f) , m_isHit(false) , m_damage(0)
 , m_scale(0.f,0.f,0.f) , m_step(STEP_MOVE) , m_move(0.f,0.f) , m_actionGauge(ACTION_GAUGE_MAX),m_box(0) , m_curEffect(0)
@@ -34,22 +28,18 @@ CCharacter::CCharacter(LPDIRECT3DDEVICE9 _pDevice,float _angle) : m_pDevice(_pDe
 {
 	
 }
-/*--------------------------------------------------------------
 
-	デストラクタ
-
---------------------------------------------------------------*/
+/**
+ * デストラクタ
+ */
 CCharacter::~CCharacter()
 {
 
 }
-/*--------------------------------------------------------------
 
-	衝突判定に使用する矩形の数を決める
-	@param なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * 衝突判定に使用する矩形の数を決める
+ */
 void CCharacter::SetRect()
 {
 	// キャラクターの行動によって判定する矩形を変える
@@ -73,13 +63,11 @@ void CCharacter::SetRect()
 	// やられ判定は常に更新
 	m_unhitting_box[0] = m_box[0];
 }
-/*--------------------------------------------------------------
 
-	アニメーション時間を進める
-	@param	float 進める時間(基本的に1.0f/60.f)
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * アニメーション時間を進める
+ * @param[in] _time 進める時間(基本的に1.0f/60.f)
+ */
 void CCharacter::UpdateAnimTime(float _time)
 {
 	// しゃがみ中とポーズ時はアニメーション時間を進めない
@@ -87,6 +75,7 @@ void CCharacter::UpdateAnimTime(float _time)
 	// アニメーション経過時間
 	m_time = m_model->AdvanceTime(_time);
 }
+
 D3DXVECTOR3 CCharacter::GetBonePos(LPCTSTR _name)
 {
 	MYFRAME* m_frame;	// フレーム
@@ -97,6 +86,7 @@ D3DXVECTOR3 CCharacter::GetBonePos(LPCTSTR _name)
 
 	return position;
 }
+
 void CCharacter::UpdateRect(LPCTSTR _name , int _ID )
 {
 	UpdateBox(GetBonePos(_name),&m_box[_ID],90);	// 矩形の位置を更新
@@ -109,6 +99,7 @@ D3DXMATRIX CCharacter::GetMatrix(LPCTSTR _name )
 	m_frame = (MYFRAME*)D3DXFrameFind( m_model->GetFrameRoot(),_name );
 	return m_frame->CombinedTransformationMatrix;
 }
+
 void CCharacter::UpdateRect(D3DXVECTOR3 _position , int _ID,float _radian)
 {
 	UpdateBox(_position,&m_box[_ID],_radian);
@@ -117,14 +108,13 @@ void CCharacter::UpdateRect(D3DXVECTOR3 _position , int _ID,float _radian)
 		DrawBox(m_box[_ID]);
 	#endif
 }
-/*--------------------------------------------------------------
 
-	ボックス座標の更新
-	@param D3DXVECTOR3					位置(x.y)
-	@param XFileAnimationMesh::BOX		ボックス
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * ボックス座標の更新
+ * @param[in] _position 位置(x.y)
+ * @param[in] _box ボックス
+ * @param[in] _radian
+ */
 void CCharacter::UpdateBox(D3DXVECTOR3 _position , XFileAnimationMesh::BOX* _box,float _radian)
 {
 	_box->min =  (_box->center + _position) - (_box->length / 2);
@@ -134,37 +124,31 @@ void CCharacter::UpdateBox(D3DXVECTOR3 _position , XFileAnimationMesh::BOX* _box
 
 }
 
-/*--------------------------------------------------------------
-
-	ボーンの位置をセット
-	@param LPDIRECT3DDEVICE9
-	@param MYFRAME				
-
---------------------------------------------------------------*/
+/**
+ * ボーンの位置をセット
+ * @param[out] _position ボーンの位置
+ * @param[in] _pFrame
+ */
 void CCharacter::SetBonePos(D3DXVECTOR3* _position , MYFRAME* _pFrame)
 {
 	_position->x = _pFrame->CombinedTransformationMatrix._41;
 	_position->y = _pFrame->CombinedTransformationMatrix._42;
 	_position->z = _pFrame->CombinedTransformationMatrix._43;
 }
-/*--------------------------------------------------------------
 
-	攻撃判定矩形の取得
-	@param なし
-	@return ボックス配列
-
---------------------------------------------------------------*/
+/**
+ * 攻撃判定矩形の取得
+ * @return ボックス配列
+ */
 std::vector<XFileAnimationMesh::BOX> CCharacter::GetHittingBox()
 {
 	return m_hitting_box;
 }
-/*--------------------------------------------------------------
 
-	やられ判定矩形の取得
-	@param なし
-	@return ボックス配列
-
---------------------------------------------------------------*/
+/**
+ * やられ判定矩形の取得
+ * @return ボックス配列
+ */
 std::vector<XFileAnimationMesh::BOX> CCharacter::GetunHittingBox()
 {
 	return m_unhitting_box;
@@ -175,26 +159,20 @@ XFileAnimationMesh::RAY_PARAM CCharacter::GetRay()
 	return m_ray;
 }
 
-/*--------------------------------------------------------------
-
-	キャラクターの状態を取得
-	@param  なし
-	@return 状態
-
---------------------------------------------------------------*/
+/**
+ * キャラクターの状態を取得
+ * @return 状態
+ */
 CCharacter::STATE CCharacter::GetState()
 {
 	return m_state;
 }
-/*--------------------------------------------------------------
 
-	キャラクターの移動量からフィールドの移動量を求める時に使用
-
-	キャラクターの移動速度を取得
-	@param 　	なし
-	@return		移動速度
-
---------------------------------------------------------------*/
+/**
+ * キャラクターの移動速度を取得.
+ * キャラクターの移動量からフィールドの移動量を求める時に使用
+ * @return 移動速度
+ */
 D3DXVECTOR2 CCharacter::GetCharaSpeed()
 {
 	return m_move;
@@ -210,35 +188,28 @@ float CCharacter::GetDamage()
 }
 
 
-/*--------------------------------------------------------------
-
-	キャラクターの移動量をセット
-	@param float	移動量
-	@return			なし
-
---------------------------------------------------------------*/
+/**
+ * キャラクターの移動量をセット
+ * @param[in] _spd 移動量
+ */
 void CCharacter::SetCharaSpeed(int _spd)
 {
 	m_speed.x = _spd * 0.015f;
 }
-/*--------------------------------------------------------------
 
-	衝突判定用のフラグをセット
-	@param bool フラグ
-	@return		なし
-
---------------------------------------------------------------*/
+/**
+ * 衝突判定用のフラグをセット
+ * @param[in] _flag フラグ
+ */
 void CCharacter::SetHitFlag(bool _flag)
 {
 	m_isHit = _flag;
 }
-/*--------------------------------------------------------------
 
-	モーションをリセットする
-	@param	int モーションID
-	@return		なし
-
---------------------------------------------------------------*/
+/**
+ * モーションをリセットする
+ * @param[in] _motionID モーションID
+ */
 void CCharacter::ResetMotion(int _motionID)
 {
 	// キャンセル不可のモーションは一時的にキャンセル可能にして
@@ -265,14 +236,13 @@ void CCharacter::ResetMotion(int _motionID)
 		}
 	m_motionStop = false;
 }
-/*--------------------------------------------------------------
 
-	モーションが終了しているかチェックする
-	@param  モーション番号
-	@return true　: モーション終了
-			false : モーション再生中
-
---------------------------------------------------------------*/
+/**
+ * モーションが終了しているかチェックする
+ * @param[in] _motionID モーション番号
+ * @retval true モーション終了
+ * @retval false モーション再生中
+ */
 bool CCharacter::CheckMotionEnd(int _motionID)
 {
 	if( m_animList[_motionID].endTime <= m_time )
@@ -281,25 +251,19 @@ bool CCharacter::CheckMotionEnd(int _motionID)
 	return false;
 }
 
-/*--------------------------------------------------------------
-
-	状態を取得(戦闘開始演出中等の判定)
-	@param	なし
-	@return CCharacter ステップ
-
---------------------------------------------------------------*/
+/**
+ * 状態を取得(戦闘開始演出中等の判定)
+ * @return ステップ
+ */
 CCharacter::STEP CCharacter::GetStep()
 {
 	return m_step;
 }
 
-/*--------------------------------------------------------------
-
-	ボックスの描画デバッグ用
-	@param XFileAnimationMesh::BOX		ボックス
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * ボックスの描画デバッグ用
+ * @param[in] _box ボックス
+ */
 void CCharacter::DrawBox(XFileAnimationMesh::BOX _box)
 {
 #ifdef DEBUG

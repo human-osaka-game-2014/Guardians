@@ -1,3 +1,6 @@
+/**
+ * @file DBillBoard.h
+ */
 
 class CBillBoard
 {

@@ -1,3 +1,7 @@
+/**
+ * @file DEffectManager.h
+ */
+
 class CEffectManager
 {
 public:

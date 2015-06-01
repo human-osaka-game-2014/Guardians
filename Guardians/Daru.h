@@ -1,3 +1,7 @@
+/**
+ * @file Daru.h
+ */
+
 class CAru : public CPlayer
 {
 public:

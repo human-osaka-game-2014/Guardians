@@ -9,7 +9,7 @@
 
 /**
  * ベクトルの長さを返す
- * @param _vector ベクトル
+ * @param[in] _vector ベクトル
  * @return ベクトルの長さ
  */
 float CVector::GetVecLength(D3DXVECTOR3 _vector)
@@ -24,7 +24,7 @@ float CVector::GetVecLength(D3DXVECTOR3 _vector)
 
 /**
  * 単位ベクトルを返す
- * @param _vector ベクトル
+ * @param[in] _vector ベクトル
  * @return 単位ベクトル
  */
 D3DXVECTOR3 CVector::GetUnitVector(D3DXVECTOR3 _vector)
@@ -40,8 +40,8 @@ D3DXVECTOR3 CVector::GetUnitVector(D3DXVECTOR3 _vector)
 
 /**
  * 引数で渡された2つのベクトルの外積を返す
- * @param v1 ベクトル1
- * @param v2 ベクトル2
+ * @param[in] v1 ベクトル1
+ * @param[in] v2 ベクトル2
  * @return 外積
  */
 float CVector::D3DXVecCross( D3DXVECTOR3* v1, D3DXVECTOR3* v2 ) 

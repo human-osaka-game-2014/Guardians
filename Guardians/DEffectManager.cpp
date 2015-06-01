@@ -1,3 +1,7 @@
+/**
+ * @file DEffectManager.cpp
+ */
+
 #include "stdafx.h"
 #include <time.h>
 

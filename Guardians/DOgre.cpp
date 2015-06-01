@@ -1,12 +1,13 @@
+/**
+ * @file DOgre.cpp
+ */
+
 #include "stdafx.h"
 
-/*--------------------------------------------------------------
-
-	コンストラクタ
-	@param	LPDIRECT3DDEVICE9 描画デバイス
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * コンストラクタ
+ * @param _pDevice 描画デバイス
+ */
 COgre::COgre(LPDIRECT3DDEVICE9 _pDevice) : CEnemy(_pDevice),m_speed(0.00f)
 {
 	m_model = new XFileAnimationMesh(_T("image\\xfile\\Enemy\\Boss1_PoisonusMushroom.X"),m_pDevice,D3DXVECTOR3(0.07f,0.07f,0.07f));
@@ -65,26 +66,20 @@ COgre::COgre(LPDIRECT3DDEVICE9 _pDevice) : CEnemy(_pDevice),m_speed(0.00f)
 	m_status.hp = m_status.maxHP =  90;
 
 }
-/*--------------------------------------------------------------
 
-	デストラクタ
-
-
-
---------------------------------------------------------------*/
+/**
+ * デストラクタ
+ */
 COgre::~COgre()
 {
 	SAFE_DELETE(m_model);
 	for(unsigned i = 0; i < m_box.size();i++)
 	SAFE_DELETE(m_box[i].pMaterials)
 }
-/*--------------------------------------------------------------
 
-	制御
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * 制御
+ */
 void COgre::Control()
 {
 	static bool countFlag = false;
@@ -152,13 +147,10 @@ void COgre::Control()
 	}
 	SetMotion(m_motionID);
 }
-/*--------------------------------------------------------------
 
-	描画
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * 描画
+ */
 void COgre::Draw()
 {
 	UpdateAnimTime();
@@ -191,13 +183,11 @@ void COgre::Draw()
 
 
 }
-/*--------------------------------------------------------------
 
-	アニメーション変更
-	@param	int キー情報
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * アニメーション変更
+ * @param[in] _motionID キー情報
+ */
 void COgre::SetMotion(int _motionID)
 {
 		// モーションを変更
@@ -219,13 +209,11 @@ void COgre::SetMotion(int _motionID)
 		m_correctionValue = 0;
 	}
 }
-/*--------------------------------------------------------------
 
-	キャラの移動速度を返す
-	@param	なし
-	@return 移動速度
-	
---------------------------------------------------------------*/
+/**
+ * キャラの移動速度を返す
+ * @return 移動速度
+ */
 float COgre::GetCharaSpeed()
 {
 	return m_speed;

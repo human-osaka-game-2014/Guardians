@@ -1,15 +1,16 @@
+/**
+ * @file DNeru.cpp
+ */
+
 #include "stdafx.h"
 
  float CNeru::m_charaHeight = 150.f;
 // 消費MP
 
-/*--------------------------------------------------------------
-
-	コンストラクタ
-	@param	LPDIRECT3DDEVICE9 描画デバイス
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * コンストラクタ
+ * @param _pDevice 描画デバイス
+ */
 CNeru::CNeru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_teleportState(TPSTATE_WAIT) , m_moveValue(0,0,0) , m_isPlay(false)
 {
 	m_scale = D3DXVECTOR3(0.06f,0.06f,0.06f);
@@ -75,13 +76,10 @@ CNeru::CNeru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_teleportState(T
 		m_efk[i] = NULL;
 	}
 }
-/*--------------------------------------------------------------
 
-	ボックスを生成
-	@param なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * ボックスを生成
+ */
 void CNeru::CreateBox()
 {
 	XFileAnimationMesh::SPHERE sphere;
@@ -106,11 +104,9 @@ void CNeru::CreateBox()
 	
 }
 
-/*--------------------------------------------------------------
-
-	デストラクタ
-
---------------------------------------------------------------*/
+/**
+ * デストラクタ
+ */
 CNeru::~CNeru()
 {
 	SAFE_DELETE(m_model);
@@ -124,13 +120,10 @@ CNeru::~CNeru()
 	}
 	//SAFE_DELETE(m_maru);
 }
-/*--------------------------------------------------------------
 
-	描画
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * 描画
+ */
 void CNeru::Draw()
 {
 	// モデルのα値をセット
@@ -156,13 +149,10 @@ void CNeru::Draw()
 
 	m_time = m_model->AdvanceTime(1.0f/60.f);
 }
-/*--------------------------------------------------------------
 
-	エフェクトの制御
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * エフェクトの制御
+ */
 void CNeru::ControlEffect()
 {
 	static D3DXVECTOR3 move = D3DXVECTOR3(0,0,0);
@@ -226,13 +216,11 @@ void CNeru::FireBall()
 		m_hitting_box[0] = m_box[1];
 	}
 }
-/*--------------------------------------------------------------
 
-	アニメーション変更
-	@param	int キー情報
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * アニメーション変更
+ * @param[in] _motionID キー情報
+ */
 void CNeru::SetMotion(int _motionID)
 {
 	static double endTime = m_animList[MOTION_WAIT].endTime;
@@ -413,13 +401,10 @@ void CNeru::ThunderWhip()
 }
 
 
-/*--------------------------------------------------------------
-
-	エフェクトを再生
-	@param	int 複数のエフェクトを出現させる場合フレームを指定
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * エフェクトを再生
+ * @param[in] _frame 複数のエフェクトを出現させる場合フレームを指定
+ */
 void CNeru::PlayEffect(int _frame)
 {
 	bool flag = false;

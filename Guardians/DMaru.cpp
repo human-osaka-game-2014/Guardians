@@ -1,11 +1,13 @@
+/**
+ * @file DMaru.cpp
+ */
+
 #include "stdafx.h"
-/*--------------------------------------------------------------
-
-	コンストラクタ
-	@param	LPDIRECT3DDEVICE9 描画デバイス
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * コンストラクタ
+ * @param _pDevice 描画デバイス
+ * @return なし
+ */
 CMaru::CMaru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_teleportState(TPSTATE_WAIT) , m_alpha(1.0f)
 {
 	m_motionStop = false;
@@ -69,13 +71,10 @@ void CMaru::SetStopMotion(bool _flag)
 {
 	m_motionStop = _flag;
 }
-/*--------------------------------------------------------------
 
-	ボックスを生成
-	@param なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * ボックスを生成
+ */
 void CMaru::CreateBox()
 {
 	XFileAnimationMesh::SPHERE sphere;
@@ -92,11 +91,9 @@ void CMaru::CreateBox()
 	
 }
 
-/*--------------------------------------------------------------
-
-	デストラクタ
-
---------------------------------------------------------------*/
+/**
+ * デストラクタ
+ */
 CMaru::~CMaru()
 {
 	SAFE_DELETE(m_model);
@@ -105,13 +102,10 @@ CMaru::~CMaru()
 		SAFE_DELETE(m_box[i].pMaterials);
 	}
 }
-/*--------------------------------------------------------------
 
-	描画
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * 描画
+ */
 void CMaru::Draw()
 {
 	// 回転
@@ -126,6 +120,7 @@ void CMaru::Draw()
 	
 	UpdateAnimTime();
 }
+
 void CMaru::Move( D3DXVECTOR3 _position , int _motionID ,int _angle)
 {
 	m_neruPos = _position;
@@ -164,13 +159,11 @@ void CMaru::Move( D3DXVECTOR3 _position , int _motionID ,int _angle)
 	SetPosition(D3DXVECTOR3(m_position.x,m_position.y,m_position.z));
 
 }
-/*--------------------------------------------------------------
 
-	アニメーション変更
-	@param	int キー情報
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * アニメーション変更
+ * @param _motionID キー情報
+ */
 void CMaru::SetMotion(int _motionID)
 {
 	static double endTime = m_animList[MOTION_WAIT].endTime;
@@ -191,6 +184,7 @@ void CMaru::SetMotion(int _motionID)
 	else if( m_curMotionID >= MOTION_ATTACK ) m_state = STATE_ATTACK;
 
 }
+
 void CMaru::UpdateRect(LPCTSTR _name , int _ID )
 {
 	MYFRAME* m_frame;	// フレーム
@@ -200,11 +194,13 @@ void CMaru::UpdateRect(LPCTSTR _name , int _ID )
 	UpdateBox(position,&m_box[_ID]);
 	DrawBox(m_box[_ID]);
 }
+
 void CMaru::UpdateRect(D3DXVECTOR3 _position , int _ID )
 {
 	UpdateBox(_position,&m_box[_ID]);
 	DrawBox(m_box[_ID]);
 }
+
 void CMaru::SetPosition(D3DXVECTOR3 _position)
 {
 	m_position = _position;

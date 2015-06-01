@@ -1,3 +1,7 @@
+/**
+ * @file DMaru.h
+ */
+
 class CMaru : public CPlayer
 {
 public:
@@ -12,9 +16,9 @@ public:
 	};
 private:
 
-	bool	m_isPlay;			// エフェクト再生フラグ
-	int		m_teleportState;		// テレポートの状態
-	float	m_alpha;			// モデルのα値
+	bool	m_isPlay;			///< エフェクト再生フラグ
+	int		m_teleportState;		///< テレポートの状態
+	float	m_alpha;			///< モデルのα値
 	D3DXVECTOR3 m_neruPos;
 public:
 	CMaru(LPDIRECT3DDEVICE9 _pDevice);			// コンストラクタ
