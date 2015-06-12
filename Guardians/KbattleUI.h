@@ -1,4 +1,5 @@
 class CCombo;
+class CGauge;
 
 class CBattleUI
 {
@@ -79,6 +80,7 @@ private:
 	CVertex		m_vertex;
 
 	CCombo*		m_combo;
+	CGauge*		m_gauge[3];
 	CGameData*  m_pGameData;    // ゲームデータ
 	
 	STATE		m_state;			// 戦闘状態
@@ -112,6 +114,29 @@ public:
 	void ControlCombo();
 
 	void SetNextPosition();
+};
+class CGauge
+{
+public:
+	static const FRECT CHARA_GAUGE_VERTEX;
+private:
+	CVertex		m_vertex;
+	CTexture	m_tex;
+
+	LPDIRECT3DDEVICE9 m_pDevice;
+
+
+	D3DXVECTOR2 m_position;
+	float		m_scale;
+public:
+	CGauge(LPDIRECT3DDEVICE9 _pDevice);
+	~CGauge();
+
+	void Control(); 
+	void Draw();
+
+private:
+
 };
 class CCombo
 {

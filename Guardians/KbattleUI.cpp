@@ -65,6 +65,10 @@ CBattleUI::CBattleUI(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData) :
 
 	m_combo = new CCombo(m_pDevice);
 
+	for(int i = 0; i < PLAYER_MAX; i++){
+		m_gauge[i] = new CGauge(m_pDevice);
+	}
+
 	m_charaID[ALDO]=ALDO;				//仮キャラ
 	m_charaID[NERU_MARU]=NERU_MARU;		//仮キャラ
 	m_charaID[MINE]=MINE;				//仮キャラ
@@ -244,51 +248,76 @@ void CBattleUI::Draw()
 	for(int i = 0;i * FRAME_SIZE < FRAME_MAX_SIZE; i++)
 		m_vertex.DrawTextureLT(m_pDevice,enemyGauge,FRAME_POS.x + (i * FRAME_SIZE),FRAME_POS.y,FRAME_VERTEX);
 
-
-	//UI表示
-
-	float HPper[3];             //HP%パーセンテージ
-	float MPper[3];				//MP%パーセンテージ
-	for(int i=0;i<3;i++){		//HP%パーセンテージ MP%パーセンテージ処理
-		HPper[i]=105*(1.0f-(static_cast<float>(m_chara[m_charaID[i]].hp)/m_chara[m_charaID[i]].MAXhp));
-		MPper[i]=105*(1.0f-(static_cast<float>(m_chara[m_charaID[i]].mp)/m_chara[m_charaID[i]].MAXmp));
+	for(int i = 0; i < PLAYER_MAX; i++){
+		m_gauge[i]->Draw();
 	}
-	static const D3DXVECTOR2 INIT_CHARA_POS[PLAYER_MAX] = {
-		D3DXVECTOR2(101,10),
-		D3DXVECTOR2(231,50),
-		D3DXVECTOR2(326,50),
-	};
+	
+}
+
+
+
+const FRECT CGauge::CHARA_GAUGE_VERTEX = FRECT(120,465,207,570);
+const FRECT CGauge::HP_VERTEX = FRECT(0,465,60,570);
+const FRECT CGauge::MP_VERTEX = FRECT(60,465,120,570);
+
+CGauge::CGauge(LPDIRECT3DDEVICE9 _pDevice) : m_pDevice(_pDevice) , m_position(D3DXVECTOR2(0,0))
+{
+	m_tex = CTexMgr.Get(TEX_BATTLE_UI );
+}
+void CGauge::Control()
+{
+
+}
+void CGauge::Draw()
+{
+	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x + 0 * m_scale,m_position.y,CHARA_GAUGE_VERTEX);	//選んでいるキャラの黒ゲージ表示
+	// ゲージが減ったときに位置がずれないようにpositionにHPperを加算
+	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x + (HP_GAUGE_POS * m_scale),m_position.y + HPper[i] * m_scale,0,465+HPper[i],60,570);	//選んでいるキャラのHP表示
+	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x + (MP_GAUGE_POS * m_scale),m_position.y + MPper[i] * m_scale,60,465+MPper[i],120,570);	//選んでいるキャラのMP表示
+	//m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x + (HP_GAUGE_POS * m_scale),m_position.y + HPper[i] * m_scale,0,465+HPper[i],60,570);	//選んでいるキャラのHP表示
+
+	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_chara[i].position.x,m_chara[i].position.y,0+((float)i*145),360,145+((float)i*145),465);	//選んでいるキャラの表示
+
+
+	////UI表示
+
+	//float HPper[3];             //HP%パーセンテージ
+	//float MPper[3];				//MP%パーセンテージ
+	//for(int i=0;i<3;i++){		//HP%パーセンテージ MP%パーセンテージ処理
+	//	HPper[i]=105*(1.0f-(static_cast<float>(m_chara[m_charaID[i]].hp)/m_chara[m_charaID[i]].MAXhp));
+	//	MPper[i]=105*(1.0f-(static_cast<float>(m_chara[m_charaID[i]].mp)/m_chara[m_charaID[i]].MAXmp));
+	//}
+	//static const D3DXVECTOR2 INIT_CHARA_POS[PLAYER_MAX] = {
+	//	D3DXVECTOR2(101,10),
+	//	D3DXVECTOR2(231,50),
+	//	D3DXVECTOR2(326,50),
+	//};
 
 
 	// 黒ゲージ
-	static const FRECT CHARA_GAUGE_VERTEX = FRECT(120,465,207,570);
+	
 
-	static const float HP_GAUGE_POS = 58;
-	static const float MP_GAUGE_POS = 84;
-	// y 105;
-	// x 87;
-	D3DXVECTOR2 FRAME_SIZE = D3DXVECTOR2(105,87);
-	//D3DXVECTOR2 shiftPos;
+	//static const float HP_GAUGE_POS = 58;
+	//static const float MP_GAUGE_POS = 84;
+	//// y 105;
+	//// x 87;
+	//D3DXVECTOR2 FRAME_SIZE = D3DXVECTOR2(105,87);
+	////D3DXVECTOR2 shiftPos;
 
-	for(int i = 0; i < PLAYER_MAX; i++){
-		if( m_pGameData->m_turnNo[i] == 0 ) {
-			//shiftPos = D3DXVECTOR2(0,0);
-		}
+	//for(int i = 0; i < PLAYER_MAX; i++){
+	//	if( m_pGameData->m_turnNo[i] == 0 ) {
+	//		//shiftPos = D3DXVECTOR2(0,0);
+	//	}
 
-		m_vertex.SetSizeX(m_chara[i].scale);
-		m_vertex.SetSizeY(m_chara[i].scale);
-		m_vertex.SetAngle(-90);
-		m_vertex.DrawTextureLT(m_pDevice,UI,m_chara[i].position.x + (HP_GAUGE_POS * m_chara[i].scale),m_chara[i].position.y,CHARA_GAUGE_VERTEX);	//選んでいるキャラの黒ゲージ表示
-		m_vertex.DrawTextureLT(m_pDevice,UI,m_chara[i].position.x + (HP_GAUGE_POS * m_chara[i].scale),m_chara[i].position.y + HPper[i] * m_chara[i].scale,0,465+HPper[i],60,570);	//選んでいるキャラのHP表示
-		m_vertex.DrawTextureLT(m_pDevice,UI,m_chara[i].position.x + (MP_GAUGE_POS * m_chara[i].scale),m_chara[i].position.y + MPper[i] * m_chara[i].scale,60,465+MPper[i],120,570);	//選んでいるキャラのMP表示
-		m_vertex.DrawTextureLT(m_pDevice,UI,m_chara[i].position.x,m_chara[i].position.y,0+((float)i*145),360,145+((float)i*145),465);	//選んでいるキャラの表示
-	}
-	m_vertex.SetSizeX(1.f);
-	m_vertex.SetSizeY(1.f);
-	// 62
-	// 86
+	//	m_vertex.SetSizeX(m_chara[i].scale);
+	//	m_vertex.SetSizeY(m_chara[i].scale);
+	//	m_vertex.SetAngle(-90);
+	//}
+	//m_vertex.SetSizeX(1.f);
+	//m_vertex.SetSizeY(1.f);
+	//// 62
+	//// 86
 }
-
 const CCombo::vector2 CCombo::NUMBER_POS = CCombo::vector2(100,160); // 数字の位置
 const float	 CCombo::NUM_SIZE = 64;									 // 数字のサイズ
 const FRECT CCombo::TELOP_VERTEX = FRECT(296,770,616,870);			 // テロップの頂点座標

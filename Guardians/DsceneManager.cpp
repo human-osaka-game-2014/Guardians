@@ -248,9 +248,10 @@ bool CSceneManager::Load(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,CChara
 		if( i == ALDO )
 			_model->player[i] = new CAldfauth(_pDevice);
 		else if ( i == NERU_MARU )
-			_model->player[i] = new CMinertza(_pDevice);
-		else
 			_model->player[i] = new CNeru(_pDevice);
+		else
+			_model->player[i] = new CMinertza(_pDevice);
+
 	}
 	
 	// 敵を生成(　ステージ数によって敵が変わる予定)

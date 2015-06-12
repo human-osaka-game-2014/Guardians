@@ -31,10 +31,7 @@
 #include <time.h>
 #include <comdef.h>   // _bstr_t
 #include <algorithm>
-// Effekseer ヘッダーファイル
-#include <Effekseer.h>
-#include <EffekseerRendererDX9.h>
-#include <EffekseerSoundXAudio2.h>
+
 
 #ifdef _DEBUG
 #ifndef DBG_NEW
@@ -124,8 +121,7 @@
 //3dmodel
 #include "3DModel.h"
 #include "anim3DModel.h"
-//Effect
-#include "Deffect.h"
+
 
 // UI
 
