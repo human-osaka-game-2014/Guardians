@@ -10,6 +10,7 @@ private:
 public:
 	CTexture() {m_pTexture = NULL;} 
 	BOOL Load(const wchar_t* _fileName, LPDIRECT3DDEVICE9 _pDevice);
+	BOOL Load(const wchar_t* _fileName, LPDIRECT3DDEVICE9 _pDevice,D3DXCOLOR _color);
 	void Release();
 
 public:

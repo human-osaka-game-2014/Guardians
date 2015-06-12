@@ -41,7 +41,6 @@ private:
 
 	CEffectManager*  m_efk[EFFECT_MAX_NUM];
 
-	bool	m_isPlay;			///< エフェクト再生フラグ
 	int		m_teleportState;		///< テレポートの状態
 
 	

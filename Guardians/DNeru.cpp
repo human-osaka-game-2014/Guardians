@@ -11,7 +11,7 @@
  * コンストラクタ
  * @param _pDevice 描画デバイス
  */
-CNeru::CNeru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_teleportState(TPSTATE_WAIT) , m_moveValue(0,0,0) , m_isPlay(false)
+CNeru::CNeru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_teleportState(TPSTATE_WAIT) , m_moveValue(0,0,0)
 {
 	m_scale = D3DXVECTOR3(0.06f,0.06f,0.06f);
 

@@ -23,8 +23,6 @@ public:
 private:
 	CMinertzaWeapon* m_weapon;	// ミネルツァ武器モデル
 
-	bool	m_isPlay;			// エフェクト再生フラグ
-
 	D3DXMATRIX m_matWeapon;		// ミネルツァの武器のマテリアル
 public:
 	// コンストラクタ

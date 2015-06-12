@@ -18,7 +18,7 @@
 	コンストラクタ
 
 --------------------------------------------------------------*/
-CMinertza::CMinertza(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_isPlay(false)
+CMinertza::CMinertza(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 {
 	// モデルのスケール
 	m_scale = D3DXVECTOR3(0.06f,0.06f,0.06f);

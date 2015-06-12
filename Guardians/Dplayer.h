@@ -59,6 +59,7 @@ protected:
 	bool				m_jumpFlag;			// ジャンプ中フラグ
 	D3DXVECTOR2			m_jumpMove;			// ジャンプ中のy座標
 
+	bool				m_isPlay;
 public:
 	// コンストラクタ
 	CPlayer(LPDIRECT3DDEVICE9 _pDevice);

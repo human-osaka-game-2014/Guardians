@@ -9,13 +9,14 @@
  * コンストラクタ
  * @param _pDevice デバイスオブジェクト
  */
-CAldfauth::CAldfauth(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_isPlay(false)
+CAldfauth::CAldfauth(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 {
 	// モデルのスケール
 	m_scale = D3DXVECTOR3(0.06f,0.06f,0.06f);
 
 	//m_charaHeight = (m_charaHeight * m_scale.y) / 2;
-	
+	tex.Load(L"gra_effect_guardA.bmp",m_pDevice,D3DXCOLOR(255,255,255,255));
+
 	m_model = new XFileAnimationMesh(_T("image\\xfile\\Player\\PC_1_Aldfauth.X"),m_pDevice,m_scale);
 
 	// 使用する矩形を作成

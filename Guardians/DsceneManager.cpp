@@ -55,7 +55,7 @@ unsigned __stdcall ThreadFuncUpdate(LPVOID vdParam) {
  * @param _graphics グラフィックデバイス
  */
 CSceneManager::CSceneManager(HWND hWnd,CGraphicsDevice _graphics) : 
-	m_pScene( nullptr ), m_step( STEP_CREATE ), m_nextSceneID( CScene::SCENE_GAME ),
+	m_pScene( nullptr ), m_step( STEP_CREATE ), m_nextSceneID( CScene::SCENE_LOGO ),
 m_hWnd(hWnd),m_graphics(_graphics) ,m_time(0)
 {
 	m_pGameData = new CGameData();	// コンストラクタでデータがロードされる	

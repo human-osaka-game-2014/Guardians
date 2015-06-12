@@ -11,8 +11,8 @@ class CAldfauth : public CPlayer
 public:
 
 private:
-	bool	m_isPlay;			// エフェクト再生フラグ
-
+	CBillBoard vertex;
+	CTexture tex;
 public:
 	// コンストラクタ
 	CAldfauth(LPDIRECT3DDEVICE9 _pDevice);

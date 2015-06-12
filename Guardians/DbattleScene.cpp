@@ -96,8 +96,8 @@ CBattleScene::SceneID CBattleScene::Control()
 			m_ui->SetNextPosition();
 
 		}
-		m_character->CharacterChange();
 		m_changeTime++;
+		m_character->CharacterChange(m_changeTime);
 		// §ŒÀŽžŠÔ‚ð‰ß‚¬‚Ä‚¢‚½‚ç
 		if( m_changeTime >= CHANGE_LIMIT ){
 			m_charaChange = STATE_BATTLE;	// í“¬ó‘Ô‚É–ß‚·

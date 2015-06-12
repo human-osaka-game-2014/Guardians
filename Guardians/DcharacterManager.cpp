@@ -211,9 +211,11 @@ bool CCharacterManager::HitCheck(std::vector<XFileAnimationMesh::BOX> _hitting_b
 --------------------------------------------------------------*/
 void CCharacterManager::Draw()
 {
+	m_activeEnemy->Draw();
+
 	m_activePlayer->Draw();
 
-	m_activeEnemy->Draw();
+
 }
 /*--------------------------------------------------------------
 
@@ -361,7 +363,7 @@ bool CCharacterManager::RayToMesh(XFileAnimationMesh::RAY_PARAM _ray,std::vector
 		//D3DXVECTOR3 length =  _ray.position + _ray.length;
 		D3DXMATRIX matTrans, matWorld, invWorld, invRotation,matScale;
 		//  拡大（縮小）行列を作成する
-    D3DXMatrixScaling(&matScale,1.0f,1.0f,1.0f);
+		D3DXMatrixScaling(&matScale,1.0f,1.0f,1.0f);
 		//D3DXMatrixIdentity(&meshRotate);
 		D3DXMatrixTranslation(&matTrans,_box[i].position.x, _box[i].position.y, _box[i].position.z);
 		matWorld = matScale * matTrans;
@@ -431,33 +433,32 @@ bool CCharacterManager::GetMotionEnd(int _motionID)
 }
 /*-------------------------------------------------------------------------------------------------
 	
-	4/30
 
 	キャラクター変更時の制御(モーションを入れ替える・キャラクターの移動速度をセットする・モデルを半透明に)
-	@param	なし
-	@return なし
-
+	@param	_time 経過時間
 
 ----------------------------------------------------------------------------------------------------*/
-void CCharacterManager::CharacterChange()
+void CCharacterManager::CharacterChange(int _time)
 {
 	// モデルは半透明
 	float MAX_ALPHA = 0.5f;
 	const int ERASE_FRAME = 10;
 	float addAlpha = MAX_ALPHA / ERASE_FRAME;
 
-	static int time = 0;
-	if( time <= ERASE_FRAME )
+	m_activePlayer->SetCharaSpeed( 0 ); // キャラクターの移動速度を0に
+
+	if( _time <= ERASE_FRAME )
 		m_activePlayer->addAlpha(-addAlpha);
-	else{
+	else if ( _time >= CBattleScene::CHANGE_LIMIT ){
 		// モデルデータを先頭のキャラへ入れ替える
 		m_activePlayer = m_pModel->player[m_pGameData->m_playerCharaNo];
 		m_activePlayer->SetCharaSpeed( m_pGameData->m_chara[ m_pGameData->m_playerCharaNo ].spd ); // キャラクターの移動速度をセット
 		m_activePlayer->ResetMotion(CPlayer::MOTION_WAIT); // 待機モーションをセット
-		time = 0; // 経過時間をリセット
+	}else{
+		// モデルデータを先頭のキャラへ入れ替える
+		m_activePlayer = m_pModel->player[m_pGameData->m_playerCharaNo];
+		m_activePlayer->ResetMotion(CPlayer::MOTION_WAIT); // 待機モーションをセット
 	}
-	
-	time++;
 }
 /*--------------------------------------
 

@@ -19,7 +19,7 @@ D3DXVECTOR3 CPlayer::m_position = INIT_PLAYER_POSITION;
 	@param D3DXVECTOR2			描画する位置(x,y)
 
 --------------------------------------------------------------*/
-CPlayer::CPlayer(LPDIRECT3DDEVICE9 _pDevice) : CCharacter(_pDevice,RIGHT_ANGLE) , m_jumpMove(0.f, -1.f), m_jumpStartPoint(-1.f),m_jumpFlag(false)
+CPlayer::CPlayer(LPDIRECT3DDEVICE9 _pDevice) : CCharacter(_pDevice,RIGHT_ANGLE) , m_jumpMove(0.f, -1.f), m_jumpStartPoint(-1.f),m_jumpFlag(false),m_isPlay(false)
 {
 	//m_step = STEP_FADE_IN;
 	//m_position(D3DXVECTOR3(0.f,-1.f,-17.f));
@@ -83,7 +83,6 @@ void CPlayer::Control()
 	// 死亡モーションが終わっていたらモーションを進めない
 	if( (m_curMotionID == MOTION_DEAD &&  m_animList[MOTION_DEAD].endTime <= m_time) || (m_curMotionID == MOTION_APPEAL2 &&  m_animList[MOTION_APPEAL2].endTime <= m_time) ){
 		m_motionStop = true;
-
 	}
 	// モーションを変更
 	if( !m_motionStop ) SetMotion( m_motionID );
@@ -234,7 +233,7 @@ void CPlayer::Run()
 		}
 	}
 
-	// 右キーが押されたとき
+	//// 右キーが押されたとき
 	if( (CScene::m_keyStateOn & RIGHT) != 0){
 		TOTAL_FRAME++;
 		// 5フレーム押されていたら走り出しモーションへ

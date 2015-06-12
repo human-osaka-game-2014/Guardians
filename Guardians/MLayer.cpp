@@ -3,6 +3,7 @@
 CLayer::CLayer(LPDIRECT3DDEVICE9 _pDevice,  D3DXVECTOR3 _position, int _stageID) : m_pDevice( _pDevice ), m_position( _position ), m_speed( 0.f, 0.f ), m_plane( nullptr ), m_initPosition( _position ),m_angle(0,0,-90)
 {
 
+
 }
 
 CLayer::~CLayer()

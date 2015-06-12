@@ -66,7 +66,7 @@ public:
 
 	bool		GetMotionEnd(int _motionID);
 
-	void CharacterChange();
+	void CharacterChange(int _time);
 	void SetAlpha();
 private:
 	// プレイヤーのダメージを計算する
