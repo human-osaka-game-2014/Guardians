@@ -144,7 +144,6 @@ void CSceneManager::Control()
 			}
 			break;
 		case CScene::SCENE_BATTLE:
-			CStringList::Create(m_graphics.GetDevice(),m_pGameData);
 			m_pScene = new CBattleScene(m_graphics.GetDevice(),m_pGameData,m_Input,&param.model,param.field.m_field);
 			break;
 		case CScene::SCENE_RESULT:
@@ -182,6 +181,7 @@ void CSceneManager::Control()
 		}
 		break;
 	case STEP_RELEASE:
+		
 		if( m_pScene != nullptr ) {
 			delete m_pScene;
 			m_pScene = nullptr;

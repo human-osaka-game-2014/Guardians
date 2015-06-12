@@ -374,8 +374,8 @@ void CNeru::Teleport()
 		break;
 	}
 
-			// Teleport_01.efkをキャラ位置に再生＋15Frameかけてフェードイン
-			// 発動直後からフェードインが済むまで（45frame間）無敵
+	// Teleport_01.efkをキャラ位置に再生＋15Frameかけてフェードイン
+	// 発動直後からフェードインが済むまで（45frame間）無敵
 }
 void CNeru::StoneImpact()
 {

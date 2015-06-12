@@ -23,6 +23,7 @@ std::vector<bool>				 CStringList::m_isSelLst;
 
 void CStringList::Create(LPDIRECT3DDEVICE9 _pDevice , CGameData* _pGameData)
 {
+	if( !saveStrList.empty() ) return;
 	std::string wstr[] = {
 		"ƒvƒŒƒCŠÔ",
 		"Š‹à",
