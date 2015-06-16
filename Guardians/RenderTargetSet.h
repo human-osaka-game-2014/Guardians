@@ -1,21 +1,21 @@
 #pragma comment( lib, "d3d9.lib" )
 #pragma comment( lib, "d3dx9.lib" )
 
+/// レンダリングターゲット変更用セット
 /**
-@brief	レンダリングターゲット変更用セット
-		テクスチャへのレンダリングの開始とそのテクスチャの返しを用意する
-*/
+ * テクスチャへのレンダリングの開始とそのテクスチャの返しを用意する
+ */
 class RenderTargetSet
 {
-	IDirect3DSurface9 *m_backbuffer_surface;	//!< @brief バックバッファサーフェイス
-	IDirect3DSurface9 *m_textuer_surface;		//!< @brief テクスチャサーフェイス
-	IDirect3DTexture9 *m_render_target_textuer;	//!< @brief レンダリングターゲット先テクスチャ
-	LPDIRECT3DDEVICE9 m_dev;					//!< @brief 描画切り替えように保持する
-	UINT m_width;		//!< @brief 幅
-	UINT m_heigth;		//!< @brief 高さ
+	IDirect3DSurface9 *m_backbuffer_surface;	//!< バックバッファサーフェイス
+	IDirect3DSurface9 *m_textuer_surface;		//!< テクスチャサーフェイス
+	IDirect3DTexture9 *m_render_target_textuer;	//!< レンダリングターゲット先テクスチャ
+	LPDIRECT3DDEVICE9 m_dev;					//!< 描画切り替えように保持する
+	UINT m_width;		//!< 幅
+	UINT m_heigth;		//!< 高さ
 
 private:
-	/** @brief メンバーの解放*/
+	/// メンバーの解放
 	void ReleaseParameter();
 
 public:
@@ -23,39 +23,15 @@ public:
 	RenderTargetSet();
 	~RenderTargetSet();
 
-	/**
-	@brief	レンダリングターゲットのテクスチャを作成
-	@param	1[ in ] 描画デバイス
-	@param	2[ in ] 作成テクスチャの幅
-	@param	3[ in ] 作成テクスチャの高さ
-	@return true	成功
-	@return false	失敗（デバイスが確保されていない可能性があります）
-	*/
+	/// レンダリングターゲットのテクスチャを作成
 	bool CreateRenderTargetTexture( LPDIRECT3DDEVICE9 _dev, UINT _w, UINT _h );
 
-	/**
-	@brief	レンダリングターゲットを作成したテクスチャに変更する
-	@param	1[ in ] クリア色の赤
-	@param	2[ in ] クリア色の緑
-	@param	3[ in ] クリア色の青
-	@return 成功	true
-	@return 失敗	false（空のテクスチャが作成されていない可能性があります）
-	*/
+	/// レンダリングターゲットを作成したテクスチャに変更する
 	bool SetTextuerRenderTarget( int _r, int _g, int _b );
 
-	/**
-	@brief	レンダリングターゲットをバックバッファに変更する
-	@param	1[ in ] クリア色の赤
-	@param	2[ in ] クリア色の緑
-	@param	3[ in ] クリア色の青
-	@return 成功	true
-	@return 失敗	false（空のテクスチャが作成されていない可能性があります）
-	*/
+	/// レンダリングターゲットをバックバッファに変更する
 	bool SetBackbufferRenderTarget( int _r, int _g, int _b );
 
-	/**
-	@brief	描画対象テクスチャを返す(カウンタ操作をしないので保存する時は注意)
-	@return	レンダリングターゲットのテクスチャを返す
-	*/
+	/// 描画対象テクスチャを返す
 	IDirect3DTexture9 *GetRenderTargetTextuer();
 };

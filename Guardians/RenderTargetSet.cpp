@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-/** @brief メンバーの解放*/
 void RenderTargetSet::ReleaseParameter()
 {
 	if( m_dev != NULL ){ m_dev->Release(); }
@@ -24,13 +23,12 @@ RenderTargetSet::~RenderTargetSet()
 }
 
 /**
-@brief	レンダリングターゲットのテクスチャを作成
-@param	1[ in ] 描画デバイス
-@param	2[ in ] 作成テクスチャの幅
-@param	3[ in ] 作成テクスチャの高さ
-@return true	成功
-@return false	失敗（デバイスが確保されていない可能性があります）
-*/
+ * @param[in]	_dev	描画デバイス
+ * @param[in]	_w		作成テクスチャの幅
+ * @param[in]	_h		作成テクスチャの高さ
+ * @retval		true   	成功
+ * @retval		false	失敗（デバイスが確保されていない可能性があります）
+ */
 bool RenderTargetSet::CreateRenderTargetTexture( LPDIRECT3DDEVICE9 _dev, UINT _w, UINT _h )
 {
 	//デバイスがそもそもないなら失敗
@@ -71,12 +69,11 @@ bool RenderTargetSet::CreateRenderTargetTexture( LPDIRECT3DDEVICE9 _dev, UINT _w
 }
 
 /**
-@brief	レンダリングターゲットを作成したテクスチャに変更する
-@param	1[ in ] クリア色の赤
-@param	2[ in ] クリア色の緑
-@param	3[ in ] クリア色の青
-@return 成功	true
-@return 失敗	false（空のテクスチャが作成されていない可能性があります）
+ * @param[in]	_r		クリア色の赤
+ * @param[in]	_g		クリア色の緑
+ * @param[in]	_b		クリア色の青
+ * @retval		true	成功
+ * @retval		false	失敗（空のテクスチャが作成されていない可能性があります）
 */
 bool RenderTargetSet::SetTextuerRenderTarget( int _r, int _g, int _b )
 {
@@ -93,13 +90,12 @@ bool RenderTargetSet::SetTextuerRenderTarget( int _r, int _g, int _b )
 }
 
 /**
-@brief	レンダリングターゲットをバックバッファに変更する
-@param	1[ in ] クリア色の赤
-@param	2[ in ] クリア色の緑
-@param	3[ in ] クリア色の青
-@return 成功	true
-@return 失敗	false（空のテクスチャが作成されていない可能性があります）
-*/
+ * @param[in]	_r		クリア色の赤
+ * @param[in]	_g		クリア色の緑
+ * @param[in]	_b		クリア色の青
+ * @retval		true	成功
+ * @retval		false	失敗（空のテクスチャが作成されていない可能性があります）
+ */
 bool RenderTargetSet::SetBackbufferRenderTarget( int _r, int _g, int _b )
 {
 	//テクスチャの初期化前なら失敗
@@ -115,9 +111,9 @@ bool RenderTargetSet::SetBackbufferRenderTarget( int _r, int _g, int _b )
 }
 
 /**
-@brief	描画対象テクスチャを返す(カウンタ操作をしないので保存する時は注意)
-@return	レンダリングターゲットのテクスチャを返す
-*/
+ * @return	レンダリングターゲットのテクスチャを返す
+ * @warning	カウンタ操作をしないので保存する時は注意
+ */
 IDirect3DTexture9 *RenderTargetSet::GetRenderTargetTextuer()
 {
 	//対象がNULLなら何もできない
