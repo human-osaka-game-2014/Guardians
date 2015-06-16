@@ -11,6 +11,7 @@
  */
 CAldfauth::CAldfauth(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 {
+
 	// モデルのスケール
 	m_scale = D3DXVECTOR3(0.06f,0.06f,0.06f);
 
@@ -29,8 +30,8 @@ CAldfauth::CAldfauth(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 		{70, 99},// 01) 走り出し
 		{100, 149},	// 02) 走り
 		{150, 179},	// 03) 止まる
-		{190, 299},	// 04) ジャンプ(190	-235上昇　235-250 250-270下降（繰り返し表示） 290-299 着地)
-		{290, 299},	// 05) ジャンプ着地(190-235上昇　235-250 250-270下降（繰り返し表示） 290-299 着地)
+		{190, 235},	// 04) ジャンプ(190	-235上昇　235-250 250-270下降（繰り返し表示） 290-299 着地)
+		{235, 270},	// 05) ジャンプ着地(190-235上昇　235-250 250-270下降（繰り返し表示） 290-299 着地)
 		{300, 310},	// 06) しゃがむ
 		{310, 339},	// 07) しゃがみ中
 		{340, 349},	// 08) しゃがみ解除
@@ -70,6 +71,8 @@ CAldfauth::CAldfauth(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 	// 待機モーションをセット
 	m_model->ChangeMotion( MOTION_WAIT );
 
+	// ジャンプを開始するフレーム
+	m_jumpStartFrame = 3;
 }
 
 /**
@@ -301,32 +304,7 @@ void CAldfauth::Upper()
 	static bool keyPush = false;
 
 	static float MOTION_CHANGE_FRAME = (float)m_animList[MOTION_SKILL3].endTime - 1;
-	// ジャンプ中はジャンプできない状態
-	if( m_curMotionID == MOTION_SKILL3 && !m_jumpFlag ){	
-		m_motionID = MOTION_JUMP;
-		m_jumpFlag = true;
-		m_jumpSpeed = JUMP_SPD_MAX;
 
-		// ジャンプ開始した地点を保存
-		m_jumpStartPoint = m_position.y;
-	}	
-	// ジャンプしている時
-	if(m_jumpFlag){
-		m_position.y += m_jumpSpeed;
-		if( m_curMotionID == MOTION_SKILL3 && MOTION_CHANGE_FRAME <= m_time)
-			ResetMotion(MOTION_JUMP_FALL);
-		// ジャンプ速度は常に一定量マイナス
-		m_jumpSpeed -= INIT_JUMP_SPEED;
-		// ジャンプ中下キーが押されていたら落下速度を加算
-		if( ((CScene::m_keyStateOn & DOWN) != 0) && (m_jumpSpeed < 0)) m_position.y += m_jumpSpeed;
-		// 着地
-		if(m_position.y <= m_jumpStartPoint){
-			m_position.y = m_jumpStartPoint;
-			ResetMotion(MOTION_WAIT);
-			m_motionID = MOTION_WAIT;
-			m_jumpFlag = false;
-		}
-	}
 }
 
 /**

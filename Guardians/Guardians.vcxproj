@@ -103,7 +103,6 @@
     <ClInclude Include="Dcharacter.h" />
     <ClInclude Include="DcharacterManager.h" />
     <ClInclude Include="DdirectShow.h" />
-    <ClInclude Include="Deffect.h" />
     <ClInclude Include="DEffectManager.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Denemy.h" />
@@ -203,7 +202,6 @@
     <ClCompile Include="Dcharacter.cpp" />
     <ClCompile Include="DcharacterManager.cpp" />
     <ClCompile Include="DdirectShow.cpp" />
-    <ClCompile Include="Deffect.cpp" />
     <ClCompile Include="DEffectManager.cpp" />
     <ClCompile Include="Denemy.cpp" />
     <ClCompile Include="DfireBallManager.cpp" />

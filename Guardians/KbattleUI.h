@@ -42,35 +42,15 @@ public:
 	static const D3DXVECTOR2 INIT_GAUGE_POS;
 	static const D3DXVECTOR2 INIT_RIGHT_GAUGE_POS;
 
-	static const D3DXVECTOR2 INIT_CHARA_POS[PLAYER_MAX];
-
 	static const int FRAME_MAX_SIZE = 600;
 	static const int FRAME_SIZE = 200;
 
-	//static const D3DXVECTOR2
-	//static const D3DXVECTOR2
-	//static const D3DXVECTOR2
-	//static const D3DXVECTOR2
 	static const FRECT rect;
 
 	enum STATE{
 		STATE_BATTLE,
 		STATE_CHARA_CHANGE,
 	};
-
-	// キャラクター画像描画パラメーター
-	struct chara{
-   		int hp;	
-		int mp;
-		int MAXhp;	
-		int MAXmp;
-		int positionID;
-		float scale;
-		D3DXVECTOR2 position;
-	};
-
-
-
 private:
 	LPDIRECT3DDEVICE9	m_pDevice;
 
@@ -85,23 +65,15 @@ private:
 	
 	STATE		m_state;			// 戦闘状態
 	
-	int         m_charaID[3];			//選択しているキャラ
-	chara       m_chara[3];             //キャラ
-	int			m_activeCharaNo;
 	// キャラUI
 	int			m_time;					// キャラ交代中のフレーム
 	// コンボ数
-	int			m_comboNum;
 
 	bool        m_charachange;			//キャラ交代判定           
     int         m_changecount;			//キャラ交代時間数　
-	bool        m_startchange;          //キャラ初期交代
-	bool        m_initializestatus;     //キャラ初期位置
 	float		m_enemyMAXHP;           //敵のHP
 	float		m_enemyHP;
-	bool        m_ishit;                //あたり判定                 
 
-	D3DCOLOR            m_color;
 public:
     CBattleUI(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGamedata);
 	~CBattleUI();
@@ -118,7 +90,20 @@ public:
 class CGauge
 {
 public:
+	static const int	MOVE_TIME = 30;
+
 	static const FRECT CHARA_GAUGE_VERTEX;
+	static const FRECT HP_VERTEX;
+	static const FRECT MP_VERTEX;
+	static const D3DXVECTOR2 CHARA_POSITION[PLAYER_MAX];
+	// キャラクター画像描画パラメーター
+	struct STATUS{
+   		int hp;	
+		int mp;
+		int MAXhp;	
+		int MAXmp;
+	};
+
 private:
 	CVertex		m_vertex;
 	CTexture	m_tex;
@@ -127,14 +112,27 @@ private:
 
 
 	D3DXVECTOR2 m_position;
+	D3DXVECTOR2 m_nextPosition;
 	float		m_scale;
+	float		m_HPper;
+	float		m_MPper;
+	float		m_move;
+	float		m_addScale;
+	float		m_maxScale;
+	int			m_charaID;	// キャラクターのID(0:アルドファウト 1:ネルマル 2:ミネルツァ)
+	int			m_time;
+
+
+	CGameData*  m_pGameData;
+	STATUS		m_status;
 public:
-	CGauge(LPDIRECT3DDEVICE9 _pDevice);
-	~CGauge();
+	CGauge(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,int _charaID);
+	~CGauge(){};
 
 	void Control(); 
 	void Draw();
 
+	void SetNextPosition();
 private:
 
 };

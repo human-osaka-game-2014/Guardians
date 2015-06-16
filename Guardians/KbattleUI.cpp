@@ -17,12 +17,6 @@ const D3DXVECTOR2  CBattleUI::INIT_SIDE_GAUGE_POS = D3DXVECTOR2(240,680);
 const D3DXVECTOR2  CBattleUI::INIT_GAUGE_POS = D3DXVECTOR2(260,680);
 const D3DXVECTOR2  CBattleUI::INIT_RIGHT_GAUGE_POS = D3DXVECTOR2(860,680);
 
-// キャラクターUIの描画位置
-const D3DXVECTOR2 CBattleUI::INIT_CHARA_POS[PLAYER_MAX] = {
-	D3DXVECTOR2(45.f,10.f),
-	D3DXVECTOR2(200.f,30.f),
-	D3DXVECTOR2(320.f,30.f),
-};
 
 // ゲージ中央部の頂点座標
 const FRECT CBattleUI::GAUGE_VERTEX[CBattleUI::GAUGE_TYPE_NUM] = {
@@ -55,7 +49,7 @@ static const D3DXVECTOR2 INIT_FRAME_POS[PLAYER_MAX] ={
 //・白ゲージ		左上100x95	右下300x117	
 
 CBattleUI::CBattleUI(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData) :
-	m_pDevice(_pDevice),m_pGameData(_pGameData),m_state(STATE_BATTLE) , m_comboNum(0)
+	m_pDevice(_pDevice),m_pGameData(_pGameData),m_state(STATE_BATTLE)
 {
 	CTexMgr.Load(4, m_pDevice); //UI画像読み込み
 	
@@ -66,46 +60,15 @@ CBattleUI::CBattleUI(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData) :
 	m_combo = new CCombo(m_pDevice);
 
 	for(int i = 0; i < PLAYER_MAX; i++){
-		m_gauge[i] = new CGauge(m_pDevice);
+		m_gauge[i] = new CGauge(m_pDevice,m_pGameData,i);
 	}
-
-	m_charaID[ALDO]=ALDO;				//仮キャラ
-	m_charaID[NERU_MARU]=NERU_MARU;		//仮キャラ
-	m_charaID[MINE]=MINE;				//仮キャラ
-
-	for(int i = 0; i < PLAYER_MAX; i++){
-		m_chara[i].mp = m_chara[i].MAXmp = m_pGameData->m_chara[i].mp;
-		m_chara[i].hp = m_chara[i].MAXhp = m_pGameData->m_chara[i].hp;
-	}
-
-	for(int i = 0; i < PLAYER_MAX;i++){
-		
-		m_chara[i].positionID = m_pGameData->m_turnNo[i];
-
-		switch( i ){
-		case ALDO:
-			m_chara[i].position = INIT_FRAME_POS[m_pGameData->m_turnNo[i]];
-			break;
-		case NERU_MARU:
-			m_chara[i].position = INIT_FRAME_POS[m_pGameData->m_turnNo[i]];
-			break;
-		case MINE:
-			m_chara[i].position = INIT_FRAME_POS[m_pGameData->m_turnNo[i]];
-			break;
-		}
-		// 先頭のキャラクターなら
-		if( m_pGameData->m_turnNo[i] == 0 ){
-			m_chara[i].scale = 1.0f;
-			m_activeCharaNo = i;	// 出撃順の先頭キャラの位置を保存
-		}else{
-			m_chara[i].scale = 0.8f;
-		}
-	}
-
 }
 CBattleUI::~CBattleUI()
 {
 	SAFE_DELETE(m_combo);
+	for(int i = 0; i < PLAYER_MAX; i++ ){
+		SAFE_DELETE(m_gauge[i]);
+	}
 }
 void CBattleUI::Control()
 {
@@ -124,44 +87,11 @@ void CBattleUI::Control()
 		break;
 		// キャラ変更時
 	case STATE_CHARA_CHANGE:
-		for(int i = 0; i < PLAYER_MAX; i++){
-			// キャラ変更時に画像を移動する
-			if( m_chara[i].position != INIT_CHARA_POS[m_chara[i].positionID] )
-				m_chara[i].position += Move;
-			if( m_chara[i].position.x >= INIT_CHARA_POS[m_chara[i].positionID].x )
-				m_chara[i].position.x = INIT_CHARA_POS[m_chara[i].positionID].x;
-			if( m_chara[i].position.x >= INIT_CHARA_POS[m_chara[i].positionID].y )
-				m_chara[i].position.y = INIT_CHARA_POS[m_chara[i].positionID].y;
-
-			if( m_chara[i].positionID == 0 && m_chara[i].scale >= 1.0f) {
-				m_chara[i].scale = 1.0f;
-			}else if( m_chara[i].positionID != 0 && m_chara[i].scale >= 0.8f )
-				m_chara[i].scale = 0.8f;
-			else
-				m_chara[i].scale += 0.01f;
-		}
 		break;
 	}
-
-	int MPuse=0;  //ＭＰ消費量
-
-	static int add = 2; // 1fに減らすゲージ量
-	// HPを減らす
-	if( m_pGameData->m_pDamage.damageTaken > 0 ){
-		m_chara[m_activeCharaNo].hp -= add;
-		m_pGameData->m_pDamage.damageTaken -= add;
+	for(int i = 0; i < PLAYER_MAX; i++){
+		m_gauge[i]->Control();
 	}
-	if( m_chara[m_activeCharaNo].hp <= 0){
-		m_chara[m_activeCharaNo].hp  = 0;
-		m_pGameData->m_death = true;
-	}
-	// MPを減らす
-	if( MPuse > 0 ){
-		m_pGameData->m_chara[m_activeCharaNo].mp -= add;
-		MPuse -= add;
-	}
-	if( m_chara[m_activeCharaNo].mp < 0) m_chara[m_activeCharaNo].mp  = 0;
-
 	CScene::m_keyStatePush = 0;
 }
 void CBattleUI::SetBossHP(CGameData::ENEMY_STATUS _status)
@@ -172,11 +102,13 @@ void CBattleUI::SetBossHP(CGameData::ENEMY_STATUS _status)
 void CBattleUI::SetNextPosition()
 {
 	for(int i = 0; i < PLAYER_MAX; i++){
-		m_chara[i].positionID = (m_chara[i].positionID + 1) % PLAYER_MAX;
-		
+
+		m_gauge[i]->SetNextPosition();
+
+		if( m_pGameData->m_turnNo[i] == 0 )
+			m_pGameData->m_playerCharaNo = i;
 	}
-	m_pGameData->m_playerCharaNo = (m_pGameData->m_playerCharaNo + 2) % PLAYER_MAX;
-	m_activeCharaNo = (m_activeCharaNo + 2) % PLAYER_MAX;
+
 }
 
 
@@ -192,6 +124,10 @@ void CBattleUI::Draw()
 	case STATE_CHARA_CHANGE:
 		break;
 	};
+
+	for(int i = 0; i < PLAYER_MAX; i++){
+		m_gauge[i]->Draw();
+	}
 
 	float red,black,white;
 	red = black = white = MAX_GAUGE_SCALE;
@@ -247,76 +183,97 @@ void CBattleUI::Draw()
 	// フレーム中央部
 	for(int i = 0;i * FRAME_SIZE < FRAME_MAX_SIZE; i++)
 		m_vertex.DrawTextureLT(m_pDevice,enemyGauge,FRAME_POS.x + (i * FRAME_SIZE),FRAME_POS.y,FRAME_VERTEX);
-
-	for(int i = 0; i < PLAYER_MAX; i++){
-		m_gauge[i]->Draw();
-	}
 	
 }
-
-
 
 const FRECT CGauge::CHARA_GAUGE_VERTEX = FRECT(120,465,207,570);
 const FRECT CGauge::HP_VERTEX = FRECT(0,465,60,570);
 const FRECT CGauge::MP_VERTEX = FRECT(60,465,120,570);
+const D3DXVECTOR2 CGauge::CHARA_POSITION[PLAYER_MAX] = 
+{
+	D3DXVECTOR2(45.f,10.f),
+	D3DXVECTOR2(210.f,10.f),
+	D3DXVECTOR2(340.f,10.f),
+};
 
-CGauge::CGauge(LPDIRECT3DDEVICE9 _pDevice) : m_pDevice(_pDevice) , m_position(D3DXVECTOR2(0,0))
+CGauge::CGauge(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,int _turnNo) : m_pDevice(_pDevice) ,m_pGameData(_pGameData)
+	, m_HPper(0) , m_MPper(0) , m_scale(1.0f),m_charaID(_turnNo),m_move(0),m_addScale(0)
 {
 	m_tex = CTexMgr.Get(TEX_BATTLE_UI );
+	
+	m_status.hp = m_status.MAXhp = m_pGameData->m_chara[m_charaID].hp;
+	m_status.mp = m_status.MAXmp = m_pGameData->m_chara[m_charaID].mp;
+
+	if( m_pGameData->m_turnNo[m_charaID] != 0 ) m_scale = 0.8f;
+	m_nextPosition = m_position = CHARA_POSITION[m_pGameData->m_turnNo[m_charaID]];
 }
 void CGauge::Control()
 {
+	//	int MPuse=0;  //ＭＰ消費量
+	if( m_pGameData->m_turnNo[m_charaID] == 0 ){
+		static int add = 2; // 1fに減らすゲージ量
+		// HPを減らす
+		if( m_pGameData->m_pDamage.damageTaken > 0 ){
+			m_status.hp -= add;
+			m_pGameData->m_pDamage.damageTaken -= add;
+		}
+		if( m_status.hp <= 0){
+			m_status.hp  = 0;
+			m_pGameData->m_death = true;
+		}
+		//// MPを減らす
+		//if( MPuse > 0 ){
+		//	m_status.mp -= add;
+		//	MPuse -= add;
+		//}
+		//if( m_status.mp < 0) m_status.mp  = 0;
+	}
 
+	m_HPper = 105 * (1.0f - (static_cast<float>(m_status.hp)/m_status.MAXhp));
+	m_MPper = 105 * (1.0f - (static_cast<float>(m_status.mp)/m_status.MAXmp));
+
+
+	m_position.x += m_move;
+	m_scale += m_addScale;
+
+	if( m_time >= MOVE_TIME ){
+		m_position.x = m_nextPosition.x;
+		m_scale = m_maxScale;
+	}
+	m_time++;
 }
 void CGauge::Draw()
 {
-	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x + 0 * m_scale,m_position.y,CHARA_GAUGE_VERTEX);	//選んでいるキャラの黒ゲージ表示
+	m_vertex.SetSizeX(m_scale);
+	m_vertex.SetSizeY(m_scale);
+
+	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x + 59 * m_scale,m_position.y,CHARA_GAUGE_VERTEX);	//選んでいるキャラの黒ゲージ表示
 	// ゲージが減ったときに位置がずれないようにpositionにHPperを加算
-	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x + (HP_GAUGE_POS * m_scale),m_position.y + HPper[i] * m_scale,0,465+HPper[i],60,570);	//選んでいるキャラのHP表示
-	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x + (MP_GAUGE_POS * m_scale),m_position.y + MPper[i] * m_scale,60,465+MPper[i],120,570);	//選んでいるキャラのMP表示
-	//m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x + (HP_GAUGE_POS * m_scale),m_position.y + HPper[i] * m_scale,0,465+HPper[i],60,570);	//選んでいるキャラのHP表示
+	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x + (HP_VERTEX.right * 1.3f * m_scale),m_position.y + m_HPper * m_scale,0,465+m_HPper,60,570);	//選んでいるキャラのHP表示
+	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x + (HP_VERTEX.right * m_scale),m_position.y + m_MPper * m_scale,60,465+m_MPper,120,570);	//選んでいるキャラのMP表示
+	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_position.x,m_position.y,0+((float)m_charaID * 145),360,145+((float)m_charaID * 145),465);	//選んでいるキャラの表示
 
-	m_vertex.DrawTextureLT(m_pDevice,m_tex,m_chara[i].position.x,m_chara[i].position.y,0+((float)i*145),360,145+((float)i*145),465);	//選んでいるキャラの表示
-
-
-	////UI表示
-
-	//float HPper[3];             //HP%パーセンテージ
-	//float MPper[3];				//MP%パーセンテージ
-	//for(int i=0;i<3;i++){		//HP%パーセンテージ MP%パーセンテージ処理
-	//	HPper[i]=105*(1.0f-(static_cast<float>(m_chara[m_charaID[i]].hp)/m_chara[m_charaID[i]].MAXhp));
-	//	MPper[i]=105*(1.0f-(static_cast<float>(m_chara[m_charaID[i]].mp)/m_chara[m_charaID[i]].MAXmp));
-	//}
-	//static const D3DXVECTOR2 INIT_CHARA_POS[PLAYER_MAX] = {
-	//	D3DXVECTOR2(101,10),
-	//	D3DXVECTOR2(231,50),
-	//	D3DXVECTOR2(326,50),
-	//};
-
-
-	// 黒ゲージ
+	m_vertex.SetSizeX(1.f);
+	m_vertex.SetSizeY(1.f);
+}
+void CGauge::SetNextPosition()
+{
+	// 出撃順・先頭のプレイヤーNoを変更
+	m_pGameData->m_turnNo[m_charaID] = (m_pGameData->m_turnNo[m_charaID] + 1) % PLAYER_MAX;
+	// 移動先を決める
+	m_nextPosition = CHARA_POSITION[m_pGameData->m_turnNo[m_charaID]];
+	// 移動量を決める
+	m_move = (m_nextPosition.x - m_position.x) / MOVE_TIME;
 	
+	// キャラ画像の最大スケールを決める
+	if( m_pGameData->m_turnNo[m_charaID] == 0 )
+		m_maxScale = 1.0f;
+	else
+		m_maxScale = 0.8f;
+	// スケールの増加量を決める
+	m_addScale =  (m_maxScale - m_scale) / MOVE_TIME;
 
-	//static const float HP_GAUGE_POS = 58;
-	//static const float MP_GAUGE_POS = 84;
-	//// y 105;
-	//// x 87;
-	//D3DXVECTOR2 FRAME_SIZE = D3DXVECTOR2(105,87);
-	////D3DXVECTOR2 shiftPos;
-
-	//for(int i = 0; i < PLAYER_MAX; i++){
-	//	if( m_pGameData->m_turnNo[i] == 0 ) {
-	//		//shiftPos = D3DXVECTOR2(0,0);
-	//	}
-
-	//	m_vertex.SetSizeX(m_chara[i].scale);
-	//	m_vertex.SetSizeY(m_chara[i].scale);
-	//	m_vertex.SetAngle(-90);
-	//}
-	//m_vertex.SetSizeX(1.f);
-	//m_vertex.SetSizeY(1.f);
-	//// 62
-	//// 86
+	m_time = 0;
 }
 const CCombo::vector2 CCombo::NUMBER_POS = CCombo::vector2(100,160); // 数字の位置
 const float	 CCombo::NUM_SIZE = 64;									 // 数字のサイズ
@@ -368,8 +325,6 @@ void CCombo::Control(int _comboNum)
 }
 void CCombo::Draw()
 {
-
-	
 	switch( m_state ){
 	case STATE_BATTLE:
 		// コンボ状態が解除されたらvectorの要素を削除

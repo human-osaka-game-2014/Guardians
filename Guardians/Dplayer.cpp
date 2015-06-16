@@ -3,7 +3,7 @@
 #include "stdafx.h"
 
 // 静的なメンバー変数の実体宣言
-const float CPlayer::JUMP_SPD_MAX = 0.35f;	// ジャンプ初速度
+const float CPlayer::INIT_VELOCITY = 0.40f;	// ジャンプ初速度
 
 const float CPlayer::INIT_HEIGHT_POSITION = -0.5f;
 
@@ -19,7 +19,7 @@ D3DXVECTOR3 CPlayer::m_position = INIT_PLAYER_POSITION;
 	@param D3DXVECTOR2			描画する位置(x,y)
 
 --------------------------------------------------------------*/
-CPlayer::CPlayer(LPDIRECT3DDEVICE9 _pDevice) : CCharacter(_pDevice,RIGHT_ANGLE) , m_jumpMove(0.f, -1.f), m_jumpStartPoint(-1.f),m_jumpFlag(false),m_isPlay(false)
+CPlayer::CPlayer(LPDIRECT3DDEVICE9 _pDevice) : CCharacter(_pDevice,RIGHT_ANGLE) , m_jumpMove(0.f, -1.f),m_jumpFlag(false),m_isPlay(false)
 {
 	//m_step = STEP_FADE_IN;
 	//m_position(D3DXVECTOR3(0.f,-1.f,-17.f));
@@ -48,6 +48,9 @@ void CPlayer::Control()
 	if( m_step != STEP_MOVE ) return;
 	// 待機モーション再生中は状態を待機に
 	if( m_curMotionID == MOTION_WAIT ) m_motionState = MSTATE_WAIT;
+	// モーションが終わっていたら待機モーションに戻す
+	if( m_animList[m_curMotionID].endTime <= m_time ) m_motionID = MOTION_WAIT;
+
 
 	// モーションの状態
 	switch( m_motionState ){
@@ -74,7 +77,6 @@ void CPlayer::Control()
 		Flinch();
 		break;
 	case MSTATE_AERIAL:
-		Move();
 		Aerial();
 		Jump();
 		break;
@@ -89,16 +91,19 @@ void CPlayer::Control()
 	// プレイヤーの座標を変更
 	m_position.x += m_move.x;
 	// 右壁
-	if( m_position.x >= CCharacter::RIGHT_WALL )
+	if( m_position.x >= CCharacter::RIGHT_WALL ){
 		m_position.x = CCharacter::RIGHT_WALL;
+		m_move.x = 0.f;
+	}
 	// 左壁
-	if( m_position.x <= CCharacter::LEFT_WALL ) 
+	if( m_position.x <= CCharacter::LEFT_WALL ){ 
 		m_position.x = CCharacter::LEFT_WALL;
-
+		m_move.x = 0.f;
+	}
 
 	if( m_curMotionID == MOTION_WAIT ) m_HitCount = 0;
+	
 	CScene::m_keyStateOn = 0;
-	m_motionID = MOTION_WAIT;
 }
 void CPlayer::Flinch()
 {
@@ -144,35 +149,61 @@ void CPlayer::Jump()
 	if( m_motionState == MSTATE_WAIT && !m_jumpFlag && (CScene::m_keyStateOn & UP) != 0){	
 		TOTAL_FRAME++;
 		// ボタンを押している時間が一定以上(上＋攻撃キーを優先させる)
-		if(TOTAL_FRAME == DELAY_FRAME)
+		if(TOTAL_FRAME == DELAY_FRAME){
 			m_motionID = MOTION_JUMP;
-	}
-
-	if( m_curMotionID == MOTION_JUMP && !m_jumpFlag){
-		m_jumpFlag = true;
-		m_jumpSpeed = JUMP_SPD_MAX;
-		// ジャンプ開始した地点を保存
-		m_jumpStartPoint = m_position.y;
-	}
-	// ジャンプしている時
-	if(m_jumpFlag){
-		m_position.y += m_jumpSpeed;
-		m_motionID = MOTION_JUMP;
-		// ジャンプ速度は常に一定量マイナス
-		m_jumpSpeed -= INIT_JUMP_SPEED;
-		// ジャンプ中下キーが押されていたら落下速度を加算
-		if( ((CScene::m_keyStateOn & DOWN) != 0) && (m_jumpSpeed < 0)) m_position.y += m_jumpSpeed;
-		// 着地
-		if(m_position.y <= m_jumpStartPoint){
-			m_position.y = m_jumpStartPoint;
-			ResetMotion(MOTION_WAIT);
-			m_motionID = MOTION_WAIT;
-			m_jumpFlag = false;
 			TOTAL_FRAME = 0;
 		}
 	}
 
+	if( m_curMotionID == MOTION_JUMP )
+		TOTAL_FRAME++;
 
+	if( m_curMotionID == MOTION_JUMP && !m_jumpFlag && TOTAL_FRAME >= m_jumpStartFrame){
+		m_jumpFlag = true;
+		m_jumpSpeed = INIT_VELOCITY;
+	}
+
+	if( m_jumpFlag ){
+
+		if( m_curMotionID == MOTION_JUMP && m_animList[MOTION_JUMP].endTime >= m_time ){
+			m_position.y += m_jumpSpeed;
+			m_jumpSpeed -= INIT_JUMP_SPEED;
+		}else{
+			m_motionID = MOTION_JUMP_FALL;
+		}
+
+		if( m_curMotionID == MOTION_JUMP_FALL && m_animList[MOTION_JUMP_FALL].endTime >= m_time ){
+			Fall(30);
+			if(m_position.y <= INIT_PLAYER_POSITION.y){
+				m_jumpFlag = false;
+				TOTAL_FRAME = 0;
+			}
+		}
+	}
+}
+void CPlayer::Fall(int _frame)
+{
+	static float Height = m_position.y;
+	// a = 重力 * 時間
+	float acceleration = Height / ((_frame * _frame) / 2);
+	// v
+	static float velocity = 0;
+	
+	m_position.y -= velocity;
+
+	velocity += acceleration;
+	
+	// ジャンプ中下キーが押されていたら落下速度を加算
+	if( ((CScene::m_keyStateOn & DOWN) != 0) && (m_jumpSpeed < 0)) 
+		m_position.y += velocity;
+	
+	// 着地
+	if(m_position.y <= INIT_PLAYER_POSITION.y){
+		velocity = 0;
+		m_position.y = INIT_PLAYER_POSITION.y;
+		ResetMotion(MOTION_WAIT);
+		m_motionID = MOTION_WAIT;
+	}
 }
 /*--------------------------------------------------------------
 
@@ -252,17 +283,22 @@ void CPlayer::Run()
 	// キーが離されたら
 	if( (CScene::m_keyStateOn & LEFT || CScene::m_keyStateOn & RIGHT ) == 0 ){ 
 		// 走りモーション中なら止まるモーションへ移行
-		if( m_curMotionID == MOTION_RUN && TOTAL_FRAME >= STOP_FRAME){
-			// ストップモーション
-			m_motionID = MOTION_STOP_RUN;
-			tmpAngle = m_angle;
+		if( m_curMotionID == MOTION_RUN ){
+			if( TOTAL_FRAME >= STOP_FRAME ){
+				// ストップモーション
+				m_motionID = MOTION_STOP_RUN;
+				tmpAngle = m_angle;
+			}else{
+				ResetMotion(MOTION_WAIT);
+				m_motionID = MOTION_WAIT;
+			}
 		}
 		TOTAL_FRAME = 0; // 押されていたフレーム数を0に
 	}
 
 	// 止まるモーション時
 	if( m_curMotionID == MOTION_STOP_RUN ){
-		m_move.x = 0;		// 移動しない
+		Move();
 		m_angle = tmpAngle; // 方向を変えない
 	}
 }
@@ -373,15 +409,40 @@ void CPlayer::avoid()
 }
 void CPlayer::Move()
 {
+	// 移動時徐々に加速していくように
+
+	static float velocity = 0;
+	velocity += 0.01f;
+
+	// キャラクターの最大スピードを超えないように
+	if( m_speed.x <= velocity )
+		velocity = m_speed.x;
+
 	// 左キーが押されたとき
 	if( (CScene::m_keyStateOn & LEFT) != 0){
-		m_move.x = -m_speed.x;		// 移動量
+		m_move.x -= velocity;		// 移動量
 		m_angle = LEFT_ANGLE;		// 走りモーション中のアングル
 	}
 	// 右キーが押されたとき
 	if( (CScene::m_keyStateOn & RIGHT) != 0){
-		m_move.x = m_speed.x;
+		m_move.x += velocity;
 		m_angle = RIGHT_ANGLE;
+	}
+
+	// 加速度 = モーションの時間÷キャラクターの最大速度
+	//float acceleration = m_speed.x / ( m_animList[MOTION_STOP_RUN].endTime - m_animList[MOTION_STOP_RUN].startTime );
+	// 滑りすぎるので0.02f
+	float acceleration = 0.02f;
+	// とまるモーション中は減速
+	if( m_curMotionID == MOTION_STOP_RUN ){
+		velocity -= acceleration;
+		if( velocity <= 0.f )
+			velocity = 0.f;
+
+		if( m_angle == LEFT_ANGLE )
+			m_move.x -= velocity;
+		else
+			m_move.x += velocity;
 	}
 }
 void CPlayer::SetPosition(D3DXVECTOR3 _position)

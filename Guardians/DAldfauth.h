@@ -21,6 +21,7 @@ public:
 
 	// •`‰æ
 	void Draw();
+
 	// ƒ‚[ƒVƒ‡ƒ“•ÏX
 	void SetMotion(int _motionID);
 

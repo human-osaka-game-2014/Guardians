@@ -95,7 +95,7 @@ void CCharacterManager::Control()
 	// 敵の攻撃判定
 	if ( m_playerState >= STATE_ATTACK ){
 		// 敵のやられ判定とプレイヤーの攻撃判定をチェック
-		if( m_pGameData->m_turnNo[m_pGameData->m_playerCharaNo] == 2 ) 
+		if( m_pGameData->m_playerCharaNo == MINE ) 
 			// 戦っているキャラがミネルツァの時はレイとメッシュで判定を行う
 			isHit = RayToBox(m_activePlayer->GetRay(),m_activeEnemy->GetunHittingBox());
 		else 

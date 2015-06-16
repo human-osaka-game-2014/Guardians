@@ -59,15 +59,19 @@ CBattleScene::SceneID CBattleScene::Control()
 	CScene::Control();
 
 	// ポーズ処理
-	if( ( m_keyStateOn & KEY_SPACE) && !m_pause) 
-		m_pause = true;
-	else if( ( m_keyStateOn & KEY_SPACE) && m_pause)
-		m_pause = false;
+	if( ( m_keyStateOn & KEY_SPACE) ) 
+		m_pause = !m_pause;
 
 	if( m_pause ){
 		m_keyStateOn = 0;	// キー入力を無効に
 		return SCENE_BATTLE;	// ポーズ中はここで処理を止める
 	}
+	// 戦闘開始時のフェードイン処理
+	if( m_playerPos.y <= 0.f ) {
+		m_alpha--;
+		if( m_alpha <= 0 ) m_alpha = 0; 
+	}
+
 
 	// キャラ交代
 	switch( m_charaChange ){
@@ -76,6 +80,7 @@ CBattleScene::SceneID CBattleScene::Control()
 			m_charaChange = STATE_CHARA_CHANGE;
 			m_changeTime = 0;
 		}
+
 		break;
 	case STATE_CHARA_CHANGE:
 		int add = CC_MAX_ALPHA / CC_ADDALPHA_FRAME;	// 1Fのアルファ増加量
@@ -114,7 +119,6 @@ CBattleScene::SceneID CBattleScene::Control()
 	m_move = m_character->GetCharaSpeed();
 	// プレイヤーの位置を取得
 	m_playerPos = m_character->GetPlayer()->GetPosition();
-
 	// カメラ移動範囲
 	if( m_playerPos.x >= RIGHT_WALL ){
 		m_playerPos.x = RIGHT_WALL;
@@ -124,13 +128,6 @@ CBattleScene::SceneID CBattleScene::Control()
 		m_playerPos.x = LEFT_WALL;
 		m_move.x = 0.f;
 	}
-
-	// 戦闘開始時のフェードイン処理
-	if( m_playerPos.y <= 0.f ) {
-		m_alpha--;
-		if( m_alpha <= 0 ) m_alpha = 0; 
-	}
-
 	m_field->SetCharaSpeed( m_move );
 	m_field->Control();
 

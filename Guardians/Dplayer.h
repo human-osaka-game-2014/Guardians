@@ -3,17 +3,10 @@ class CPlayer : public CCharacter
 public:
 	static const int MOTION_MAX_NUM = 26; //モーションの数 現在26個(27個予定)
 
-	static const float JUMP_SPD_MAX;	 // ジャンプ初速度
-	
-
+	static const float INIT_VELOCITY;	 // ジャンプ初速度
 
 	static const float INIT_HEIGHT_POSITION;	// キャラクターの高さ
 
-	enum {
-		CHARA_WAIT,
-		CHARA_MOVE,
-		FIELD_MOVE,
-	};
 	enum DIRECTION{ // 向き
 		DIR_LEFT,
 		DIR_RIGHT,
@@ -51,13 +44,13 @@ public:
 	};
 protected:
 	static		D3DXVECTOR3 m_position;
-	//EFFECT_LIST			m_effectList[MOTION_MAX_NUM]; // エフェクトリスト(モーションの数分確保)
+	//EFFECT_LIST		m_effectList[MOTION_MAX_NUM]; // エフェクトリスト(モーションの数分確保)
 	D3DXVECTOR3			m_enemyPos;			// 敵の位置
 	DIRECTION			m_direction;		// キャラクターの向き
-	float				m_jumpStartPoint;	// ジャンプ開始地点
 	float				m_jumpSpeed;		// ジャンプ速度
 	bool				m_jumpFlag;			// ジャンプ中フラグ
 	D3DXVECTOR2			m_jumpMove;			// ジャンプ中のy座標
+	int					m_jumpStartFrame;
 
 	bool				m_isPlay;
 public:
@@ -67,9 +60,28 @@ public:
 	virtual ~CPlayer() = 0;
 	// 制御
 	void Control();
-
 	// 描画
 	virtual void Draw() = 0;
+
+	// エフェクトの再生
+	virtual void PlayEffect(int) = 0;
+
+	void addAlpha(float _value);
+	// ゲッタ
+
+	// 衝突しているか
+	void GetHit();
+	// 防御貫通フラグ
+	int Getflag();
+
+	// 位置を取得
+	D3DXVECTOR3 GetPosition();
+	// セッタ
+
+	// 敵の位置をセット
+	void	SetEnemyPos(D3DXVECTOR3 _position); 
+	void	SetPosition(D3DXVECTOR3 _position);
+private:
 	// ジャンプ
 	void Jump();
 	// 走る
@@ -87,24 +99,6 @@ public:
 	void Move();
 	// 
 	void Flinch();
-	// エフェクトの再生
-	virtual void PlayEffect(int) = 0;
-
-	void addAlpha(float _value);
-	// ゲッタ
-
-	// 衝突しているか
-	void GetHit();
-	// 防御貫通フラグ
-	int Getflag();
-
-
-	// 位置を取得
-	D3DXVECTOR3 GetPosition();
-	// セッタ
-
-	// 敵の位置をセット
-	void	SetEnemyPos(D3DXVECTOR3 _position); 
-	void	SetPosition(D3DXVECTOR3 _position);
-private:
+	// 落下
+	void Fall(int _frame);
 };

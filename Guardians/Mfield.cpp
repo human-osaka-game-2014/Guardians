@@ -28,7 +28,6 @@ void CField::Control()
 		m_layer[i]->SetCharaSpeed(m_speed);
 		m_layer[i]->Control();
 	}
-
 	m_keyStateOn = 0;
 }
 void CField::Load(LPDIRECT3DDEVICE9 _pDevice,int _stageID)

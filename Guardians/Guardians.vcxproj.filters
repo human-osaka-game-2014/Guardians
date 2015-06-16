@@ -320,9 +320,6 @@
     <ClInclude Include="gameMapPointer.h">
       <Filter>Prepare\Map</Filter>
     </ClInclude>
-    <ClInclude Include="Deffect.h">
-      <Filter>Battle\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>Battle\Effect</Filter>
     </ClInclude>
@@ -601,9 +598,6 @@
     </ClCompile>
     <ClCompile Include="gameMapPointer.cpp">
       <Filter>Prepare\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="Deffect.cpp">
-      <Filter>Battle\Effect</Filter>
     </ClCompile>
     <ClCompile Include="DtextureManager.cpp">
       <Filter>ソース ファイル</Filter>

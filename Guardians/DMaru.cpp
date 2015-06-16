@@ -65,7 +65,10 @@ CMaru::CMaru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_teleportState(T
 	// アニメーション配列をセット
 	m_model->SetAnimList(&m_animList);
 	// 待機モーションをセット
-	m_model->ChangeMotion( MOTION_WAIT );	
+	m_model->ChangeMotion( MOTION_WAIT );
+
+	// ジャンプを開始するフレーム
+	m_jumpStartFrame = 3;
 }
 void CMaru::SetStopMotion(bool _flag)
 {

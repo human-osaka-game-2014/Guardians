@@ -36,8 +36,8 @@ typedef struct FRECT{
 enum CHARACTER
 {
 	ALDO,	// アルド・・
-	MINE, // ミネル・・
 	NERU_MARU,// ネルマル
+	MINE, // ミネル・・
 
 };
 

@@ -38,9 +38,9 @@ CGameSaveDataWindow::~CGameSaveDataWindow()
 void CGameSaveDataWindow::Load(int _ID)
 {							
 	int itemcount=0;					//アイテム数
-	int onlyitemcount[MAX_ITEM];		//各々のアイテム所持数
+	//int onlyitemcount[MAX_ITEM];		//各々のアイテム所持数
 	int emblemcount=0;					//称号数
-	int onlyemblemcount[MAX_EMBLEM];	//各々の称号獲得
+	//int onlyemblemcount[MAX_EMBLEM];	//各々の称号獲得
 	
 	std::stringstream ss;
 	ss << "SaveData\\SAVE";
