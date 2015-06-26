@@ -42,7 +42,7 @@ unsigned __stdcall ThreadFuncCreate(LPVOID vdParam) {
 unsigned __stdcall ThreadFuncUpdate(LPVOID vdParam) {
 	lpPARAM lpParam = (lpPARAM)vdParam;
 	lpParam->isEnd = false;
-	reinterpret_cast<CSceneManager*>(vdParam)->Update(lpParam->device,lpParam->pGameData,&lpParam->model,&lpParam->field );
+	//reinterpret_cast<CSceneManager*>(vdParam)->Update(lpParam->device,lpParam->pGameData,&lpParam->model,&lpParam->field );
 
 	lpParam->isEnd = true;
 	return 0;
@@ -98,9 +98,11 @@ CSceneManager::~CSceneManager()
 	for(int i = 0;i < 3; i++ ){
 		SAFE_DELETE(param.model.player[i]);
 	}
+
 	for(int i = 0;i < 4; i++ ){
 		SAFE_DELETE(param.model.enemy[i]);
 	}
+
 	SAFE_DELETE(param.field.m_field);
 }
 
@@ -147,16 +149,8 @@ void CSceneManager::Control()
 			m_pScene = new CBattleScene(m_graphics.GetDevice(),m_pGameData,m_Input,&param.model,param.field.m_field);
 			break;
 		case CScene::SCENE_RESULT:
-		{
-			// リザルトに戻ってきたときはスレッドを起動してモデルをロード開始する
-			HANDLE thread =	(HANDLE)_beginthreadex(NULL,0,ThreadFuncUpdate,&param,0,(unsigned int*)&dwID);
-			// スレッドを終了する
-			CloseHandle( thread );
-			// とりあえず仮
-
 			m_pScene = new CResultScene(m_graphics.GetDevice(), m_pGameData,m_Input);
 			break;
-		}
 		case CScene::SCENE_ENDING:
 			//m_pScene = new CEndingScene(m_graphics.GetDevice());
 			break;
@@ -268,30 +262,5 @@ bool CSceneManager::Load(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,CChara
 	_field->m_field = new CField(_pDevice,(_pGameData->m_nowClearStageNum + 1 )/ 4);
 	
 
-	return true;
-}
-
-bool CSceneManager::Update(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,CCharacterManager::MODELDATA* _model,CField::FIELD_DATA* _field)
-{
-	//// もしステージボスを倒していたら敵を生成し直す
-	//if( ( (_pGameData->m_nowClearStageNum +1) / 4 ) != ( ( _pGameData->m_oldClearStageNum + 1 ) / 4 )){
-	//	// 敵を生成
-	//	for(int i = m_pGameData->m_oldClearStageNum; i < _pGameData->m_nowClearStageNum + 1;i++){ // 現在のステージNo+次のステージのモデルを
-	//		switch( _pGameData->m_oldClearStageNum ){	
-	//		case 0:
-	//			_model->enemy[0] = new CMushroom(_pDevice);
-	//			break;
-	//		case 3:
-	//			_model->enemy[1] = new CFenrir(_pDevice);
-	//			break;
-	//			//_model->enemy[1] = new CAuger(_pDevice);
-	//			//_model->enemy[2] = new CAuger(_pDevice);
-	//			//_model->enemy[3] = new CAuger(_pDevice);
-	//		}
-	//	}
-	//	// フィールドを生成し直す
-	//	//_field->m_field = new CField(_pDevice,(_pGameData->m_nowClearStageNum + 1 )/ 4);
-	//	_pGameData->m_oldClearStageNum = _pGameData->m_nowClearStageNum;
-	//}
 	return true;
 }

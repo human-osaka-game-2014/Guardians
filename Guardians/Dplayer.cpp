@@ -9,39 +9,34 @@ const float CPlayer::INIT_HEIGHT_POSITION = -0.5f;
 
 D3DXVECTOR3 CPlayer::m_position = INIT_PLAYER_POSITION;
 
+float CPlayer::m_angle = RIGHT_ANGLE;
 //float CPlayer::m_alpha = 1.0f; // モデルのアルファ値
 
-
-/*--------------------------------------------------------------
-
-	コンストラクタ(デバイス、座標、使用画u像IDをセット)
-	@param LPDIRECT3DDEVICE9	描画デバイス
-	@param D3DXVECTOR2			描画する位置(x,y)
-
---------------------------------------------------------------*/
+/**
+ *
+ * コンストラクタ
+ * @param _pDevice 
+ *
+ */
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 _pDevice) : CCharacter(_pDevice,RIGHT_ANGLE) , m_jumpMove(0.f, -1.f),m_jumpFlag(false),m_isPlay(false)
 {
-	//m_step = STEP_FADE_IN;
-	//m_position(D3DXVECTOR3(0.f,-1.f,-17.f));
 	CScene::m_keyStateOn = 0;
-	m_motionID = 0;
+	m_motionID = MOTION_WAIT;
 }
-/*--------------------------------------------------------------
-
-	デストラクタ
-
---------------------------------------------------------------*/
+/**
+ *
+ * デストラクタ
+ *
+ */
 CPlayer::~CPlayer()
 {
 	
 }
-/*--------------------------------------------------------------
-
-	制御
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ *
+ * 制御
+ *
+ */
 void CPlayer::Control()
 {
 	// 戦闘開始演出中は移動移動しない
@@ -105,6 +100,11 @@ void CPlayer::Control()
 	
 	CScene::m_keyStateOn = 0;
 }
+/**
+ *
+ * 怯み
+ *
+ */
 void CPlayer::Flinch()
 {
 	// 無敵
@@ -129,13 +129,11 @@ void CPlayer::Flinch()
 		m_invincible = false;
 	}
 }
-/*--------------------------------------------------------------
-
-	ジャンプ
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ *
+ * ジャンプ
+ *
+ */
 void CPlayer::Jump()
 {
 	// モーションを変更するまでのフレーム
@@ -181,6 +179,11 @@ void CPlayer::Jump()
 		}
 	}
 }
+/**
+ *
+ * 落下
+ *
+ */
 void CPlayer::Fall(int _frame)
 {
 	static float Height = m_position.y;
@@ -205,13 +208,11 @@ void CPlayer::Fall(int _frame)
 		m_motionID = MOTION_WAIT;
 	}
 }
-/*--------------------------------------------------------------
-
-	しゃがみ
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ *
+ * しゃがみ
+ *
+ */
 void CPlayer::Squat()
 {	
 	// しゃがみ状態フラグ
@@ -237,13 +238,11 @@ void CPlayer::Squat()
 		m_move.x = 0; // 移動と同時押し警戒で移動値を0に
 	}
 }
-/*--------------------------------------------------------------
-
-	走る
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ *
+ * 走る
+ *
+ */
 void CPlayer::Run()
 {
 	// 止まるモーションへ以降するフレーム数(走り出しモーション　＋　走りモーション)
@@ -281,7 +280,11 @@ void CPlayer::Run()
 	
 	static float tmpAngle = 0; // 止まるモーション時の一次保存用アングル
 	// キーが離されたら
-	if( (CScene::m_keyStateOn & LEFT || CScene::m_keyStateOn & RIGHT ) == 0 ){ 
+	if( (CScene::m_keyStateOn & LEFT || CScene::m_keyStateOn & RIGHT ) == 0 ){
+		if( m_curMotionID == MOTION_START_RUN ){
+			ResetMotion(MOTION_WAIT);
+			m_motionID = MOTION_WAIT;
+		}
 		// 走りモーション中なら止まるモーションへ移行
 		if( m_curMotionID == MOTION_RUN ){
 			if( TOTAL_FRAME >= STOP_FRAME ){
@@ -302,6 +305,11 @@ void CPlayer::Run()
 		m_angle = tmpAngle; // 方向を変えない
 	}
 }
+/**
+ *
+ * 空中
+ *
+ */
 void CPlayer::Aerial()
 {
 	// Ｓ＋下キー
@@ -311,13 +319,11 @@ void CPlayer::Aerial()
 	}
 
 }
-/*--------------------------------------------------------------
-
-	攻撃
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ *
+ * 攻撃
+ *
+ */
 void CPlayer::Attack()
 {
 	int oldMotion = m_motionID;
@@ -366,13 +372,11 @@ void CPlayer::Attack()
 		m_motionStop = false;
 
 }
-/*--------------------------------------------------------------
-
-	回避
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ *
+ * 回避
+ *
+ */
 void CPlayer::avoid()
 {
 	float MOVE_DISTANCE = 5.f; // 回避モーションで移動する距離
@@ -407,6 +411,11 @@ void CPlayer::avoid()
 		else m_move.x -= add;
 	}
 }
+/**
+ *
+ * 移動
+ *
+ */
 void CPlayer::Move()
 {
 	// 移動時徐々に加速していくように
@@ -445,43 +454,42 @@ void CPlayer::Move()
 			m_move.x += velocity;
 	}
 }
+/**
+ *
+ * positionをセットする
+ * @param _position
+ *
+ */
 void CPlayer::SetPosition(D3DXVECTOR3 _position)
 {
 	m_position = _position;
 }
-/*--------------------------------------------------------------
-
-	回避
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ *
+ * 位置を取得する
+ * @return position
+ *
+ */
 D3DXVECTOR3 CPlayer::GetPosition()
 {
 	return m_position;
 }
-/*--------------------------------------------------------------
-
-	回避
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
-void CPlayer::SetEnemyPos(D3DXVECTOR3 _position)
-{
-	m_enemyPos = _position;
-}
-/*--------------------------------------------------------------
-
-	防御貫通フラグ
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ *
+ * 防御貫通フラグを取得する
+ * @return int ダメージ計算に使用するのでintで返す
+ *
+ */
 int CPlayer::Getflag()
 {
 	return !(int)true;	
 }
+/**
+ *
+ * アルファ値を加算する
+ * @param	_value
+ *
+ */
 void CPlayer::addAlpha(float _value)
 {
 	m_alpha += _value;

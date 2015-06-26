@@ -21,7 +21,7 @@ float CCharacter::m_alpha = 1.0f;
  * @param _pDevice 描画デバイス
  * @param[in] _angle
  */
-CCharacter::CCharacter(LPDIRECT3DDEVICE9 _pDevice,float _angle) : m_pDevice(_pDevice) , m_state(STATE_WAIT) , m_angle(_angle) 
+CCharacter::CCharacter(LPDIRECT3DDEVICE9 _pDevice,float _angle) : m_pDevice(_pDevice) , m_state(STATE_WAIT)
 ,m_curMotionID(0),m_speed(0.f,0.f) , m_isHit(false) , m_damage(0)
 , m_scale(0.f,0.f,0.f) , m_step(STEP_MOVE) , m_move(0.f,0.f) , m_actionGauge(ACTION_GAUGE_MAX),m_box(0) , m_curEffect(0)
 , m_time(0),m_invincible(false)
@@ -63,7 +63,6 @@ void CCharacter::SetRect()
 	// やられ判定は常に更新
 	m_unhitting_box[0] = m_box[0];
 }
-
 /**
  * アニメーション時間を進める
  * @param[in] _time 進める時間(基本的に1.0f/60.f)
@@ -75,7 +74,10 @@ void CCharacter::UpdateAnimTime(float _time)
 	// アニメーション経過時間
 	m_time = m_model->AdvanceTime(_time);
 }
-
+/**
+ * ボーンの位置を取得する
+ * @param[in] _name ボーンの名前
+ */
 D3DXVECTOR3 CCharacter::GetBonePos(LPCTSTR _name)
 {
 	MYFRAME* m_frame;	// フレーム
@@ -86,12 +88,20 @@ D3DXVECTOR3 CCharacter::GetBonePos(LPCTSTR _name)
 
 	return position;
 }
-
+/**
+ * 矩形を更新
+ * @param[in] _name ボーンの名前
+ * @param[in] _ID	ボックスのindex
+ */
 void CCharacter::UpdateRect(LPCTSTR _name , int _ID )
 {
-	UpdateBox(GetBonePos(_name),&m_box[_ID],90);	// 矩形の位置を更新
+	UpdateBox(GetBonePos(_name),&m_box[_ID]);	// 矩形の位置を更新
 }
-
+/**
+ * ボーンの位置をセット
+ * @param[out] _position ボーンの位置
+ * @param[in] _pFrame
+ */
 D3DXMATRIX CCharacter::GetMatrix(LPCTSTR _name )
 {
 	MYFRAME* m_frame;	// フレーム
@@ -99,13 +109,18 @@ D3DXMATRIX CCharacter::GetMatrix(LPCTSTR _name )
 	m_frame = (MYFRAME*)D3DXFrameFind( m_model->GetFrameRoot(),_name );
 	return m_frame->CombinedTransformationMatrix;
 }
-
-void CCharacter::UpdateRect(D3DXVECTOR3 _position , int _ID,float _radian)
+/**
+ * ボーンの位置をセット
+ * @param[in] _position ボーンの位置
+ * @param[in] _pFrame
+ * @param[in] _radian
+ */
+void CCharacter::UpdateRect(D3DXVECTOR3 _position , int _ID)
 {
-	UpdateBox(_position,&m_box[_ID],_radian);
+	UpdateBox(_position,&m_box[_ID]);
 	// 矩形の描画(デバッグ用)
 	#ifdef _DEBUG
-		DrawBox(m_box[_ID]);
+		DrawBox(m_box);
 	#endif
 }
 
@@ -115,7 +130,7 @@ void CCharacter::UpdateRect(D3DXVECTOR3 _position , int _ID,float _radian)
  * @param[in] _box ボックス
  * @param[in] _radian
  */
-void CCharacter::UpdateBox(D3DXVECTOR3 _position , XFileAnimationMesh::BOX* _box,float _radian)
+void CCharacter::UpdateBox(D3DXVECTOR3 _position , XFileAnimationMesh::BOX* _box)
 {
 	_box->min =  (_box->center + _position) - (_box->length / 2);
 	_box->max = _box->length  + _box->min;
@@ -123,7 +138,6 @@ void CCharacter::UpdateBox(D3DXVECTOR3 _position , XFileAnimationMesh::BOX* _box
 	_box->position = _position + _box->center;
 
 }
-
 /**
  * ボーンの位置をセット
  * @param[out] _position ボーンの位置
@@ -153,7 +167,10 @@ std::vector<XFileAnimationMesh::BOX> CCharacter::GetunHittingBox()
 {
 	return m_unhitting_box;
 }
-
+/**
+ * キャラクターの状態を取得
+ * @return レイ
+ */
 XFileAnimationMesh::RAY_PARAM CCharacter::GetRay()
 {
 	return m_ray;
@@ -177,6 +194,10 @@ D3DXVECTOR2 CCharacter::GetCharaSpeed()
 {
 	return m_move;
 }
+/**
+ * キャラクターの移動量をセット
+ * @return float ダメージ
+ */
 float CCharacter::GetDamage()
 {
 	m_HitCount++;
@@ -186,8 +207,6 @@ float CCharacter::GetDamage()
 	}
 	return m_correctionValue;	// ダメージを取得
 }
-
-
 /**
  * キャラクターの移動量をセット
  * @param[in] _spd 移動量
@@ -264,23 +283,29 @@ CCharacter::STEP CCharacter::GetStep()
  * ボックスの描画デバッグ用
  * @param[in] _box ボックス
  */
-void CCharacter::DrawBox(XFileAnimationMesh::BOX _box)
+void CCharacter::DrawBox(std::vector<XFileAnimationMesh::BOX> _box)
 {
 #ifdef DEBUG
-	D3DXMATRIX matTrans,matWorld,matScale;
-	D3DXMatrixScaling(&matScale,1.0f,1.0f,1.0f);
-	D3DXMatrixTranslation(&matTrans,_box.position.x ,_box.position.y,_box.position.z);
-	D3DXMatrixIdentity(&matWorld);
-	matWorld = matWorld * matScale * matTrans;
-	m_pDevice->SetTransform(D3DTS_WORLD, &matWorld);
-	// ボックスの表示
-	m_pDevice->SetMaterial( _box.pMaterials );
-	_box.pMesh->DrawSubset(0);
+	for(unsigned i = 0; i < _box.size(); i++){
+		D3DXMATRIX matTrans,matWorld,matScale;
+		D3DXMatrixScaling(&matScale,1.0f,1.0f,1.0f);
+		D3DXMatrixTranslation(&matTrans,_box[i].position.x ,_box[i].position.y,_box[i].position.z);
+		D3DXMatrixIdentity(&matWorld);
+		matWorld = matWorld * matScale * matTrans;
+		m_pDevice->SetTransform(D3DTS_WORLD, &matWorld);
+		// ボックスの表示
+		m_pDevice->SetMaterial( _box[i].pMaterials );
+		_box[i].pMesh->DrawSubset(0);
 
-	m_pDevice->SetTexture( 0, NULL );
+		m_pDevice->SetTexture( 0, NULL );
+	}
 #endif
 }
-
+/**
+ * レイの描画
+ * @param[in] _pos	　描画位置
+ * @param[in] _rayDir レイのベクトル
+ */
 void CCharacter::DrawRay(D3DXVECTOR3 _pos,D3DXVECTOR3 _rayDir)
 {
 #ifdef DEBUG

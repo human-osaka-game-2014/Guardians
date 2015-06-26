@@ -5,7 +5,6 @@
 #include "stdafx.h"
 
  float CNeru::m_charaHeight = 150.f;
-// 消費MP
 
 /**
  * コンストラクタ
@@ -15,14 +14,12 @@ CNeru::CNeru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_teleportState(T
 {
 	m_scale = D3DXVECTOR3(0.06f,0.06f,0.06f);
 
-	m_charaHeight = (m_charaHeight * m_scale.y) / 2;
-	
 	m_model = new XFileAnimationMesh(_T("image\\xfile\\Player\\PC_2-1_Neru.X"),m_pDevice,m_scale);
 	//m_maru = new CMaru(m_pDevice);
 
+	m_charaHeight = (m_charaHeight * m_scale.y) / 2;
 	// 使用する矩形を作成
 	CreateBox();
-
 	// モーションの開始時間と終了時間
 	double Animation[MOTION_MAX_NUM][2] = {
 	// StartTime　,EndTime,　ChancelFlag
@@ -54,10 +51,7 @@ CNeru::CNeru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_teleportState(T
 		{1145, 1265 },	// 25) 固有モーション2（勝利時）
 	};
 
-	SetEffectList();
-
 	m_animList.resize(MOTION_MAX_NUM);
-
 	// 配列にモーション時間をセット
 	for(int i = 0; i < MOTION_MAX_NUM;i++){
 		m_animList[i].startTime = Animation[i][0];
@@ -74,45 +68,16 @@ CNeru::CNeru(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice) , m_teleportState(T
 
 	for( int i = 0; i < EFFECT_MAX_NUM; i++ ){
 		m_efk[i] = NULL;
-	}
-}
-
-/**
- * ボックスを生成
- */
-void CNeru::CreateBox()
-{
-	XFileAnimationMesh::SPHERE sphere;
-	XFileAnimationMesh::BOX		box;
-	// ボックスの生成
-	box.max    = D3DXVECTOR3(50.0f,130.0f,100.0f);
-	box.min    = D3DXVECTOR3(0.f,0.f,0.f);
-	box.center = D3DXVECTOR3(0.f,0.0f,0.f);
-	box.length = box.max - box.min;
-	m_box.push_back(box);
-
-	box.max    = D3DXVECTOR3(100.0f,100.0f,40.0f);
-	box.length = box.max - box.min;
-	m_box.push_back(box);
-
-	box.max    = D3DXVECTOR3(20.0f,150.0f,20.0f);
-	box.length = box.max - box.min;
-	m_box.push_back(box);
-
-	for(unsigned i = 0; i < m_box.size();i++)
-		m_model->CreateBox(&m_box[i]);
-	
+	}	
 	// ジャンプを開始するフレーム
-	m_jumpStartFrame = 5;
+	m_jumpStartFrame = 3;
 }
-
 /**
  * デストラクタ
  */
 CNeru::~CNeru()
 {
 	SAFE_DELETE(m_model);
-	//SAFE_DELETE(m_sphere[0].pShereMaterials);
 	for( unsigned i = 0; i < m_box.size();i++){
 		SAFE_DELETE(m_box[i].pMaterials);
 	}
@@ -122,7 +87,6 @@ CNeru::~CNeru()
 	}
 	//SAFE_DELETE(m_maru);
 }
-
 /**
  * 描画
  */
@@ -138,30 +102,17 @@ void CNeru::Draw()
 
 	//m_maru->SetStopMotion(m_motionStop);
 	//m_maru->Draw();
-
-	SetRect();
-
-	ControlEffect();
-
-	// ボディ(やられ判定)
-	UpdateRect("pelvis",0);
 	
-	// しゃがみ中とポーズ時はアニメーション時間を進めない
-	if( CBattleScene::m_pause || m_motionStop ) return;
+	// 矩形の描画
+	DrawBox(m_box);
 
-	m_time = m_model->AdvanceTime(1.0f/60.f);
+	UpdateAnimTime();
 }
-
 /**
- * エフェクトの制御
+ * エフェクトの描画
  */
-void CNeru::ControlEffect()
+void CNeru::DrawEffect()
 {
-	static D3DXVECTOR3 move = D3DXVECTOR3(0,0,0);
-
-	float angle = 0; // エフェクト再生時のアングル保存用
-	D3DXVECTOR3 position; // エフェクト再生時の位置
-
 	switch( m_curEffect){
 	case MOTION_ATTACK:		//10.	通常攻撃
 	case MOTION_UPPER:		//13.	上攻撃
@@ -170,52 +121,20 @@ void CNeru::ControlEffect()
 		FireBall();
 		break;
 	case MOTION_LOWER:		//14.	下攻撃
-		//ThunderWhip();
 		break;
 	case MOTION_SKILL:		//16.	技1
 		IceWall();
 		break;
 	case MOTION_SKILL4:		//19.	下＋技
-		//StoneImpact();
 		break;
 	case MOTION_SKILL3:		//18.	上＋技
 	case MOTION_SKILLAIR:	//20.	下＋技（空中
 		Teleport();
 		break;
 	}
-	//// エフェクトの更新
-	//m_effect[MAIN_EFK]->Control(m_moveValue,m_efkPos);
-	//// sub(主に魔方陣)は移動しない
-	//m_effect[SUB_EFK]->Control(D3DXVECTOR3(0.f,0.f,0.f),m_efkPos);
-
-	//// エフェクトが終わっていたら
-	//if( m_effect[MAIN_EFK]->checkEnd() ){
-	//	//m_isPlay = false;
-	//	m_effect[MAIN_EFK]->SetCharaHeight( (m_charaHeight * m_scale.y) / 2);
-	//}
 	// 技が当たっていたらエフェクト再生停止
 	if( m_isHit ) {
 		m_isPlay = false;
-	}
-}
-
-void CNeru::FireBall()
-{
-	// エフェクト再生中
-	if( m_efk[FIRE_BALL] != NULL ){
-		m_efk[FIRE_BALL]->Run();
-		UpdateRect( m_efk[FIRE_BALL]->GetPosition(),1);
-		//通常攻撃
-		m_hitting_box[0] = m_box[1];
-		m_correctionValue = 1.0f;
-	}
-	// エフェクトの再生が終わっていたら
-	if( (m_isPlay && !m_efk[FIRE_BALL]->GetExists()) || m_isHit ){
-		SAFE_DELETE(m_efk[FIRE_BALL]);
-		m_isPlay = false;
-		m_curEffect = 0;
-		UpdateRect( DUMMY,1);
-		m_hitting_box[0] = m_box[1];
 	}
 }
 
@@ -225,8 +144,6 @@ void CNeru::FireBall()
  */
 void CNeru::SetMotion(int _motionID)
 {
-	static double endTime = m_animList[MOTION_WAIT].endTime;
-
 	// モーションを変更
 	if(  m_model->ChangeMotion(_motionID) ){
 		// 再生しているアニメーションを保存
@@ -267,21 +184,6 @@ void CNeru::SetMotion(int _motionID)
 		m_state = STATE_AVOID;
 		m_motionState = MSTATE_AVOID;
 		break;
-	case MOTION_ATTACK:		//10.	通常攻撃
-	case MOTION_ATTACK2:		//11.	通常攻撃連撃1
-	case MOTION_ATTACK3:		//12.	通常攻撃連撃2
-	case MOTION_UPPER:		//13.	上攻撃
-	case MOTION_LOWER:		//14.	下攻撃
-	case MOTION_AIR:			//15.	下攻撃（空中）
-	case MOTION_SKILL:		//16.	技1
-	case MOTION_SKILL2:		//17.	前＋技
-	case MOTION_SKILL3:		//18.	上＋技
-	case MOTION_SKILL4:		//19.	下＋技
-	case MOTION_SKILLAIR:		//20.	下＋技（空中）
-	//case MOTION_SPECIAL:		//21.	必殺技
-		m_state = STATE_PROJECTILE;
-		m_motionState = MSTATE_IN_MOTION;
-		break;
 	case MOTION_FLINCH:			//22.	ダメージ喰らい
 	case MOTION_DEAD:			//23.	死亡
 	case MOTION_STUN:			//24.	スタン
@@ -290,15 +192,70 @@ void CNeru::SetMotion(int _motionID)
 		m_motionState = MSTATE_IN_MOTION;
 		m_state = STATE_WAIT;
 		break;
+	default:
+		m_state = STATE_PROJECTILE;
+		m_motionState = MSTATE_IN_MOTION;
 	}
+		// 無敵状態ならStateを無敵に
+	if( m_invincible ) 
+		m_state = STATE_INVICIBLE;
+
 	if( m_isPlay ) m_state = STATE_PROJECTILE;
+
+	SetRect();
 }
+
+/**
+ * エフェクトを再生
+ * @param[in] _frame 複数のエフェクトを出現させる場合フレームを指定
+ */
+void CNeru::PlayEffect(int _frame)
+{
+	bool flag = false;
+
+	// モーション変更時にエフェクトを変更
+	switch( m_curMotionID ){
+	case MOTION_ATTACK:		//10.	通常攻撃
+	case MOTION_UPPER:		//13.	上攻撃
+	case MOTION_AIR:			//15.	下攻撃（空中）
+	case MOTION_SKILL2:		//17.	前＋技
+	case MOTION_SKILL3:		//18.	上＋技
+		m_efk[FIRE_BALL] = new CFireBallManager(m_pDevice);
+		m_efk[FIRE_BALL]->Play(m_angle,D3DXVECTOR3(m_position.x,m_position.y + m_charaHeight,m_position.z));
+		flag = true;
+		break;
+	case MOTION_LOWER:		//14.	下攻撃
+		//ThunderWhip();
+		break;
+	case MOTION_SKILL:		//16.	技1
+		m_efk[ICE_WALL] = new CIceWallManager(m_pDevice);
+		m_efk[ICE_WALL]->Play(m_angle,D3DXVECTOR3(m_position.x,m_position.y + m_charaHeight,m_position.z));
+		flag = true;
+		break;
+	case MOTION_SKILL4:		//19.	下＋技
+		//StoneImpact();
+		break;
+	case MOTION_SKILLAIR:		//20.	下＋技（空中）
+		Teleport();
+		break;
+	}
+	if( flag ){ // エフェクト再生したフレーム
+		m_curEffect = m_curMotionID;					// 再生しているモーションを保存
+		m_isPlay = true;
+		flag = false;
+		
+		m_efkAngle = m_angle;							// 再生時の向きを保存
+	}
+}
+/**
+ * アイスウォール制御処理
+ */
 void CNeru::IceWall()
 {
 	// エフェクト再生中
 	if( m_efk[ICE_WALL] != NULL ){
 		m_efk[ICE_WALL]->Run();
-		UpdateRect( m_efk[ICE_WALL]->GetPosition(),0);
+		//UpdateRect( m_efk[ICE_WALL]->GetPosition(),0);
 	}
 	// エフェクトの再生が終わっていたら
 	if( m_isPlay && ! m_efk[ICE_WALL]->GetExists() ){
@@ -308,6 +265,9 @@ void CNeru::IceWall()
 	}
 	//UpdateRect(m_position,2);	// 衝突判定用矩形の更新
 }
+/**
+ * テレポート制御処理
+ */
 void CNeru::Teleport()
 {
 	int frame = 5;
@@ -375,77 +335,53 @@ void CNeru::Teleport()
 
 		break;
 	}
-
-	// Teleport_01.efkをキャラ位置に再生＋15Frameかけてフェードイン
-	// 発動直後からフェードインが済むまで（45frame間）無敵
 }
-void CNeru::StoneImpact()
-{
-	if( m_curMotionID == MOTION_SKILL4 ){
-		m_efkPos = m_position;
-		PlayEffect();
-	}
-}
-void CNeru::ThunderWhip()
-{
-	//MYFRAME* m_frame;	// フレーム
-
-	//if( m_curMotionID == MOTION_LOWER ){
-
-	//	m_frame = (MYFRAME*)D3DXFrameFind( m_model->GetFrameRoot(),"L_wrist" );
-	//	SetBonePos(&m_efkPos,m_frame);
-
-	//	m_effect[MAIN_EFK]->SetCharaHeight(0);
-	//	PlayEffect();
-	//}
-
-	//if( m_curEffect != MOTION_LOWER ) return;
-}
-
-
 /**
- * エフェクトを再生
- * @param[in] _frame 複数のエフェクトを出現させる場合フレームを指定
+ * ファイアーボール制御処理
  */
-void CNeru::PlayEffect(int _frame)
+void CNeru::FireBall()
 {
-	bool flag = false;
-
-	// モーション変更時にエフェクトを変更
-	switch( m_curMotionID ){
-	case MOTION_ATTACK:		//10.	通常攻撃
-	case MOTION_UPPER:		//13.	上攻撃
-	case MOTION_AIR:			//15.	下攻撃（空中）
-	case MOTION_SKILL2:		//17.	前＋技
-	case MOTION_SKILL3:		//18.	上＋技
-		m_efk[FIRE_BALL] = new CFireBallManager(m_pDevice);
-		m_efk[FIRE_BALL]->Play(m_angle,D3DXVECTOR3(m_position.x,m_position.y + m_charaHeight,m_position.z));
-		flag = true;
-		break;
-	case MOTION_LOWER:		//14.	下攻撃
-		//ThunderWhip();
-		break;
-	case MOTION_SKILL:		//16.	技1
-		m_efk[ICE_WALL] = new CIceWallManager(m_pDevice);
-		m_efk[ICE_WALL]->Play(m_angle,D3DXVECTOR3(m_position.x,m_position.y + m_charaHeight,m_position.z));
-		flag = true;
-		break;
-	case MOTION_SKILL4:		//19.	下＋技
-		//StoneImpact();
-		break;
-	case MOTION_SKILLAIR:		//20.	下＋技（空中）
-		Teleport();
-		break;
+	// エフェクト再生中
+	if( m_efk[FIRE_BALL] != NULL ){
+		m_efk[FIRE_BALL]->Run();
+		UpdateRect( m_efk[BOX_FIRE_BALL]->GetPosition(),1);
+		//通常攻撃
+		m_hitting_box[0] = m_box[BOX_FIRE_BALL];
+		m_correctionValue = 1.0f;
 	}
-	if( flag ){ // エフェクト再生したフレーム
-		m_curEffect = m_curMotionID;					// 再生しているモーションを保存
-		m_isPlay = true;
-		flag = false;
-		
-		m_efkAngle = m_angle;							// 再生時の向きを保存
-		m_actionGauge -= 30;							// アクションゲージを減らす
+	// エフェクトの再生が終わっていたら
+	if( (m_isPlay && !m_efk[FIRE_BALL]->GetExists()) || m_isHit ){
+		SAFE_DELETE(m_efk[FIRE_BALL]);
+		m_isPlay = false;
+		m_curEffect = 0;
+		UpdateRect( DUMMY,BOX_FIRE_BALL);
+		m_hitting_box[0] = m_box[BOX_FIRE_BALL];
 	}
 }
+/**
+ * ボックスを生成
+ */
+void CNeru::CreateBox()
+{
+	XFileAnimationMesh::BOX		box;
+	// ボックスの生成
+	box.max    = D3DXVECTOR3(50.0f,130.0f,100.0f);
+	box.min    = D3DXVECTOR3(0.f,0.f,0.f);
+	box.center = D3DXVECTOR3(0.f,0.0f,0.f);
+	box.length = box.max - box.min;
+	m_box.push_back(box);
+
+	box.max    = D3DXVECTOR3(100.0f,100.0f,40.0f);
+	box.length = box.max - box.min;
+	m_box.push_back(box);
+
+	for(unsigned i = 0; i < m_box.size();i++)
+		m_model->CreateBox(&m_box[i]);
+	
+	// ジャンプを開始するフレーム
+	m_jumpStartFrame = 5;
+}
+
 /*-----------------------------------------------------------------
 	
 	ネル　ボーン
@@ -460,7 +396,3 @@ void CNeru::PlayEffect(int _frame)
 	右　L_toe(mirrored)
 	左　L_toe
 ------------------------------------------------------------------*/
-void CNeru::SetEffectList()
-{
-
-}

@@ -9,7 +9,7 @@ public:
 	~CMinertzaWeapon();
 	// 描画
 	void Draw(D3DXVECTOR3 _position,D3DXMATRIX _rotate,float _alpha);
-
+	// メッシュのサイズを取得
 	void GetMeshSize(D3DXVECTOR3*,D3DXVECTOR3*);
 private:
 
@@ -18,12 +18,11 @@ private:
 
 class CMinertza : public CPlayer
 {
-public:
-
 private:
-	CMinertzaWeapon* m_weapon;	// ミネルツァ武器モデル
-
-	D3DXMATRIX m_matWeapon;		// ミネルツァの武器のマテリアル
+	// ミネルツァ武器モデル
+	CMinertzaWeapon* m_weapon;	
+	// ミネルツァの武器行列
+	D3DXMATRIX m_matWeapon;		
 public:
 	// コンストラクタ
 	CMinertza(LPDIRECT3DDEVICE9 _pDevice);
@@ -34,14 +33,12 @@ public:
 	void Draw();
 	// モーション変更
 	void SetMotion(int _motionID);
-
 	// 再生するエフェクの生成
 	void ChangeEffect(){};
+	// 
+	void DrawEffect(){}; 
 	// エフェクトの再生
 	void PlayEffect(int){};
-
-
-	
 private:
 	// 矩形を作成
 	void CreateBox();

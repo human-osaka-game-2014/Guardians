@@ -9,16 +9,20 @@
 class CAldfauth : public CPlayer
 {
 public:
-
+	enum BOX_TYPE{
+		BOX_BODY,
+		BOX_ATTACK,
+		BOX_HAND_STRIKE,
+	};
 private:
-	CBillBoard vertex;
-	CTexture tex;
+	CAldEffect* m_efk;
 public:
 	// コンストラクタ
 	CAldfauth(LPDIRECT3DDEVICE9 _pDevice);
 	// デストラクタ
 	~CAldfauth();
 
+	void DrawEffect();
 	// 描画
 	void Draw();
 
@@ -28,17 +32,14 @@ public:
 	// 再生するエフェクの生成
 	void ChangeEffect(){};
 	// エフェクトの再生
-	void PlayEffect(int){};
+	void PlayEffect();
 
 private:
 	// 矩形を作成
 	void CreateBox();
 	// 矩形の制御
 	void ControlRect();
-	// エフェクトの制御
-	void ControlEffect();
 
 	// アルドファウトモーション
 	void Rush();	// 突進
-	void Upper();	// アッパー
 };

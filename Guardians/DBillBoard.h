@@ -22,5 +22,8 @@ public:
 	void Draw(LPDIRECT3DDEVICE9 _pDevice,CTexture _texture,D3DXVECTOR3 _pos,float _scale,D3DXMATRIX _attitude,D3DCOLOR _color);
 	void Draw(LPDIRECT3DDEVICE9 _pDevice,CTexture _texture,D3DXVECTOR3 _pos,float _scale,FRECT _rect,D3DXMATRIX _attitude,D3DCOLOR _color);
 
+	void DrawCC(LPDIRECT3DDEVICE9 _pDevice,CTexture _texture,D3DXVECTOR3 _pos,float _scale,D3DXMATRIX _attitude,D3DCOLOR _color);
+	void DrawCC(LPDIRECT3DDEVICE9 _pDevice,CTexture _texture,D3DXVECTOR3 _pos,float _scale,FRECT _rect,D3DXMATRIX _attitude,D3DCOLOR _color);
+
 private:
 };

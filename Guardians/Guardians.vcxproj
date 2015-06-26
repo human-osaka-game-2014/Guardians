@@ -93,10 +93,12 @@
     <ClInclude Include="3DModel.h" />
     <ClInclude Include="3DVertex.h" />
     <ClInclude Include="anim3DModel.h" />
+    <ClInclude Include="animation.h" />
     <ClInclude Include="animVertex.h" />
     <ClInclude Include="charaPicture.h" />
     <ClInclude Include="chip.h" />
     <ClInclude Include="chipMonster.h" />
+    <ClInclude Include="DAldEffect.h" />
     <ClInclude Include="DAldfauth.h" />
     <ClInclude Include="DbattleScene.h" />
     <ClInclude Include="DBillBoard.h" />
@@ -137,7 +139,7 @@
     <ClInclude Include="DVector.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="endingScene.h" />
-    <ClInclude Include="fenrir.h" />
+    <ClInclude Include="Dfenrir.h" />
     <ClInclude Include="fontPolygon.h" />
     <ClInclude Include="gameMap.h" />
     <ClInclude Include="gameMapPointer.h" />
@@ -191,7 +193,9 @@
   <ItemGroup>
     <ClCompile Include="3DModel.cpp" />
     <ClCompile Include="3DVertex.cpp" />
+    <ClCompile Include="DAldEffect.cpp" />
     <ClCompile Include="anim3DModel.cpp" />
+    <ClCompile Include="animation.cpp" />
     <ClCompile Include="animVertex.cpp" />
     <ClCompile Include="charaPicture.cpp" />
     <ClCompile Include="chip.cpp" />
@@ -234,7 +238,7 @@
     <ClCompile Include="DtitleSelect.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="endingScene.cpp" />
-    <ClCompile Include="fenrir.cpp" />
+    <ClCompile Include="Dfenrir.cpp" />
     <ClCompile Include="fontPolygon.cpp" />
     <ClCompile Include="gameMap.cpp" />
     <ClCompile Include="gameMapPointer.cpp" />

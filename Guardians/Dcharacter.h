@@ -97,6 +97,7 @@ public:
 
 	virtual void Control() = 0; // 制御
 	virtual void Draw() = 0;	// 描画
+	virtual void DrawEffect() = 0;
 
 	void SetRect();				// 衝突判定に使用する矩形のセット
 
@@ -124,12 +125,12 @@ protected:
 	// アニメーション時間を更新する
 	void UpdateAnimTime(float _time = (1.0f/60.f));
 	// 衝突判定矩形の更新
-	void UpdateRect(D3DXVECTOR3 _position , int _ID,float radian = 0);
+	void UpdateRect(D3DXVECTOR3 _position , int _ID);
 	void UpdateRect(LPCTSTR _name , int _ID );
 	void UpdateSphere(D3DXVECTOR3 _position , XFileAnimationMesh::SPHERE* _sphere);							// スフィアの位置情報を更新
-	void UpdateBox(D3DXVECTOR3 _position , XFileAnimationMesh::BOX* _box,float radian = 0);							// スフィアの位置情報を更新
+	void UpdateBox(D3DXVECTOR3 _position , XFileAnimationMesh::BOX* _box);							// スフィアの位置情報を更新
 	// 矩形の描画
-	void DrawBox(XFileAnimationMesh::BOX _box);
+	void DrawBox(std::vector<XFileAnimationMesh::BOX> _box);
 	void DrawRay(D3DXVECTOR3 _pos,D3DXVECTOR3 _rayDir);
 
 	void SetHitFlag();

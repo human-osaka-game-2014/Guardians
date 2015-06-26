@@ -190,9 +190,8 @@ void CMushroom::Draw()
 
 	}
 
-	for( unsigned i = 0; i < m_box.size();i++){
-		DrawBox(m_box[i]);
-	}
+	DrawBox(m_box);
+	
 }
 /*--------------------------------------------------------------
 

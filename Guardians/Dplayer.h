@@ -44,8 +44,8 @@ public:
 	};
 protected:
 	static		D3DXVECTOR3 m_position;
+	static		float	m_angle;
 	//EFFECT_LIST		m_effectList[MOTION_MAX_NUM]; // エフェクトリスト(モーションの数分確保)
-	D3DXVECTOR3			m_enemyPos;			// 敵の位置
 	DIRECTION			m_direction;		// キャラクターの向き
 	float				m_jumpSpeed;		// ジャンプ速度
 	bool				m_jumpFlag;			// ジャンプ中フラグ
@@ -62,10 +62,9 @@ public:
 	void Control();
 	// 描画
 	virtual void Draw() = 0;
-
-	// エフェクトの再生
-	virtual void PlayEffect(int) = 0;
-
+	virtual void DrawEffect() = 0;
+	//// エフェクトの再生
+	//virtual void PlayEffect();
 	void addAlpha(float _value);
 	// ゲッタ
 
@@ -79,7 +78,6 @@ public:
 	// セッタ
 
 	// 敵の位置をセット
-	void	SetEnemyPos(D3DXVECTOR3 _position); 
 	void	SetPosition(D3DXVECTOR3 _position);
 private:
 	// ジャンプ

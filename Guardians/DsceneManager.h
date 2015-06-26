@@ -48,7 +48,6 @@ public:
 	void Run();
 
 	bool Load(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,CCharacterManager::MODELDATA* _model,CField::FIELD_DATA* _field);
-	bool Update(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,CCharacterManager::MODELDATA* _model,CField::FIELD_DATA* _field);
 
 	void SetGraphics(CGraphicsDevice _graphics) {
 		m_graphics = _graphics;

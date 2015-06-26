@@ -21,7 +21,7 @@ protected:
 	DWORD				m_endTime; // 計測終了時間
 
 	bool				m_discovered; // プレイヤーを発見した
-
+	void DrawEffect(){};
 	CGameData::ENEMY_STATUS m_status;
 
 public:

@@ -1,37 +1,25 @@
-/*--------------------------------------------------------------
-
-	処理内容:アルドファウトの制御
-	作成者:檀上
-	更新日:
-	更新内容:
-	
-	関数　
-
-	変数　
-
---------------------------------------------------------------*/
+/**
+ * @file DMinertza.cpp
+ * @author 檀上
+ */
 
 #include "stdafx.h"
 
-/*--------------------------------------------------------------
-
-	コンストラクタ
-
---------------------------------------------------------------*/
+/**
+ * コンストラクタ
+ * @param _pDevice デバイスオブジェクト
+ */
 CMinertza::CMinertza(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 {
 	// モデルのスケール
 	m_scale = D3DXVECTOR3(0.06f,0.06f,0.06f);
 
-	//m_charaHeight = (m_charaHeight * m_scale.y) / 2;
-	
 	m_model = new XFileAnimationMesh(_T("image\\xfile\\player\\PC_3_minertza.X"),m_pDevice,m_scale);
 
 	m_weapon = new CMinertzaWeapon(m_pDevice);
 	// 使用する矩形を作成
 	CreateBox();
-
-		// モーションの開始時間と終了時間
+	// モーションの開始時間と終了時間
 	double Animation[MOTION_MAX_NUM][2] = {
 	//{ StartTime,  EndTime,
 		{0, 79},		// 00) 待機
@@ -60,7 +48,6 @@ CMinertza::CMinertza(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 		{1140, 1189},	// 23) スタン
 		{1195, 1290},	// 24) 固有モーション1（戦闘開始時用）
 		{1290, 1410},	// 25) 固有モーション2（勝利時）
-		//{1260, , },	// 26) 必殺技
 	};
 	m_animList.resize(MOTION_MAX_NUM);
 	// 配列にモーション時間をセット
@@ -80,11 +67,9 @@ CMinertza::CMinertza(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 	// ジャンプを開始するフレーム
 	m_jumpStartFrame = 3;
 }
-/*--------------------------------------------------------------
-
-	デストラクタ
-
---------------------------------------------------------------*/
+/**
+ * デストラクタ
+ */
 CMinertza::~CMinertza()
 {
 	SAFE_DELETE(m_model);
@@ -95,13 +80,9 @@ CMinertza::~CMinertza()
 		SAFE_DELETE(m_box[i].pMaterials);
 	}
 }
-/*--------------------------------------------------------------
-
-	描画
-	@param	なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * 描画
+ */
 void CMinertza::Draw()
 {
 	// モデルのα値をセット
@@ -119,20 +100,15 @@ void CMinertza::Draw()
 	// レイを描画する
 	DrawRay(m_ray.position,m_ray.length);
 
-
 	// 矩形の描画
-	for(unsigned i = 0; i < m_box.size(); i++)
-		DrawBox(m_box[i]);
+	DrawBox(m_box);
 	// アニメーション時間の更新
 	UpdateAnimTime();
 }
-/*--------------------------------------------------------------
-
-	モーションを変更
-	@param int	モーション番号
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * モーションを変更
+ * @param _motionID モーション番号
+ */
 void CMinertza::SetMotion(int _motionID)
 {
 	// モーションを変更
@@ -208,13 +184,9 @@ void CMinertza::SetMotion(int _motionID)
 	ControlEffect();
 	ControlRect();
 }
-/*--------------------------------------------------------------
-
-	衝突判定矩形の制御
-	@param なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * 衝突判定矩形の制御
+ */
 void CMinertza::ControlRect()
 {
 	m_matWeapon = GetMatrix("GripPosition"); // GripPositionのMatrixを取得
@@ -268,13 +240,9 @@ void CMinertza::ControlRect()
 	// ボディ矩形を常に更新(やられ判定)
 	UpdateRect("Back",0);
 }
-/*--------------------------------------------------------------
-
-	エフェクトの制御
-	@param なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * エフェクトの制御
+ */	
 void CMinertza::ControlEffect()
 {
 	switch( m_curEffect){
@@ -297,19 +265,10 @@ void CMinertza::ControlEffect()
 		
 		break;
 	}
-	//if( m_isHit ) {
-	//for(int i = 0; i < EFFECT_MAX_NUM;i++)
-	//		m_effect[i]->StopEffect();
-	//	m_isPlay = false;
-	//}
 }
-/*--------------------------------------------------------------
-
-	衝突判定に使用するボックスを生成
-	@param なし
-	@return なし
-
---------------------------------------------------------------*/
+/**
+ * 衝突判定に使用するボックスを生成
+ */
 void CMinertza::CreateBox()
 {
 	XFileAnimationMesh::BOX		box;
@@ -320,22 +279,13 @@ void CMinertza::CreateBox()
 	box.length = box.max - box.min;
 	m_box.push_back(box);
 
-	box.max    = D3DXVECTOR3(40.0f,50.0f,20.0f);
-	box.center = D3DXVECTOR3(0.f,80.0f,0.f);
-	box.length = box.max - box.min;
-	m_box.push_back(box);
-
-	box.max    = D3DXVECTOR3(100.0f,20.0f,20.0f);
-	box.center = D3DXVECTOR3(50.f,0.0f,0.f);
-	box.length = box.max - box.min;
-	m_box.push_back(box);
-
 	for(unsigned i = 0; i < m_box.size();i++)
 		m_model->CreateBox(&m_box[i]);
 	
 }
 /*-----------------------------------------------------------------
 
+	ボーン名メモ
 	Breast
 	Back
 
@@ -344,28 +294,42 @@ void CMinertza::CreateBox()
 -------------------------------------------------------------------*/
 
 
-
 // ミネルツァ武器クラス
+/**
+ * コンストラクタ
+ */
 CMinertzaWeapon::CMinertzaWeapon(LPDIRECT3DDEVICE9 _pDevice)
 {
 	m_model = new C3DModel(_T("image\\xfile\\Player\\ken.X"),_pDevice);
 
 	m_model->SetAngle(D3DXVECTOR3(0,0,0));
 }
+/**
+ * デストラクタ
+ */
 CMinertzaWeapon::~CMinertzaWeapon()
 {
 	SAFE_DELETE(m_model);
 }
+/**
+ * 描画
+ * @param _position	描画位置
+ * @param _mat		
+ * @param _alpha 武器のアルファ値
+ */
 void CMinertzaWeapon::Draw(D3DXVECTOR3 _position,D3DXMATRIX _mat,float _alpha)
 {
-	D3DXMATRIX mat;
-	D3DXMatrixIdentity(&mat);
 	m_model->SetScale(D3DXVECTOR3(50,50,50));
 
 	if( _alpha == 1.0 )
 		m_model->Draw(_position,_mat);
 
 }
+/**
+ * メッシュサイズを取得する
+ *	@param _min 最小サイズ
+ *  @param _max 最大サイズ
+ */
 void CMinertzaWeapon::GetMeshSize(D3DXVECTOR3* _min,D3DXVECTOR3* _max)
 {
 	m_model->GetMeshSize(_min,_max);

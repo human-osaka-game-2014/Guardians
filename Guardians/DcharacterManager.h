@@ -44,29 +44,23 @@ public:
 	~CCharacterManager();
 	// 制御
 	virtual void Control();
-
+	// 衝突しているか調べる
 	bool HitCheck(std::vector<XFileAnimationMesh::BOX>,std::vector<XFileAnimationMesh::BOX>);
 	// 描画
 	virtual void Draw();
-
 	// 移動フラグをセット
-	void setMoveFlag(bool _flag);
-	bool GetMoveFlag();
-	bool GetHitWall();
-	void SetFieldPosition(D3DXVECTOR2 _position);
 	CPlayer* GetPlayer();
-	void SetPosition(D3DXVECTOR2 _position);
-	void SetFieldSpeed(D3DXVECTOR2 _spd);
-
+	// キャラクターの移動速度を取得する
 	D3DXVECTOR2 CCharacterManager::GetCharaSpeed();
-
+	// キャラクたーの位置を取得する
 	D3DXVECTOR3 GetCharaPosition();
-
+	// HPを取得する
 	CGameData::ENEMY_STATUS GetHP();
-
-	bool		GetMotionEnd(int _motionID);
-
+	// モーションが終了しているか調べる
+	bool GetMotionEnd(int _motionID);
+	// キャラクターを変更する
 	void CharacterChange(int _time);
+	// アルファ値をセットする
 	void SetAlpha();
 private:
 	// プレイヤーのダメージを計算する
@@ -74,16 +68,16 @@ private:
 	// 敵のダメージを計算する
 	void CalcEnemyDamage();
 	// 円同士の衝突判定
-	bool SphereCollision(XFileAnimationMesh::SPHERE _pSphereA, XFileAnimationMesh::SPHERE _pSphereB);
+	bool SphereCollision(XFileAnimationMesh::SPHERE _sphereA, XFileAnimationMesh::SPHERE _sphereB);
 	// ボックス同士の衝突判定
 	bool AABBtoAABB(XFileAnimationMesh::BOX _box1,XFileAnimationMesh::BOX _box2);
 	// 円とボックスの衝突判定
-	bool SphereToBox(XFileAnimationMesh::SPHERE _pSphere,XFileAnimationMesh::BOX _box);
+	bool SphereToBox(XFileAnimationMesh::SPHERE _sphere,XFileAnimationMesh::BOX _box);
 	// レイとメッシュの衝突判定
 	bool RayToMesh(XFileAnimationMesh::RAY_PARAM _ray,std::vector<XFileAnimationMesh::BOX> _box);
-
+	// レイとボックスの衝突判定
 	bool RayToBox(XFileAnimationMesh::RAY_PARAM _ray,std::vector<XFileAnimationMesh::BOX> _box);
-
+	// 線分と線分の衝突判定
 	bool ColSegments(XFileAnimationMesh::RAY_PARAM _ray1,XFileAnimationMesh::RAY_PARAM _ray2);
 
 };

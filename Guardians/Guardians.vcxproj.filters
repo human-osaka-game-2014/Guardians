@@ -344,11 +344,17 @@
     <ClInclude Include="Dminertza.h">
       <Filter>Battle\Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="fenrir.h">
-      <Filter>Battle\Character\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="DVector.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="animation.h">
+      <Filter>Battle\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="DAldEffect.h">
+      <Filter>Battle\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Dfenrir.h">
+      <Filter>Battle\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -629,11 +635,17 @@
     <ClCompile Include="DmenuSelectScreen.cpp">
       <Filter>Prepare\Screen</Filter>
     </ClCompile>
-    <ClCompile Include="fenrir.cpp">
-      <Filter>Battle\Character\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="DVector.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="animation.cpp">
+      <Filter>Battle\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="DAldEffect.cpp">
+      <Filter>Battle\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Dfenrir.cpp">
+      <Filter>Battle\Character\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

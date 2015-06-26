@@ -11,14 +11,12 @@
  */
 CAldfauth::CAldfauth(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 {
-
 	// モデルのスケール
 	m_scale = D3DXVECTOR3(0.06f,0.06f,0.06f);
 
-	//m_charaHeight = (m_charaHeight * m_scale.y) / 2;
-	tex.Load(L"gra_effect_guardA.bmp",m_pDevice,D3DXCOLOR(255,255,255,255));
-
 	m_model = new XFileAnimationMesh(_T("image\\xfile\\Player\\PC_1_Aldfauth.X"),m_pDevice,m_scale);
+
+	m_efk = new CAldEffect(m_pDevice);
 
 	// 使用する矩形を作成
 	CreateBox();
@@ -53,10 +51,8 @@ CAldfauth::CAldfauth(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 		{1040, 1135},	// 24) 固有モーション1（戦闘開始時用）
 		{1135, 1255},	// 25) 固有モーション2（勝利時）
 	};
-		//{1260, , },	// 26) 必殺技
 
 	m_animList.resize(MOTION_MAX_NUM);
-
 	// 配列にモーション時間をセット
 	for(int i = 0; i < MOTION_MAX_NUM;i++){
 		m_animList[i].startTime = Animation[i][0];
@@ -70,7 +66,6 @@ CAldfauth::CAldfauth(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 	m_model->SetAnimList(&m_animList);
 	// 待機モーションをセット
 	m_model->ChangeMotion( MOTION_WAIT );
-
 	// ジャンプを開始するフレーム
 	m_jumpStartFrame = 3;
 }
@@ -81,6 +76,7 @@ CAldfauth::CAldfauth(LPDIRECT3DDEVICE9 _pDevice) : CPlayer(_pDevice)
 CAldfauth::~CAldfauth()
 {
 	SAFE_DELETE(m_model);
+	SAFE_DELETE(m_efk);
 
 	for(unsigned i = 0; i < m_box.size(); i++){
 		SAFE_DELETE(m_box[i].pMaterials);
@@ -97,17 +93,23 @@ void CAldfauth::Draw()
 	// モデル向き
 	D3DXMATRIX rotation;							
 	D3DXMatrixRotationYawPitchRoll(&rotation, D3DXToRadian(RIGHT_ANGLE + m_angle), D3DXToRadian(RIGHT_ANGLE), D3DXToRadian(RIGHT_ANGLE));
-	// モデルの描画の
+	// モデルの描画
 	m_model->Draw(m_position,rotation);
 	
-// 矩形の描画
-//#ifdef _DEBUG
-//	for(int i = 0; i < m_box.size(); i++)
-//		DrawBox(m_box[i]);
-//#endif
+	// 矩形の描画
+	DrawBox(m_box);
+
 	UpdateAnimTime();
 }
-
+/**
+ * エフェクトの描画
+ */
+void CAldfauth::DrawEffect()
+{
+	if( m_isHit ) m_efk->Stop(m_curMotionID);
+	// エフェクトの制御
+	m_efk->Draw();
+}
 /**
  * モーションを変更
  * @param _motionID モーション番号
@@ -121,9 +123,7 @@ void CAldfauth::SetMotion(int _motionID)
 		// モーション時間をリセット
 		m_time = m_animList[m_curMotionID].startTime;
 
-		if( !m_isPlay ){
-			PlayEffect(1);
-		}
+		m_efk->Create(GetBonePos("R_wrist"),m_curMotionID,m_angle);
 	}
 
 	// モーション毎に状態を変える
@@ -154,21 +154,6 @@ void CAldfauth::SetMotion(int _motionID)
 		m_state = STATE_AVOID;
 		m_motionState = MSTATE_AVOID;
 		break;
-	case MOTION_ATTACK:		//10.	通常攻撃
-	case MOTION_ATTACK2:		//11.	通常攻撃連撃1
-	case MOTION_ATTACK3:		//12.	通常攻撃連撃2
-	case MOTION_UPPER:		//13.	上攻撃
-	case MOTION_LOWER:		//14.	下攻撃
-	case MOTION_AIR:			//15.	下攻撃（空中）
-	case MOTION_SKILL:		//16.	技1
-	case MOTION_SKILL2:		//17.	前＋技
-	case MOTION_SKILL3:		//18.	上＋技
-	case MOTION_SKILL4:		//19.	下＋技
-	case MOTION_SKILLAIR:		//20.	下＋技（空中）
-	//case MOTION_SPECIAL:		//21.	必殺技
-		m_state = STATE_ATTACK;
-		m_motionState = MSTATE_IN_MOTION;
-		break;
 	case MOTION_FLINCH:			//22.	ダメージ喰らい
 	case MOTION_DEAD:			//23.	死亡
 	case MOTION_STUN:			//24.	スタン
@@ -177,17 +162,20 @@ void CAldfauth::SetMotion(int _motionID)
 		m_motionState = MSTATE_IN_MOTION;
 		m_state = STATE_WAIT;
 		break;
+	default:
+		m_state = STATE_ATTACK;
+		m_motionState = MSTATE_IN_MOTION;
 	}
 	// 無敵状態ならStateを無敵に
 	if( m_invincible ) 
 		m_state = STATE_INVICIBLE;
 
 	SetRect();
-	// エフェクトの制御
-	ControlEffect();
-	ControlRect();
-}
 
+	ControlRect();
+
+	m_efk->Control();
+}
 /**
  * 衝突判定矩形の制御
  */
@@ -200,23 +188,23 @@ void CAldfauth::ControlRect()
 	case MOTION_ATTACK2:	//11.	通常攻撃連撃1
 	case MOTION_ATTACK3:	//12.	通常攻撃連撃2
 		m_correctionValue = 1.f;
-		UpdateRect("R_wrist",1);
-		m_hitting_box[0] = m_box[1];
+		UpdateRect("R_wrist",BOX_ATTACK);
+		m_hitting_box[0] = m_box[BOX_ATTACK];
 		break;
 	case MOTION_SKILL:		//16.	技1
-		m_correctionValue = 1.2f;
-		UpdateRect("R_wrist",1);
-		m_hitting_box[0] = m_box[1];
+		m_correctionValue = 0.5f;
+		UpdateRect( m_efk->GetPosition(m_curMotionID,(int)(m_animList[m_curMotionID].endTime - m_time)),BOX_HAND_STRIKE);
+		m_hitting_box[0] = m_box[BOX_HAND_STRIKE];
 		break;
 	case MOTION_SKILL2:		//17.	前＋技
 		m_correctionValue = 1.3f;
-		UpdateRect("R_wrist",1);
-		m_hitting_box[0] = m_box[1];
+		UpdateRect("R_wrist",BOX_ATTACK);
+		m_hitting_box[0] = m_box[BOX_ATTACK];
 		break;
 	case MOTION_UPPER:		//13.	上攻撃
 		m_correctionValue = 1.3f;
-		UpdateRect("R_wrist",2);
-		m_hitting_box[0] = m_box[2];
+		UpdateRect("R_wrist",BOX_HAND_STRIKE);
+		m_hitting_box[0] = m_box[BOX_HAND_STRIKE];
 		break;
 	case MOTION_LOWER:		//14.	下攻撃
 		m_correctionValue = 0.f;
@@ -227,9 +215,8 @@ void CAldfauth::ControlRect()
 		break;
 	case MOTION_SKILL3:		//18.	上＋技
 		m_correctionValue = 1.0f;
-		UpdateRect("R_wrist",2);
-		Upper();
-		m_hitting_box[0] = m_box[2];
+		UpdateRect("R_wrist",BOX_HAND_STRIKE);
+		m_hitting_box[0] = m_box[BOX_HAND_STRIKE];
 		break;
 	case MOTION_SKILL4:		//19.	下＋技
 		m_correctionValue = 0.f;
@@ -242,40 +229,9 @@ void CAldfauth::ControlRect()
 		break;
 	}
 	// ボディ矩形を常に更新(やられ判定)
-	UpdateRect("pelvis",0);
+	UpdateRect("pelvis",BOX_BODY);
 }
 
-/**
- * エフェクトの制御
- */
-void CAldfauth::ControlEffect()
-{
-	switch( m_curEffect){
-	case MOTION_ATTACK:		//10.	通常攻撃
-	case MOTION_UPPER:		//13.	上攻撃
-	case MOTION_AIR:			//15.	下攻撃（空中）
-	case MOTION_SKILL2:		//17.	前＋技
-			
-		break;
-	case MOTION_LOWER:		//14.	下攻撃
-		
-		break;
-	case MOTION_SKILL:		//16.	技1
-		
-		break;
-	case MOTION_SKILL4:		//19.	下＋技
-		break;
-	case MOTION_SKILL3:		//18.	上＋技
-	case MOTION_SKILLAIR:	//20.	下＋技（空中
-		
-		break;
-	}
-	//if( m_isHit ) {
-	//for(int i = 0; i < EFFECT_MAX_NUM;i++)
-	//		m_effect[i]->StopEffect();
-	//	m_isPlay = false;
-	//}
-}
 
 /**
  * 突進
@@ -293,26 +249,11 @@ void CAldfauth::Rush()
 	}
 }
 /**
- * アッパー
- */
-void CAldfauth::Upper()
-{
-	// モーションを変更するまでのフレーム
-	static int DELAY_FRAME = 10;
-	// ジャンプ速度
-	static float INIT_JUMP_SPEED = 0.006f;
-	static bool keyPush = false;
-
-	static float MOTION_CHANGE_FRAME = (float)m_animList[MOTION_SKILL3].endTime - 1;
-
-}
-
-/**
  * 衝突判定に使用するボックスを生成
  */
 void CAldfauth::CreateBox()
 {
-	XFileAnimationMesh::BOX		box;
+	XFileAnimationMesh::BOX	box;
 	// ボックスの生成
 	box.max    = D3DXVECTOR3(50.0f,130.0f,100.0f);
 	box.min    = D3DXVECTOR3(0.f,0.f,0.f);
@@ -324,7 +265,7 @@ void CAldfauth::CreateBox()
 	box.length = box.max - box.min;
 	m_box.push_back(box);
 
-	box.max    = D3DXVECTOR3(20.0f,40.0f,20.0f);
+	box.max    = D3DXVECTOR3(70.0f,120.0f,20.0f);
 	box.length = box.max - box.min;
 	m_box.push_back(box);
 

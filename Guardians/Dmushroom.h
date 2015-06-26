@@ -22,7 +22,7 @@ private:
 public:
 	CMushroom(LPDIRECT3DDEVICE9 _pDevice);			// コンストラクタ
 	~CMushroom();									// デストラクタ
-
+	void DrawEffect(){};
 	void SetEffectList(){};
 	void ChangeEffect(){ };						// エフェクトの生成
 	void PlayEffect(int){};

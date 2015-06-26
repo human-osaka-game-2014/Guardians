@@ -63,7 +63,6 @@
 #include "DdirectShow.h"
 
 
-
 //--------------------------------------------------
 //ˆÈ‰º2D
 //--------------------------------------------------
@@ -129,12 +128,15 @@
 
 
 #include "DBillBoard.h"
+#include "animation.h"
 #include "Effect.h"
 #include "DEffectManager.h"
 #include "DfireBallManager.h"
 #include "MagicSquareManager.h"
 #include "iceWallManager.h"
 
+
+#include "DAldEffect.h"
 
 #include "Dcharacter.h"
 #include "Dplayer.h"
@@ -145,7 +147,7 @@
 #include "DNeru.h"
 #include "Dminertza.h"
 #include "DAldfauth.h"
-#include "fenrir.h"
+#include "Dfenrir.h"
 #include "Dmushroom.h"
 
 
