@@ -2,6 +2,9 @@
  * @file DbattleScene.h
  */
 
+/**
+ * ƒoƒgƒ‹‰æ–Ê‚ğŠÇ—‚·‚é
+ */
 class CBattleScene : public CScene
 {
 public:

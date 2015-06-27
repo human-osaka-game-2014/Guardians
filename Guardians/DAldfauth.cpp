@@ -112,7 +112,7 @@ void CAldfauth::DrawEffect()
 }
 /**
  * モーションを変更
- * @param _motionID モーション番号
+ * @param[in] _motionID モーション番号
  */
 void CAldfauth::SetMotion(int _motionID)
 {

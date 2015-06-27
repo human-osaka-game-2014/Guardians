@@ -1,3 +1,11 @@
+/**
+ * @file DmenuSelectScreen.h
+ */
+
+/**
+ * 戦闘準備画面のキャラクター選択画面の管理
+ */
+
 #ifndef _MENU_SELECT_SCREEN_H_
 #define _MENU_SELECT_SCREEN_H_
 
@@ -47,7 +55,7 @@ public:
 	~CMenuSelectScreen();
 	void Control(int _keyState);
 	void Draw();
-
+	// バトルシーンへ遷移するかどうかのフラグを返す
 	bool GetBattleFlag();
 };
 

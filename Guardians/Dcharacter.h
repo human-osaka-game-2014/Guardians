@@ -1,5 +1,10 @@
 /**
  * @file Dcharacter.h
+ * @author 檀上
+ */
+
+/**
+ * @file キャラクターの制御
  */
 
 class CCharacter

@@ -1,7 +1,11 @@
 /**
- * @file DNeru.h
+ * @file DNeru.cpp
+ * @author ’hã
  */
 
+/**
+ * ƒlƒ‹‚Ì§Œä
+ */
 class CNeru : public CPlayer
 {
 public:

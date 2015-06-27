@@ -1,3 +1,12 @@
+/**
+ * @file DgameSelectCursor.h
+ */
+
+/**
+ * 装備選択用のカーソルの制御
+ */
+
+
 #ifndef _GAME_SELECT_CURSOR_H_
 #define _GAME_SELECT_CURSOR_H_
 

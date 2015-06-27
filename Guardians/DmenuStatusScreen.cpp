@@ -1,18 +1,6 @@
-/*--------------------------------------------------------------
-
-	処理内容: ステータス画面
-	作成者:檀上
-	作成日:9/24
-	更新日:10/8
-	更新内容:
-	関数　
-		コンストラクタ引数にゲームデータを追加
-	変数　
-		
-		KeyCheck　Z　の処理内に装備変更処理を追加
-		生成するカーソルの数を追加
-
---------------------------------------------------------------*/
+/**
+ * @file DmenuStatusScreen.cpp
+ */
 #include "stdafx.h"
 
 CMenuStatusScreen::CMenuStatusScreen(LPDIRECT3DDEVICE9 _pDevice, CGameData* _gameData) :
@@ -333,7 +321,7 @@ void CMenuStatusScreen::ChangeStatus(int _equipID,ChangeType _type)
 	int power;
 
 	if( _type == add ) power = m_pGameData->m_chara[m_charaID].equip[_equipID].power;
-	else power = -m_pGameData->m_chara[m_charaID].equip[_equipID].power;
+	else power = - m_pGameData->m_chara[m_charaID].equip[_equipID].power;
 
 	switch( m_pGameData->m_chara[m_charaID].equip[_equipID].stType ){
 	case 0:

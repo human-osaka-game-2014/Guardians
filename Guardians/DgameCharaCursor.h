@@ -1,3 +1,11 @@
+/**
+ * @file DgameCharaCursor.h
+ */
+
+/**
+ * キャラクター選択用のカーソルの制御
+ */
+
 #ifndef _GAME_CHARA_CURSOR_H_
 #define _GAME_CHARA_CURSOR_H_
 

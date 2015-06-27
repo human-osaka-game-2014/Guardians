@@ -1,3 +1,11 @@
+/**
+ * @file DmenuSelectScreen.h
+ */
+
+/**
+ * ƒVƒ‡ƒbƒv‰æ–Ê‚ÌŠÇ—
+ */
+
 #ifndef _MENU_SHOP_SCREEN_H_
 #define _MENU_SHOP_SCREEN_H_
 

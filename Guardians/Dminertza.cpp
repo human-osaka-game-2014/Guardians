@@ -313,9 +313,9 @@ CMinertzaWeapon::~CMinertzaWeapon()
 }
 /**
  * 描画
- * @param _position	描画位置
- * @param _mat		
- * @param _alpha 武器のアルファ値
+ * @param[in] _position	描画位置
+ * @param[in] _mat		
+ * @param[in] _alpha 武器のアルファ値
  */
 void CMinertzaWeapon::Draw(D3DXVECTOR3 _position,D3DXMATRIX _mat,float _alpha)
 {
@@ -327,8 +327,8 @@ void CMinertzaWeapon::Draw(D3DXVECTOR3 _position,D3DXMATRIX _mat,float _alpha)
 }
 /**
  * メッシュサイズを取得する
- *	@param _min 最小サイズ
- *  @param _max 最大サイズ
+ *	@param[out] _min 最小サイズ
+ *  @param[out] _max 最大サイズ
  */
 void CMinertzaWeapon::GetMeshSize(D3DXVECTOR3* _min,D3DXVECTOR3* _max)
 {

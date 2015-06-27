@@ -1,3 +1,11 @@
+/**
+ * @file DprepareMissionScene.h
+ */
+
+/**
+ * í“¬€”õ‰æ–Ê‚ÌŠÇ—
+ */
+
 #ifndef _PREPARE_MISSION_H_
 #define _PREPARE_MISSION_H_
 

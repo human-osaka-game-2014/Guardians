@@ -1,16 +1,8 @@
-#include "stdafx.h"
+/**
+ * @file DprepareMissionScene.cpp
+ */
 
-//======================================================
-//	戦闘準備画面
-//	作成者　：檀上
-//	作成日　：2014/09/24
-//	更新日　：2014/10/12
-//	更新内容：
-//			生成するテロップを追加　bosstlop charatelop 檀上
-//			m_menuBarの追加　.h .cpp	
-//			Control,Drawのcase文にSTATE_CHANGE_ITEMを追加
-//
-//======================================================
+#include "stdafx.h"
 
 const CPrepareMission::CharaPictureData CPrepareMission::CH_PIC_DATA[] = {
 	{ D3DXVECTOR2(85.f, 0.f),TEX_FIELD_MENU , CCharaPicture::TYPE_STAGE_SELECT },	// -ステージ選択-	
@@ -33,12 +25,6 @@ const CPrepareMission::CharaPictureData CPrepareMission::CH_PIC_DATA[] = {
 	{ D3DXVECTOR2(), 0 },	
 };
 
-/*------------------------------------------------------
-	
-	コンストラクタ
-	@param LPDIRECT3DDEVICE9 描画デバイス
-
-------------------------------------------------------*/
 CPrepareMission::CPrepareMission(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGamedata,CInput* _input) : CScene(_pDevice,_input) 
 	,m_pDevice( _pDevice ), m_state( STATE_STAGE_SELECT ), m_menuID( 0 ), m_stageID( 0 ),
 	m_oldState( m_state ), m_pScreen( NULL ), m_mapPosition(-75.f, -2000.f),m_pGameData(_pGamedata),m_clearCount(0)
@@ -59,7 +45,7 @@ CPrepareMission::CPrepareMission(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGamedat
 	//				
 	m_pWindow = new CGameDataWindow(_pDevice, D3DXVECTOR2(-199.f, 888.f), m_pGameData);	// ゲームデータ
 
-	m_pMap = new CGameMap(_pDevice,m_pGameData,m_mapPosition, (m_pGameData->m_nowClearStageNum)/4);		// マップ
+	m_pMap = new CGameMap(_pDevice,m_pGameData,m_mapPosition, (m_pGameData->m_nowClearStageNum + 1)/4);		// マップ
 	// デバッグ用
 	//m_pMap = new CGameMap(_pDevice, m_mapPosition,m_pGameData->m_nowClearStageNum%4);		// マップ
 
@@ -78,11 +64,7 @@ CPrepareMission::CPrepareMission(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGamedat
 	}
 }
 
-/*------------------------------------------------------
-	
-	デストラクタ
 
-------------------------------------------------------*/
 CPrepareMission::~CPrepareMission()
 {
 	CTexMgr.Release();
@@ -107,13 +89,6 @@ CPrepareMission::~CPrepareMission()
 	SAFE_DELETE_ARRAY(m_menuBar);
 }
 
-/*------------------------------------------------------
-	
-	制御
-	@param	なし
-	@return なし
-
-------------------------------------------------------*/
 CPrepareMission::SceneID CPrepareMission::Control()
 {
 	CScene::m_keyStatePush = 0;
@@ -227,14 +202,6 @@ CPrepareMission::SceneID CPrepareMission::Control()
 
 	return SCENE_GAME;
 }
-
-/*------------------------------------------------------
-	
-	描画
-	@param	なし
-	@return なし
-
-------------------------------------------------------*/
 void CPrepareMission::Draw()
 {
 	// ステージ

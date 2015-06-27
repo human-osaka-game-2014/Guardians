@@ -1,20 +1,6 @@
-/*--------------------------------------------------------------
-
-	処理内容: 出撃選択画面
-	作成者:檀上
-	作成日:9/24
-	更新日:10/19
-	更新内容:
-	関数　
-		コンストラクタ引数にゲームデータを追加
-	変数　
-		m_oldIDの追加(出撃選択キャンセル用)
-		
-		10/19 檀上
-		WINDOW_TYPE_NUMを1から2に変更
-		CURSOR_TYPE_NUMを1から2に変更
-
---------------------------------------------------------------*/
+/**
+ * @file DmenuSelectScreen.cpp
+ */
 
 #include "stdafx.h"
 
@@ -177,6 +163,11 @@ void CMenuSelectScreen::Draw()
 		m_gameCursor[i]->Draw();
 	}
 }
+/**
+ * バトルシーンに遷移するかどうかのフラグを返す
+ * @retval true  出撃順を選択し終わった
+ * @retval false 選択し終わっていない
+ */
 bool CMenuSelectScreen::GetBattleFlag()
 {
 	return m_battleFlag;

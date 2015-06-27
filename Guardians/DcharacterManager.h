@@ -1,3 +1,11 @@
+/**
+ * @file DcharacterManager.h
+ * @author 檀上
+ */
+
+/**
+ * キャラクターの衝突判定やダメージ計算などを管理する
+ */
 class CCharacterManager
 {
 public:

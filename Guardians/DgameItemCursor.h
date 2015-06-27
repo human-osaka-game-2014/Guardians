@@ -1,3 +1,12 @@
+/**
+ * @file DgameItemCursor.h
+ */
+
+/**
+ * アイテム選択用のカーソルの制御
+ */
+
+
 #ifndef _GAME_ITEM_CURSOR_H_
 #define _GAME_ITEM_CURSOR_H_
 

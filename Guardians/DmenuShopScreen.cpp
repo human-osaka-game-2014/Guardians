@@ -1,22 +1,9 @@
-/*--------------------------------------------------------------
-
-	処理内容: ショップ画面
-	作成者:檀上
-	作成日:9/24
-	更新日:10/19
-	更新内容:
-	関数　
-		
-	変数　
-
---------------------------------------------------------------*/
+/**
+ * @file DmenuShopScreen.cpp
+ */
 
 #include "stdafx.h"
-/*--------------------------------------------------------------
 
-	コンストラクタ
-
---------------------------------------------------------------*/
 CMenuShopScreen::CMenuShopScreen(LPDIRECT3DDEVICE9 _pDevice,CGameData* _gameData) :
 	CMenuScreen( _pDevice ) , m_drawID(0) ,m_oldID(0) , m_state(STATE_SELECT_SHOPMENU)
 {
@@ -37,11 +24,7 @@ CMenuShopScreen::CMenuShopScreen(LPDIRECT3DDEVICE9 _pDevice,CGameData* _gameData
 	m_gameTelop = new CGameTelop*[TELOP_TYPE_NUM];
 	m_gameTelop[TELOP_EXPLAIN] = NULL;
 }
-/*--------------------------------------------------------------
 
-	デストラクタ
-
---------------------------------------------------------------*/
 CMenuShopScreen::~CMenuShopScreen()
 {
 
@@ -59,11 +42,7 @@ CMenuShopScreen::~CMenuShopScreen()
 	
 	SAFE_DELETE_ARRAY(m_gameTelop);
 }
-/*--------------------------------------------------------------
 
-	制御
-
---------------------------------------------------------------*/
 void CMenuShopScreen::Control(int _keyState)
 {
 	for( int i = 0; i < WINDOW_TYPE_NUM; i++ ) {
@@ -152,11 +131,7 @@ void CMenuShopScreen::Control(int _keyState)
 	if( m_gameWindow[WND_SHOPLIST] != NULL )
 		dynamic_cast<CGameShopListWindow*>(m_gameWindow[WND_SHOPLIST])->SetCursorPosition( m_equipID );
 }
-/*--------------------------------------------------------------
 
-	描画
-
---------------------------------------------------------------*/
 void CMenuShopScreen::Draw()
 {
 	if( m_gameTelop[TELOP_EXPLAIN] != NULL )
@@ -171,14 +146,11 @@ void CMenuShopScreen::Draw()
 		m_gameCursor[i]->Draw();
 	}
 }
-/* --------------------------------------------------
-
-	購入したいアイテムを所持しているか調べる
-	@param int	選択した項目(アイテムor装備)
-	@param int  調べたいアイテムのナンバー
-	@return		なし
-
----------------------------------------------------*/
+/**
+ * 購入したいアイテムを所持しているかサーチする
+ * @param[in] _oldID
+ * @param[in] _No
+ */
 void CMenuShopScreen::Search(int _oldID,int _No)
 {
 	bool isFound = false;
@@ -224,26 +196,18 @@ void CMenuShopScreen::Search(int _oldID,int _No)
 	m_pGameData->m_money -= (m_oldID == TOOLS ? m_pGameData->m_itemList[m_equipID].price :  m_pGameData->m_equipList[m_equipID].price);
 
 }
-/* --------------------------------------------------
-
-	購入画面ウインドウの生成
-	@param		なし
-	@return		なし
-
----------------------------------------------------*/
+/**
+ * 購入画面ウインドウを生成する
+ */
 void CMenuShopScreen::OpenWindow()
 {
 	m_gameCursor[CUR_SHOP] = new CGameItemCursor(m_pDevice,INIT_SHOPLIST_CURSOR_POSITION,CGameItemCursor::CUR_SHOP );
 	m_gameWindow[WND_SHOPLIST] = new CGameShopListWindow(m_pDevice,D3DXVECTOR2(410.f+370.f,65.f+292.5f),m_pGameData,CGameWindow::EQUIP);
 	m_gameTelop[TELOP_EXPLAIN] = new CGameExplainTelop(m_pDevice,INIT_EXPLAIN_TELOP_POSITION,m_pGameData);
 }
-/* --------------------------------------------------
-
-	購入画面ウインドウの削除
-	@param	なし
-	@return なし
-
----------------------------------------------------*/
+/**
+ * 購入画面ウインドウを削除する
+ */
 void CMenuShopScreen::DeleteWindow()
 {
 	SAFE_DELETE(m_gameCursor[CUR_SHOP]);

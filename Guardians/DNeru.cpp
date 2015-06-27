@@ -1,5 +1,6 @@
 /**
  * @file DNeru.cpp
+ * @author íhè„
  */
 
 #include "stdafx.h"

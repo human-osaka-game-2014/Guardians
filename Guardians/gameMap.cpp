@@ -98,7 +98,7 @@ CGameMap::CGameMap(LPDIRECT3DDEVICE9 _pDevice,CGameData* _pGameData,D3DXVECTOR2 
 		m_cameraPosition.y = -(CHIP_DATA[(_stageID-1) * 5 + 1].position.y - 500.f);
 
 		m_nextMapPosition.x = INIT_CAMERA_POS.x;
-		m_nextMapPosition.y = -(CHIP_DATA[_stageID * 5].position.y - 500.f);
+		m_nextMapPosition.y = -(CHIP_DATA[_stageID * 5 + 1].position.y - 500.f);
 
 		m_threwBoss = true;
 	} else {
@@ -165,11 +165,11 @@ CGameMap::~CGameMap()
 bool CGameMap::Control()
 {
 	// ゲームシーンに戻ってきて進行ラインが描画済み(-1)であれば？
-	if( m_pGameData->m_win && *STAGE_LINE_NUMLIST[m_stageID] == -1){
+	if( m_pGameData->m_win && *STAGE_LINE_NUMLIST[m_stageID-1] == -1){
 		// カメラを移動後の位置へ
-		m_cameraPosition.y = (CHIP_DATA[(m_stageID-1) * 5 + 1].position.y - 500.f);
+		m_cameraPosition.y = (CHIP_DATA[(m_stageID) * 5 + 1].position.y - 500.f);
 		m_pGameData->m_win = false;
-		STAGE_LINE_NUMLIST[m_stageID] -= 4;
+		STAGE_LINE_NUMLIST[m_stageID-1] -= 4;
 	}
 	//if( *STAGE_LINE_NUMLIST[m_stageID] == -1 &&	(m_pGameData->m_nowClearStageNum == m_pGameData->m_selectStageNum) )
 	//	

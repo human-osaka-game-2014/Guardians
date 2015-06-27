@@ -1,3 +1,6 @@
+/**
+ * ミネルツァの武器の制御
+ */
 class CMinertzaWeapon
 {
 private:
@@ -15,7 +18,14 @@ private:
 
 };
 
+/**
+ * @file DMinertza.h
+ * @author 檀上
+ */
 
+/**
+ * ミネルツァの制御
+ */
 class CMinertza : public CPlayer
 {
 private:

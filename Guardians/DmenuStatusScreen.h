@@ -1,3 +1,11 @@
+/**
+ * @file DmenuSelectScreen.h
+ */
+
+/**
+ * ステータス表示画面の管理
+ */
+
 #ifndef _MENU_STATUS_SCREEN_H_
 #define _MENU_STATUS_SCREEN_H_
 

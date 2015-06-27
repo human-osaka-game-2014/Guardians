@@ -1,3 +1,11 @@
+/**
+ * @file DgameCursor.h
+ */
+
+/**
+ * ÉJÅ[É\ÉãÇÃêßå‰
+ */
+
 #ifndef _GAME_CURSOR_H_
 #define _GAME_CURSOR_H_
 

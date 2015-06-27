@@ -99,8 +99,8 @@ void CCharacter::UpdateRect(LPCTSTR _name , int _ID )
 }
 /**
  * ボーンの位置をセット
- * @param[out] _position ボーンの位置
  * @param[in] _pFrame
+ * @return  ボーンの位置
  */
 D3DXMATRIX CCharacter::GetMatrix(LPCTSTR _name )
 {
